@@ -1,0 +1,1233 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  title: DUV Ultramarathon Statistics API
+  version: "2.0"
+  x-logo:
+    url: duv_logo_with_name.png
+    altText: DUV Ultramarathon Statistics
+  description: |
+    ## Introduction
+    Welcome to the DUV Ultramarathon Statistics API! This API provides access to data on ultramarathon races, editions, results, and runner profiles.
+
+    ## Base URL
+    The Base URL for the API is `https://statistik.d-u-v.org/json`. All endpoints referenced in the documentation are relative to this base URL.
+
+    ## Authentication
+    This API is open and does not require authentication to access its resources. You can make requests to any endpoint without including an API key or other authentication credentials.
+
+    ## Rate Limiting
+    *TODO: Is there any rate limit?*
+
+    ## Caching
+    Clients are encouraged to cache responses to reduce the load on our servers and improve their application performance. Most GET requests support caching and will return an `ETag` header. Use the `If-None-Match` header in subsequent requests to leverage caching.
+servers:
+  - url: https://statistik.d-u-v.org/json
+    description: Production server
+tags:
+  - name: Races
+    description: Operations related to races
+  - name: Race Editions
+    description: Operations related to race editions
+  - name: Race Results
+    description: Operations related to race results
+  - name: Runners
+    description: Operations related to runner profiles
+  - name: Top Lists
+    description: Operations related to top lists
+  - name: Records
+    description: Operations related to records
+  - name: Internationalization
+    description: Operations related to internationalization
+x-tagGroups:
+  - name: Endpoints
+    tags:
+      - Races
+      - Race Editions
+      - Race Results
+      - Runners
+      - Top Lists
+      - Records
+      - Internationalization
+paths:
+  /races:
+    get:
+      tags:
+        - Races
+      operationId: listRaces
+      summary: Retrieve a list of races
+      x-todo: Add more detailed description of the parameters
+      description: |
+        Retrieves a list of races (by EventID in current data model). You can filter the results based on various criteria such as date, country, and race type.
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Optional search terms for finding races by race name (EventId), city, or other attributes.
+        - in: query
+          name: dateFrom
+          schema:
+            type: string
+            format: date
+          description: The start date for filtering races, in the format YYYY-MM-DD.
+        - in: query
+          name: dateTo
+          schema:
+            type: string
+            format: date
+          description: The end date for filtering races, in the format YYYY-MM-DD.
+        - in: query
+          name: countries
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          description: Two-letter continent codes or three-letter IOC country codes to filter races. Multiple values allowed.
+        - in: query
+          name: raceType
+          schema:
+            type: string
+            enum: [fixedTime, fixedDistance, backyardUltra, stageRace, other]
+          description: Type of race.
+        - in: query
+          name: raceSurface
+          schema:
+            type: string
+            enum: [trail, road, track, indoor]
+          description: Surface of the race.
+        - in: query
+          name: distanceMinKm
+          schema:
+            type: number
+            format: float
+          description: Minimum race distance for open-ended distance ranges (in kilometers).
+        - in: query
+          name: distanceMaxKm
+          schema:
+            type: number
+            format: float
+          description: Maximum race distance for open-ended distance ranges (in kilometers).
+        - in: query
+          name: durationMin
+          schema:
+            type: integer
+          description: Minimum race duration for non-standard times (in hours).
+        - in: query
+          name: durationMax
+          schema:
+            type: integer
+          description: Maximum race duration for non-standard times (in hours).
+        - in: query
+          name: disciplines
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          description: Predefined categories for standard distances or durations, such as 50km, 100mi, 6h, 10d, etc. Multiple values allowed.
+        - in: query
+          name: rankingEligible
+          schema:
+            type: boolean
+          description: If set to true, only races that are eligible for ranking are returned.
+        - in: query
+          name: resultStatus
+          schema:
+            type: string
+          description: Status of the race results, such as complete (C), partial (P), postponed (O), cancelled (R), etc.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 25
+            maximum: 100
+          description: The maximum number of races to retrieve.
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+          description: The index of the first race to retrieve in the result set for pagination.
+        - in: query
+          name: orderBy
+          schema:
+            type: string
+            enum: [date, numberOfFinishers]
+          description: >
+            Order races by date or the number of finishers. If not specified, the default ordering is by date.
+        - $ref: "#/components/parameters/lang"
+      responses:
+        "200":
+          description: An array of races
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalCount:
+                    type: integer
+                    description: The total number of races matching the filter criteria.
+                    example: 7468
+                  races:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Race"
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+        "404":
+          description: Not found (e.g., a specific race does not exist)
+        "500":
+          description: Internal Server Error - A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
+  /races/filters:
+    get:
+      tags:
+        - Races
+      operationId: getRaceFilters
+      summary: Get available filter options for races
+      description: |
+        Retrieves the available filter options for races. This includes dynamic content for country codes and names, race types, race surfaces, and disciplines.
+      responses:
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+        "200":
+          description: An object containing arrays of filter options for races
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  countries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                          example: "SWE"
+                        name:
+                          type: string
+                          example: "Sweden"
+                  raceTypes:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        [
+                          "fixedTime",
+                          "fixedDistance",
+                          "backyardUltra",
+                          "stageRace",
+                          "other",
+                        ]
+                  raceSurfaces:
+                    type: array
+                    items:
+                      type: string
+                      example: ["trail", "road", "track", "indoor"]
+                  disciplines:
+                    type: array
+                    items:
+                      type: string
+                      example: ["50km", "100mi", "6h", "10d"]
+  /races/{parentId}/editions:
+    get:
+      tags:
+        - Races
+      operationId: listRaceEditions
+      summary: List all editions for a specific race
+      description: List all editions for a specific race (by ParentID in current data model)
+      parameters:
+        - in: path
+          name: parentId
+          schema:
+            type: integer
+          required: true
+          description: The unique identifier for the race (equivalent to the unique ParentID).
+        - $ref: "#/components/parameters/lang"
+      responses:
+        "200":
+          description: An array of race edition objects for the specified race
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RaceEdition"
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+        "404":
+          description: Not found (e.g., the specified race does not exist)
+        "500":
+          description: Internal Server Error - A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
+  /races/{eventId}:
+    get:
+      tags:
+        - Race Editions
+      operationId: getRaceEdition
+      summary: Retrieve details for a specific race edition
+      description: Retrieve details for a specific race edition
+      parameters:
+        - in: path
+          name: eventId
+          schema:
+            type: integer
+          required: true
+          description: The unique identifier for the edition (EventID)
+        - $ref: "#/components/parameters/lang"
+      responses:
+        "200":
+          description: Details of the specific race edition
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RaceEdition"
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+        "404":
+          description: Not found (e.g., a specific race does not exist)
+        "500":
+          description: Internal Server Error - A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
+  /races/{eventId}/results:
+    get:
+      tags:
+        - Race Results
+      operationId: getRaceResults
+      summary: Retrieve results for a specific race edition
+      description: Retrieve results for a specific race edition
+      parameters:
+        - in: path
+          name: eventId
+          schema:
+            type: integer
+          required: true
+          description: The unique identifier for the race edition (EventID)
+        - $ref: "#/components/parameters/lang"
+      responses:
+        "200":
+          description: Race edition details and results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  editionDetails:
+                    $ref: "#/components/schemas/RaceEdition"
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RaceResult"
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+        "404":
+          description: Not found (e.g., the specified race edition does not exist)
+        "500":
+          description: Internal Server Error - A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
+  /races/{eventId}/results/filters:
+    get:
+      tags:
+        - Race Results
+      operationId: getRaceEventResultsFilters
+      summary: Retrieve filter options for a specific race event's results
+      description: |
+        Provides dynamic filter options for refining the results of a specific race event. This includes category types, speed types, age groups, gender, and countries, tailored to the specific context of the race event identified by `{eventId}`.
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: integer
+          description: The unique identifier of the race event for which to retrieve result filters.
+      responses:
+        "200":
+          description: An object containing arrays of filter options for the specific race event's results.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  catType:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+                    example:
+                      - value: "CatInternational"
+                        label: "International"
+                      - value: "CatGerman"
+                        label: "German"
+                      - value: "EventSpecific"
+                        label: "Event-specific"
+                  speedType:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+                    example:
+                      - value: "kmh"
+                        label: "km/h"
+                      - value: "minPerKm"
+                        label: "min/km"
+                  ageGroup:
+                    type: array
+                    items:
+                      type: string
+                    example: ["all", "M20", "M30", "W20"]
+                  gender:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+                    example:
+                      - value: "M"
+                        label: "Male"
+                      - value: "F"
+                        label: "Female"
+                  countries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                        name:
+                          type: string
+                    example: # Example data for countries
+                      - code: "GER"
+                        name: "Germany"
+                      - code: "SWE"
+                        name: "Sweden"
+                    description: "Provides a list of countries with their codes and names for filtering race results specific to the event."
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+  /runners:
+    get:
+      tags:
+        - Runners
+      operationId: listOrSearchRunners
+      summary: Retrieve a list of runners or search for runners
+      description: |
+        Retrieves a list of runners. You can search for runners by name by providing a search term.
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Optional search term for finding runners by name or other attributes. The search supports multiple terms separated by spaces (encoded as '+'), e.g., 'daniel+westergren+sweden'. The search will match records containing any of the provided terms across relevant fields.
+        - $ref: "#/components/parameters/lang"
+      responses:
+        "200":
+          description: An array of runners
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Runner"
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+        "404":
+          description: Not found (e.g., the specified race does not exist)
+        "500":
+          description: Internal Server Error - A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
+  /runners/{runnerId}:
+    get:
+      tags:
+        - Runners
+      operationId: getRunnerProfile
+      summary: Retrieve a runner's profile
+      description: Retrieve detailed information about a specific runner.
+      parameters:
+        - in: path
+          name: runnerId
+          schema:
+            type: integer
+          required: true
+          description: The unique identifier for the runner
+        - $ref: "#/components/parameters/lang"
+      responses:
+        "200":
+          description: A runner profile object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Runner"
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+        "404":
+          description: Not found (e.g., the specified race does not exist)
+        "500":
+          description: Internal Server Error - A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
+  /toplists:
+    get:
+      tags:
+        - Top Lists
+      operationId: getTopLists
+      summary: Retrieve top lists
+      description: Retrieve top lists based on specified criteria.
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum: [total, annual]
+          required: true
+        - in: query
+          name: scope
+          schema:
+            type: string
+            enum: [world, continent, country]
+          required: true
+        - in: query
+          name: gender
+          schema:
+            type: string
+            enum: [male, female]
+        - in: query
+          name: year
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/lang"
+      responses:
+        "200":
+          description: An array of top list entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TopList"
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+        "404":
+          description: Not found (e.g., the specified race does not exist)
+        "500":
+          description: Internal Server Error - A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
+  /records:
+    get:
+      tags:
+        - Records
+      operationId: getRecords
+      summary: Retrieve records per age group and gender
+      description: |
+        Retrieves an array of records per age group and gender, filtered by various criteria.
+      parameters:
+        - in: query
+          name: countries
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filter records by two-letter continent codes or three-letter IOC country codes. Multiple values allowed.
+        - in: query
+          name: discipline
+          schema:
+            type: string
+            enum:
+              [
+                50km,
+                50mi,
+                100km,
+                100mi,
+                1000km,
+                1000mi,
+                6h,
+                12h,
+                24h,
+                48h,
+                72h,
+                6d,
+              ]
+          description: Filter records by standard discipline.
+        - in: query
+          name: surface
+          schema:
+            type: string
+            enum: [overall, road, track, indoor]
+            default: overall
+          description: Filter records by the surface of the race. 'overall' is the default selection.
+        - in: query
+          name: ageCalculationBase
+          schema:
+            type: string
+            enum: [yearOfBirth, dateOfBirth]
+          description: Basis for calculating age categories, either by year of birth or by exact date of birth.
+        - $ref: "#/components/parameters/lang"
+      responses:
+        "200":
+          description: An array of records per age group and gender
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Record"
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+        "404":
+          description: Not found (e.g., no records found for the given criteria)
+        "500":
+          description: Internal Server Error - A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
+  /i18n/races:
+    get:
+      tags:
+        - Internationalization
+      operationId: getLocalizedUIText
+      summary: Retrieve localized UI text strings for race listings
+      description: |
+        Provides localized versions of race listing UI text strings, enhancing support for multiple languages. This endpoint supports dynamic content localization by returning text strings in the language specified by the `lang` query parameter.
+      parameters:
+        - in: query
+          name: lang
+          required: true
+          schema:
+            type: string
+            enum: [en, de, fr, es, it, zh, ja]
+            example: "en"
+          description: |
+            The lang identifier specifying the language for which to return localized text strings. The language identifier should be a valid ISO 639-1 language code, such as "en" for English, "de" for German, "fr" for French, etc.
+      responses:
+        "200":
+          description: A collection of localized UI text strings for the specified locale.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nlsText:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    example:
+                      {
+                        "nlsKm": "km",
+                        "nlsFilter": "Filter",
+                        "nlsYear": "Year",
+                        "nlsDist": "Distance",
+                        "nlsCountry": "Country",
+                        "nlsCups": "Cups",
+                        "nlsRecordEligible": "Ranking eligible",
+                        "nlsYes": "Yes",
+                        "nlsNo": "No",
+                        "nlsDisplay": "Display",
+                        "nlsList": "List",
+                        "nlsMap": "Map",
+                        "nlsCalendar": "Race calendar",
+                        "nlsCalendarTitle": "Race calendar title",
+                        "nlsSbmtEvt": "Submit event for calendar",
+                        "nlsCalendarFoundEvents": "3062 events found",
+                        "nlsDate": "Date",
+                        "nlsEvent": "Event",
+                        "nlsValuation": "Status",
+                        "nlsLabelIAU": "IAU-Label",
+                        "nlsResults": "Results",
+                      }
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+  /i18n/races/filters:
+    get:
+      tags:
+        - Internationalization
+      operationId: getLocalizedRacesFiltersUIText
+      summary: Retrieve localized filter options for races
+      description: |
+        Provides localized versions of filter option names for the races endpoint, such as race types and race surfaces. This endpoint supports dynamic content localization by returning text strings in the language specified by the `lang` query parameter. It simplifies client-side rendering of filter options in a user-friendly manner across different languages.
+      parameters:
+        - $ref: "#/components/parameters/lang"
+      responses:
+        "200":
+          description: A collection of localized filter option names for races.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  raceTypes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                        name:
+                          type: string
+                    example:
+                      - code: "fixedTime"
+                        name: "Fixed Time"
+                      - code: "fixedDistance"
+                        name: "Fixed Distance"
+                      - code: "backyardUltra"
+                        name: "Backyard Ultra"
+                      - code: "stageRace"
+                        name: "Stage Race"
+                      - code: "other"
+                        name: "Other"
+                  raceSurfaces:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                        name:
+                          type: string
+                    example:
+                      - code: "trail"
+                        name: "Trail"
+                      - code: "road"
+                        name: "Road"
+                      - code: "track"
+                        name: "Track"
+                      - code: "indoor"
+                        name: "Indoor"
+        "400":
+          description: Bad request (e.g., malformed request syntax
+  /i18n/race-results:
+    get:
+      tags:
+        - Internationalization
+      operationId: getLocalizedRaceResultsUIText
+      summary: Retrieve localized UI text strings for race results
+      description: |
+        Provides localized versions of UI text strings specifically for viewing race results. This enhances support for multiple languages and supports dynamic content localization by returning text strings based on the specified `lang` query parameter.
+      parameters:
+        - $ref: "#/components/parameters/lang"
+      responses:
+        "200":
+          description: A collection of localized UI text strings for race results.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nlsText:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    example:
+                      nlsFilter: "Filter"
+                      nlsAgeGroupShort: "Cat"
+                      nlsCountry: "Country"
+                      nlsCountryAll: "all"
+                      nlsAvgSpeed: "Avg.Speed"
+                      nlsStages: "stages"
+                      nlsSendLinkSubject: "Link recommendation DUV Statistics"
+                      nlsSendLink1: "This web page in Ultramarathon Statistics of DUV might be interesting:"
+                      nlsDate: "Date"
+                      nlsSubmitRptHeading: "Submit link to report or GPS Track of this event"
+                      nlsEvent: "Event"
+                      nlsRaceDetails: "More details of this race."
+                      nlsDist: "Distance"
+                      nlsAlltimeResults: "All-time results of this event"
+                      nlsFinisher: "Finishers"
+                      nlsMultipleFinishers: "Multiple Finishers"
+                      nlsRecordEligible: "Ranking eligible"
+                      nlsValuation: "Status"
+                      nlsResultSource: "Source"
+                      nlsLink: "Link"
+                      nlsSourceAtRecTime: "Source at time of data acquisition."
+                      nlsRecordingBy: "Recorded by"
+                      nlsRank: "Rank"
+                      nlsPerformance: "Performance"
+                      nlsOrigName: "Original name"
+                      nlsNameLastFirst: "Surname, first name"
+                      nlsClub: "Club"
+                      nlsNationalityShort: "Nat."
+                      nlsYOBShort: "YOB"
+                      nlsGenderShort: "M/F"
+                      nlsGenderRank: "Rank M/F"
+                      nlsAgeGroupRank: "Cat. Rank"
+                      nlsAgeGradePerf: "Age graded performance"
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+  /i18n/race-results/filters:
+    get:
+      tags:
+        - Internationalization
+      operationId: getLocalizedRaceResultsFiltersUIText
+      summary: Retrieve localized filter options for race results
+      description: |
+        Provides localized versions of filter option names specifically for the race results endpoint, such as category types, speed types, age groups, gender, and countries. This endpoint supports dynamic content localization by returning text strings in the language specified by the `lang` query parameter, enhancing the user experience by catering to diverse user languages.
+      parameters:
+        - $ref: "#/components/parameters/lang"
+      responses:
+        "200":
+          description: An object containing arrays of localized filter option names for race results.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  catType:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+                    example:
+                      - value: "CatInternational"
+                        label: "International"
+                      - value: "CatGerman"
+                        label: "German"
+                      - value: "EventSpecific"
+                        label: "Event-specific"
+                  speedType:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+                    example:
+                      - value: "kmh"
+                        label: "km/h"
+                      - value: "minPerKm"
+                        label: "min/km"
+                  ageGroup:
+                    type: array
+                    items:
+                      type: string
+                    example: ["all", "M20", "M30", "W20"]
+                  gender:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        label:
+                          type: string
+                    example:
+                      - value: "M"
+                        label: "Male"
+                      - value: "F"
+                        label: "Female"
+                  countries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                        name:
+                          type: string
+                    description: "Similar to the countries filter for races, providing code and name for each country."
+                    example: # Example data for countries
+                      - code: "GER"
+                        name: "Germany"
+                      - code: "SWE"
+                        name: "Sweden"
+        "400":
+          description: Bad request (e.g., malformed request syntax)
+components:
+  parameters:
+    lang:
+      name: lang
+      in: query
+      description: Specifies the language of the response data. Supports standard ISO 639-1 language codes.
+      required: false
+      schema:
+        type: string
+        enum: [en, de, fr, es, it, zh, ja]
+        default: en
+      example: en
+  schemas:
+    Race:
+      type: object
+      properties:
+        eventId:
+          type: integer
+          example: 12345
+        parentId:
+          type: integer
+          example: 6789
+          description: EventID of the race that this race is an edition of.
+        partOf:
+          type: integer
+          description: EventID of the race that this race is a part of (such as a split or, a stage in a stage race or a championship in a race that may also contain other categories, such as an open race)
+          example: 0
+        eventName:
+          type: string
+          example: "Kullamannen 100 miles"
+        startDate:
+          type: string
+          format: date
+          example: "2024-04-22"
+        endDate:
+          type: string
+          format: date
+          example: "2024-04-23"
+        city:
+          type: string
+          example: "Båstad"
+        country:
+          type: string
+          example: "SWE"
+        raceType:
+          type: string
+          example: "fixedDistance"
+        raceSurface:
+          type: string
+          example: "trail"
+        rankingEligible:
+          type: boolean
+          example: true
+        resultStatus:
+          type: string
+          example: "C"
+        edition:
+          type: string
+          description: "This refers to the Nth edition of a race, stored as a string due to current data model constraints."
+          example: "10th"
+        distance:
+          type: string
+          example: "100 miles"
+        duration:
+          type: string
+          example: "48 hours"
+        IAULabel:
+          type: string
+          description: "IAU Label indicating the level of certification. G for Gold, S for Silver, B for Bronze, or N for none."
+          enum: [G, S, B, N]
+          example: "G"
+        year:
+          type: integer
+          example: 2024
+        month:
+          type: integer
+          format: "int32"
+          example: 4
+        day:
+          type: integer
+          format: "int32"
+          example: 22
+    RaceEdition:
+      type: object
+      properties:
+        eventId:
+          type: integer
+          description: Unique identifier for the race edition.
+          example: 12345
+        parentId:
+          type: integer
+          description: Identifier of the parent race, if this is an edition of a recurring race.
+          example: 6789
+        partOf:
+          type: integer
+          description: EventID of the race that this race is a part of (e.g., part of a series).
+          example: 2345
+        eventName:
+          type: string
+          description: Name of the race.
+          example: "Kullamannen 100 miles"
+        edition:
+          type: string
+          description: Specifies the Nth edition of the race, stored as a string due to current data model constraints.
+          example: "10th"
+        startDate:
+          type: string
+          format: date
+          description: Start date of the race.
+        endDate:
+          type: string
+          format: date
+          description: End date of the race, if applicable.
+        city:
+          type: string
+          description: City where the race is held.
+        country:
+          type: string
+          description: Country where the race is held.
+          example: "SWE"
+        raceURL:
+          type: string
+          description: URL for the race's official website or page.
+        email:
+          type: string
+          description: Contact email for the race organizers.
+        raceDistance:
+          type: string
+          description: Distance of the race, including units (e.g., "100km").
+          example: "100km"
+        raceDuration:
+          type: string
+          description: Duration
+          example: "24h"
+        raceType:
+          type: string
+          description: Type of race (e.g., "fixedTime", "fixedDistance").
+          example: "fixedDistance"
+        raceSurface:
+          type: string
+          description: Surface of the race (e.g., "trail", "road").
+          example: "trail"
+        altitudeDiff:
+          type: string
+          description: Total altitude difference in the race, including units (e.g., "1000m").
+          example: "1000m"
+        finisherCount:
+          type: object
+          properties:
+            total:
+              type: integer
+              description: Total number of finishers.
+              example: 123
+            male:
+              type: integer
+              description: Number of male finishers.
+              example: 75
+            female:
+              type: integer
+              description: Number of female finishers.
+              example: 48
+          description: Counts of finishers by gender and total.
+        recordEligible:
+          type: boolean
+          description: Indicates if the race is eligible for record consideration.
+        resultSource:
+          type: string
+          description: Source of the race results.
+          example: "by email from race organizers"
+        recordedBy:
+          type: string
+          description: Who recorded the race results.
+          example: "John Doe"
+        recordedAt:
+          type: string
+          format: date-time
+          description: When the race results were recorded.
+        resultCount:
+          type: integer
+          description: Number of results available after filtering.
+          example: 48
+    RaceResult:
+      type: object
+      properties:
+        personId:
+          type: integer
+          example: 12345
+        parentId:
+          type: integer
+          example: 67890
+        rankTotal:
+          type: integer
+          example: 1
+        performance:
+          type: string
+          example: "12:34:56 h" # or "123.566 km" for distance-based lists
+          description: "Performance value, including units. Indicates either time (h:mm:ss) or distance (km)."
+        performanceNumeric:
+          type: string
+          example: "12:34:56" # or "123.566" for distance-based lists
+        ageGradedPerformance:
+          type: string
+          example: "11:47:23"
+        extra:
+          type: array
+          items:
+            type: string
+            enum: [I, S, T]
+          example: [I, T]
+          description: "May include none, one, or several of: I (for indoor), S (for split), and T (for track)."
+        lastnameFirstname:
+          type: string
+          example: "Doe, John"
+        lastname:
+          type: string
+          example: "Doe"
+        firstname:
+          type: string
+          example: "John"
+        origName:
+          type: string
+          example: "楊連松"
+        nationality:
+          type: string
+          example: "GER"
+        yearOfBirth:
+          type: integer
+          example: 1980
+        dateOfBirth:
+          type: string
+          format: date
+          example: "1980-04-22"
+        ageGroup:
+          type: string
+          example: "M40"
+        rankAgeGroup:
+          type: integer
+          example: 1
+        date:
+          type: string
+          format: date
+          example: "2023-06-17"
+        city:
+          type: string
+          example: "Berlin"
+        country:
+          type: string
+          example: "GER"
+    Runner:
+      type: object
+      properties:
+        runnerId:
+          type: integer
+        name:
+          type: string
+        country:
+          type: string
+    TopList:
+      type: object
+      properties:
+        personId:
+          type: integer
+          example: 12345
+        parentId:
+          type: integer
+          example: 67890
+        gender:
+          type: string
+          enum: [m, f]
+          example: "f"
+        rankTotal:
+          type: integer
+          example: 1
+        performance:
+          type: string
+          example: "12:34:56 h" # or "123.566 km" for distance-based lists
+          description: "Performance value, including units. Indicates either time (h:mm:ss) or distance (km)."
+        performanceNumeric:
+          type: string
+          example: "12:34:56" # or "123.566" for distance-based lists
+        ageGradedPerformance:
+          type: string
+          example: "11:47:23 h"
+          description: "Age-graded performance value, including units. Indicates either time (h:mm:ss) or distance (km)."
+        extra:
+          type: array
+          items:
+            type: string
+            enum: [I, S, T]
+          example: [I, T]
+          description: "Extra indicators such as I (for indoor), S (for split), and T (for track)."
+        lastnameFirstname:
+          type: string
+          example: "Doe, John"
+        lastName:
+          type: string
+          example: "Doe"
+        firstName:
+          type: string
+          example: "John"
+        origName:
+          type: string
+          example: "楊連松"
+        nationality:
+          type: string
+          example: "GER"
+        yearOfBirth:
+          type: integer
+          example: 1980
+        dateOfBirth:
+          type: string
+          format: date
+          example: "1980-04-22"
+        ageGroup:
+          type: string
+          example: "M40"
+        rankAgeGroup:
+          type: integer
+          example: 1
+        date:
+          type: string
+          format: date
+          example: "2023-06-17"
+        city:
+          type: string
+          example: "Berlin"
+        country:
+          type: string
+          example: "GER"
+          items:
+            $ref: "#/components/schemas/RaceResult"
+    Record:
+      type: object
+      properties:
+        ageGroup:
+          type: string
+          example: "M40"
+        gender:
+          type: string
+          enum: [m, f]
+          example: "m"
+        personId:
+          type: integer
+          example: 12345
+        parentId:
+          type: integer
+          example: 67890
+        performance:
+          type: string
+          example: "12:34:56 h" # or "123.566 km" for distance-based lists
+          description: "Performance value, including units. Indicates either time (h:mm:ss) or distance (km)."
+        performanceNumeric:
+          type: string
+          example: "12:34:56" # or "123.566" for distance-based lists
+        lastnameFirstname:
+          type: string
+          example: "Doe, John"
+        lastName:
+          type: string
+          example: "Doe"
+        firstName:
+          type: string
+          example: "John"
+        origName:
+          type: string
+          example: "楊連松"
+        dateOfBirth:
+          type: string
+          format: date
+          example: "1980-04-22"
+        club:
+          type: string
+          example: "Runners Club"
+        date:
+          type: string
+          format: date
+          example: "2023-06-17"
+        city:
+          type: string
+          example: "Berlin"
+        country:
+          type: string
+          example: "GER"
+        discipline:
+          type: string
+          example: "24h"
+        surface:
+          type: string
+          example: "overall"
+security: []
