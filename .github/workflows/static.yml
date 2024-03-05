@@ -1,0 +1,28 @@
+name: Deploy static content to GitHub Pages
+
+on:
+  push:
+    branches: 
+      - main  # Trigger the workflow on push to the main branch
+  workflow_dispatch:  # Also allows manual triggering of the workflow
+
+permissions:  # Set necessary permissions
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Specifies the runner environment
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2  # Checks out your repository
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages  # Specifies the branch to deploy to
+          folder: static  # Specifies the folder to deploy
+          token: ${{ secrets.GITHUB_TOKEN }}  # Uses the built-in GITHUB_TOKEN for authentication
+          clean: true  # Cleans the deployment branch except for the .git directory
