@@ -1,25 +1,28 @@
-name: Deploy to GitHub Pages
+name: Deploy static content to GitHub Pages
 
 on:
   push:
-    branches:
-      - main  # Set this to your default branch
+    branches: 
+      - main  # Trigger the workflow on push to the main branch
+  workflow_dispatch:  # Also allows manual triggering of the workflow
+
+permissions:  # Set necessary permissions
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest  # Specifies the runner environment
 
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2  # Checks out your repository
 
-    # If you need to build your Nuxt project, add build steps here
-    # - name: Build
-    #   run: |
-    #     npm install
-    #     npm run build
-
-    - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@4.1.4
-      with:
-        branch: gh-pages  # The branch the action should deploy to.
-        folder: static  # The folder the action should deploy.
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages  # Specifies the branch to deploy to
+          folder: static  # Specifies the folder to deploy
+          token: ${{ secrets.GITHUB_TOKEN }}  # Uses the built-in GITHUB_TOKEN for authentication
+          clean: true  # Cleans the deployment branch except for the .git directory
