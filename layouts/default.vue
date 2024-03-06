@@ -3,7 +3,7 @@
   <v-app :theme="themeStore.currentTheme" class="app-container">
     <NavigationBar />
     <v-main>
-      <v-container>
+      <v-container class="container">
         <NuxtPage />
       </v-container>
     </v-main>
@@ -17,4 +17,3 @@
 import { useThemeStore } from "@/store/ThemeStore";
 const themeStore = useThemeStore();
 </script>
-~/store/ThemeStore

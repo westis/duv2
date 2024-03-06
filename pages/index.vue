@@ -1,3 +1,6 @@
+// pages/index.vue // This is the main page of the application. It is the first
+page that users see when they visit the site. It contains a brief introduction
+to the site and its purpose, as well as a list of features and instructions //
 <script setup>
 import { useThemeStore } from "@/store/ThemeStore"; // Assuming themeStore is correctly set up for auto-imports
 
@@ -38,10 +41,10 @@ const listItems = ref([
             :src="computedLogo"
             alt="DUV Logo"
             class=""
-            style="max-width: 250px"
+            style="max-width: 200px"
           />
         </v-col>
-        <v-col cols="12" md="10" class="mx-auto">
+        <v-col cols="12" md="10" class="pt-0 mx-auto">
           <h1 class="text-h4 text-primary font-weight-bold my-4">
             DUV Ultramarathon Statistics
           </h1>
@@ -54,17 +57,13 @@ const listItems = ref([
             Find events, explore results and top lists, and more.
           </p>
 
-          <v-list dense class="elevation-0 my-3">
+          <v-list density="compact" class="elevation-0 my-3">
             <v-list-item
               v-for="item in listItems"
               :key="item.text"
               :prepend-icon="'mdi-check-circle'"
             >
-              <v-list-item-content>
-                <v-list-item-title class="text-subtitle-1">{{
-                  item.text
-                }}</v-list-item-title>
-              </v-list-item-content>
+              {{ item.text }}
             </v-list-item>
           </v-list>
 

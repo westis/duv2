@@ -24,7 +24,9 @@
     "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
     "eslint": "^8.57.0",
-    "vite-plugin-vuetify": "^2.0.2",
-    "vuetify": "^3.5.7"
+    "sass": "^1.71.1",
+    "sass-loader": "^14.1.1",
+    "vuetify": "^3.5.7",
+    "vuetify-nuxt-module": "^0.12.0"
   }
 }
