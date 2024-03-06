@@ -1,0 +1,19 @@
+@import "vuetify/styles";
+
+/* date-container */
+.date-container {
+  border: 1px solid #ccc !important; /* Light border */
+}
+
+/* Individual date sections */
+.date-day {
+  font-size: 24px;
+}
+
+.date-month {
+  font-size: 16px;
+}
+
+.date-year {
+  font-size: 14px;
+}

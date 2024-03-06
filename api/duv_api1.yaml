@@ -1,0 +1,792 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  title: DUV Ultramarathon Statistics API
+  description: Current API for accessing race information and results from DUV Statistik.
+  version: "1.0"
+  x-logo:
+    url: ../../duv_logo_with_name.png
+    altText: DUV Ultramarathon Statistics
+servers:
+  - url: https://statistik.d-u-v.org/json
+    description: Production server
+tags:
+  - name: Races
+    description: Operations related to races
+  - name: Race Editions
+    description: Operations related to race editions
+  - name: Race Results
+    description: Operations related to race results
+  - name: Runners
+    description: Operations related to runner profiles
+  - name: Top Lists
+    description: Operations related to top lists
+  - name: Records
+    description: Operations related to records
+  - name: Internationalization
+    description: Operations related to internationalization
+x-tagGroups:
+  - name: Endpoints
+    tags:
+      - Races
+      - Race Editions
+      - Race Results
+      - Runners
+      - Top Lists
+      - Records
+      - Internationalization
+paths:
+  /mcalendar.php:
+    get:
+      tags:
+        - Races
+      security: []
+      operationId: getRaces
+      summary: Get races
+      description: Retrieve races based on specified criteria.
+      parameters:
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: string
+            description: "Year of the event. Use 'futur' for future events, 'past1' for the past year, or specify a particular year."
+        - name: country
+          in: query
+          required: true
+          schema:
+            type: string
+            description: "Country code for the events, use 'all' for events in all countries."
+        - name: dist
+          in: query
+          required: true
+          schema:
+            type: string
+            description: "Distance category for the events, use 'all' for all distances."
+        - name: cup
+          in: query
+          required: false
+          schema:
+            type: string
+            description: "Cup category for the events, optional."
+        - name: rproof
+          in: query
+          required: true
+          schema:
+            type: string
+            description: "Ranking eligibility. Use '0' for all, '1' for eligible, '2' for not eligible."
+        - name: mode
+          in: query
+          required: false
+          schema:
+            type: string
+            description: "Mode of display, use 'list' for list view and 'map' for map view."
+        - name: norslt
+          in: query
+          required: false
+          schema:
+            type: string
+            description: "Include events without results. Use '1' to include."
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: "Page number for pagination."
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Races"
+        "400":
+          description: Bad request
+  /mgetresultevent.php:
+    get:
+      tags:
+        - Race Results
+      operationId: getRaceResults
+      security:
+        - {}
+      summary: Get race results by EventID
+      description: Retrieve race results based on the specified EventID.
+      parameters:
+        - name: event
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: The EventID to get results for
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RaceResults"
+        "400":
+          description: Bad request
+  /meventdetail.php:
+    get:
+      tags:
+        - Race Editions
+      operationId: getEventDetails
+      security:
+        - {}
+      summary: Get race details by EventID
+      description: Retrieve race details based on the specified EventID.
+      parameters:
+        - name: event
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: The EventID to get details for
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RaceDetails"
+        "400":
+          description: Bad request
+  /mgetresultperson.php:
+    get:
+      tags:
+        - Runners
+      operationId: getRunnerProfile
+      description: Get runner profile, with PBs and all performances, by RunnerID
+      security:
+        - {}
+      summary: Get runner profile by RunnerID
+      parameters:
+        - name: runner
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: The RunnerID to get results for
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RunnerResults"
+        "400":
+          description: Bad request
+  /mtoprankabroad.php:
+    get:
+      tags:
+        - Summary
+      operationId: getTopRanksAbroad
+      security:
+        - {}
+      summary: Get top ranks abroad by country (nationality)
+      description: Retrieve top ranks abroad based on the specified country.
+      parameters:
+        - name: country
+          in: query
+          required: true
+          schema:
+            type: string
+            description: The country to get top rank for
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopRankAbroad"
+        "400":
+          description: Bad request
+components:
+  schemas:
+    Races:
+      type: object
+      properties:
+        nlsText:
+          type: object
+          properties:
+            nlsKm:
+              type: string
+            nlsFilter:
+              type: string
+            nlsYear:
+              type: string
+            nlsDist:
+              type: string
+            nlsCountry:
+              type: string
+            nlsCups:
+              type: string
+            nlsRecordEligible:
+              type: string
+            nlsYes:
+              type: string
+            nlsNo:
+              type: string
+            nlsDisplay:
+              type: string
+            nlsList:
+              type: string
+            nlsMap:
+              type: string
+            nlsCalendar:
+              type: string
+            nlsCalendarTitle:
+              type: string
+            nlsSbmtEvt:
+              type: string
+            nlsCalType:
+              type: string
+              nullable: true
+            nlsCalendarFoundEvents:
+              type: string
+            nlsDate:
+              type: string
+            nlsEvent:
+              type: string
+            nlsValuation:
+              type: string
+            nlsLabelIAU:
+              type: string
+            nlsResults:
+              type: string
+        URLs:
+          type: object
+          properties:
+            urlFlag:
+              type: string
+            urlSbmtEvt:
+              type: string
+            urlEvtDetail:
+              type: string
+        FltYearlist:
+          type: array
+          items:
+            type: string
+        FltCupValue:
+          type: array
+          items:
+            type: string
+        FltDistValue:
+          type: array
+          items:
+            type: string
+        FltDistLabel:
+          type: array
+          items:
+            type: string
+        FltEventTypes:
+          type: array
+          items:
+            type: string
+        FltCountryValues:
+          type: array
+          items:
+            type: string
+        FltCountryLabels:
+          type: array
+          items:
+            type: string
+        Pagination:
+          type: object
+          properties:
+            CurrPage:
+              type: integer
+            MaxPage:
+              type: integer
+            PageSize:
+              type: integer
+            NextPageURL:
+              type: string
+        Races:
+          type: array
+          items:
+            $ref: "#/components/schemas/Race"
+    Race:
+      type: object
+      properties:
+        EventID:
+          type: string
+        ParentID:
+          type: string
+        PartOf:
+          type: string
+        EventName:
+          type: string
+        Edition:
+          type: string
+        City:
+          type: string
+        Country:
+          type: string
+        EventType:
+          type: string
+        Results:
+          type: string
+        Length:
+          type: string
+        Duration:
+          type: string
+        IAULabel:
+          type: string
+        Startdate:
+          type: string
+        Enddate:
+          type: string
+        Year:
+          type: string
+        Month:
+          type: string
+        Day:
+          type: string
+        Cupname:
+          type: string
+          nullable: true
+        CupYear:
+          type: string
+          nullable: true
+    RaceResults:
+      type: object
+      properties:
+        nlsText:
+          type: object
+          properties:
+            nlsFilter:
+              type: string
+            nlsAgeGroupShort:
+              type: string
+            nlsCountry:
+              type: string
+            nlsCountryAll:
+              type: string
+            nlsAvgSpeed:
+              type: string
+            nlsStages:
+              type: string
+            nlsSendLinkSubject:
+              type: string
+            nlsSendLink1:
+              type: string
+            nlsDate:
+              type: string
+            nlsSubmitRptHeading:
+              type: string
+            nlsEvent:
+              type: string
+            nlsRaceDetails:
+              type: string
+            nlsDist:
+              type: string
+            nlsAlltimeResults:
+              type: string
+            nlsFinisher:
+              type: string
+            nlsMultipleFinishers:
+              type: string
+            nlsRecordEligible:
+              type: string
+            nlsValuation:
+              type: string
+            nlsResultSource:
+              type: string
+            nlsLink:
+              type: string
+            nlsSourceAtRecTime:
+              type: string
+            nlsRecordingBy:
+              type: string
+            nlsRank:
+              type: string
+            nlsPerformance:
+              type: string
+            nlsOrigName:
+              type: string
+            nlsNameLastFirst:
+              type: string
+            nlsClub:
+              type: string
+            nlsNationalityShort:
+              type: string
+            nlsYOBShort:
+              type: string
+            nlsGenderShort:
+              type: string
+            nlsGenderRank:
+              type: string
+            nlsAgeGroupRank:
+              type: string
+            nlsAgeGradePerf:
+              type: string
+        FltCatTypeValue:
+          type: array
+          items:
+            type: integer
+        FltCatTypeLabel:
+          type: array
+          items:
+            type: string
+        FltSpeedTypeValue:
+          type: array
+          items:
+            type: integer
+        FltSpeedTypeLabel:
+          type: array
+          items:
+            type: string
+        FltCatValues:
+          type: array
+          items:
+            type: string
+        FltCatLabels:
+          type: array
+          items:
+            type: string
+        FltCountryValues:
+          type: array
+          items:
+            type: string
+        FltCountryLabels:
+          type: array
+          items:
+            type: string
+        EvtHeader:
+          $ref: "#/components/schemas/EventHeader"
+        Resultlist:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventResult"
+    EventHeader:
+      type: object
+      properties:
+        EvtID:
+          type: integer
+        ParentID:
+          type: string
+        PartOf:
+          type: string
+        EvtDate:
+          type: string
+        StartDate:
+          type: string
+        EndDate:
+          type: string
+        Edition:
+          type: string
+        EventName:
+          type: string
+        EvtName:
+          type: string
+        City:
+          type: string
+        Country:
+          type: string
+        URL:
+          type: string
+        Email:
+          type: string
+        EvtDetailLink:
+          type: string
+        AllTimeLink:
+          type: string
+        MultFinishLink:
+          type: string
+        EvtDistance:
+          type: string
+        EvtDist:
+          type: string
+        EvtType:
+          type: string
+        AltitudeDiff:
+          type: string
+        FinisherCnt:
+          type: string
+        RecordEligible:
+          type: string
+        Valuation:
+          type: string
+        Resultsource:
+          type: string
+        RecordedBy:
+          type: string
+        RecordedAt:
+          type: string
+        SearchRsltCnt:
+          type: string
+    EventResult:
+      type: object
+      properties:
+        RankTotal:
+          type: string
+        Performance:
+          type: string
+        PerformanceNumeric:
+          type: string
+        PersonID:
+          type: string
+        ParentID:
+          type: string
+        AthleteName:
+          type: string
+        FirstName:
+          type: string
+        LastName:
+          type: string
+        OrigName:
+          type: string
+        Club:
+          type: string
+        Nationality:
+          type: string
+        YOB:
+          type: string
+        DOB:
+          type: string
+        Gender:
+          type: string
+        RankMW:
+          type: string
+        Cat:
+          type: string
+        RankCat:
+          type: string
+        Speed:
+          type: string
+        AgeGradePerf:
+          type: string
+    RaceDetails:
+      type: object
+      properties:
+        EvtHeader:
+          $ref: "#/components/schemas/EventHeaderDetail"
+    EventHeaderDetail:
+      type: object
+      properties:
+        EvtID:
+          type: integer
+        ParentID:
+          type: string
+        PartOf:
+          type: string
+        EvtDate:
+          type: string
+        StartDate:
+          type: string
+        EndDate:
+          type: string
+        Edition:
+          type: string
+        EventName:
+          type: string
+        EvtEdName:
+          type: string
+        City:
+          type: string
+        Country:
+          type: string
+        CountryName:
+          type: string
+        URL:
+          type: string
+        Email:
+          type: string
+        EvtDistance:
+          type: string
+        EvtDist:
+          type: string
+        EvtType:
+          type: string
+        AltitudeDiff:
+          type: string
+        FinisherCnt:
+          type: string
+          nullable: true
+        RecordEligible:
+          type: string
+        Valuation:
+          type: string
+        Resultsource:
+          type: string
+        RecordedBy:
+          type: string
+        RecordedAt:
+          type: string
+        SearchRsltCnt:
+          type: string
+          nullable: true
+    RunnerResults:
+      type: object
+      properties:
+        nlsText:
+          type: object
+          properties:
+            nlsName:
+              type: string
+            nlsClub:
+              type: string
+            nlsResidence:
+              type: string
+            nlsYOB:
+              type: string
+            nlsBirthday:
+              type: string
+            nlsNationality:
+              type: string
+            nlsHomepage:
+              type: string
+            nlsAgeGroupNational:
+              type: string
+            nlsAgeGroupShortINT:
+              type: string
+            nlsMisc:
+              type: string
+            nlsListOfRaces:
+              type: string
+            nlsPersonalBest:
+              type: string
+            nlsCompTable:
+              type: string
+            nlsEvent:
+              type: string
+            nlsEvents:
+              type: string
+            nlsKm:
+              type: string
+            nlsRaceDistHoursShort:
+              type: string
+            nlsAgeGroupShort:
+              type: string
+            nlsRankinYearIntNat:
+              type: string
+            nlsCompParticipation:
+              type: string
+            nlsSearchResultsCount:
+              type: string
+        PersonHeader:
+          $ref: "#/components/schemas/PersonHeader"
+        AllPerfs:
+          type: array
+          items:
+            $ref: "#/components/schemas/PerformancePerYear"
+        AllPBs:
+          type: array
+          items:
+            type: object
+            properties:
+              Distance:
+                type: string
+                enum: [50km, 50mi, 100km, 100mi, 6h, 12h, 24h, 48h, 6d]
+              BestPerformance:
+                type: object
+                properties:
+                  Perf:
+                    type: string
+                  Year:
+                    type: string
+                  RankIntNat:
+                    type: string
+              PB:
+                type: string
+        CompTable:
+          type: array
+          items:
+            $ref: "#/components/schemas/ComparisonEntry"
+    PersonHeader:
+      type: object
+      properties:
+        PersonName:
+          type: string
+        OrigName:
+          type: string
+        Club:
+          type: string
+        Residence:
+          type: string
+        YOB:
+          type: string
+        DOB:
+          type: string
+        NationalityShort:
+          type: string
+        NationalityLong:
+          type: string
+        Flag:
+          type: string
+        Homepage:
+          type: string
+        Misc:
+          type: string
+        CatNAT:
+          type: string
+        CatINT:
+          type: string
+        SearchRslts:
+          type: integer
+        TotalEvtCnt:
+          type: integer
+        TotalKm:
+          type: string
+    PerformancePerYear:
+      type: object
+      properties:
+        Year:
+          type: string
+        EvtCnt:
+          type: string
+        KmSum:
+          type: string
+        PerfsPerYear:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventPerformance"
+    EventPerformance:
+      type: object
+      properties:
+        EvtDate:
+          type: string
+        EvtID:
+          type: string
+        EvtName:
+          type: string
+        EvtDist:
+          type: string
+        Perf:
+          type: string
+        AthleteName:
+          type: string
+        PerfClub:
+          type: string
+        RankOverall:
+          type: string
+        Gender:
+          type: string
+        RankMW:
+          type: string
+        Cat:
+          type: string
+        RankCat:
+          type: string
+    ComparisonEntry:
+      type: object
+      properties:
+        EvtID:
+          type: string
+        EvtName:
+          type: string
+        EvtCnt:
+          type: integer
+        # Dynamically include years as properties. Example for clarification:
+        "2016":
+          type: string
+          nullable: true
+        "2017":
+          type: string
+          nullable: true
+        # Continue for each year of participation. Use nullable for years without participation.
+    TopRankAbroad: {}

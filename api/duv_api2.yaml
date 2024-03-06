@@ -6,14 +6,14 @@ info:
   title: DUV Ultramarathon Statistics API
   version: "2.0"
   x-logo:
-    url: duv_logo_with_name.png
+    url: ../../duv_logo_with_name.png
     altText: DUV Ultramarathon Statistics
   description: |
     ## Introduction
-    Welcome to the DUV Ultramarathon Statistics API! This API provides access to data on ultramarathon races, editions, results, and runner profiles.
+    Suggestion for new version of the API for DUV Ultramarathon Statistics. This API provides access to data on ultramarathon races, editions, results, runner profiles and more. The data is sourced from the DUV (Deutsche Ultramarathon Vereinigung) website, which is a comprehensive resource for ultramarathon statistics and information.
 
     ## Base URL
-    The Base URL for the API is `https://statistik.d-u-v.org/json`. All endpoints referenced in the documentation are relative to this base URL.
+    The Base URL for the API is `https://statistik.d-u-v.org/api`. All endpoints referenced in the documentation are relative to this base URL.
 
     ## Authentication
     This API is open and does not require authentication to access its resources. You can make requests to any endpoint without including an API key or other authentication credentials.
@@ -24,7 +24,7 @@ info:
     ## Caching
     Clients are encouraged to cache responses to reduce the load on our servers and improve their application performance. Most GET requests support caching and will return an `ETag` header. Use the `If-None-Match` header in subsequent requests to leverage caching.
 servers:
-  - url: https://statistik.d-u-v.org/json
+  - url: https://statistik.d-u-v.org/api
     description: Production server
 tags:
   - name: Races
@@ -57,7 +57,7 @@ paths:
       tags:
         - Races
       operationId: listRaces
-      summary: Retrieve a list of races
+      summary: Get races
       x-todo: Add more detailed description of the parameters
       description: |
         Retrieves a list of races (by EventID in current data model). You can filter the results based on various criteria such as date, country, and race type.
@@ -270,7 +270,7 @@ paths:
       tags:
         - Race Editions
       operationId: getRaceEdition
-      summary: Retrieve details for a specific race edition
+      summary: Get details for a specific race edition
       description: Retrieve details for a specific race edition
       parameters:
         - in: path
@@ -298,7 +298,7 @@ paths:
       tags:
         - Race Results
       operationId: getRaceResults
-      summary: Retrieve results for a specific race edition
+      summary: Get results for a specific race edition
       description: Retrieve results for a specific race edition
       parameters:
         - in: path
@@ -333,7 +333,7 @@ paths:
       tags:
         - Race Results
       operationId: getRaceEventResultsFilters
-      summary: Retrieve filter options for a specific race event's results
+      summary: Get filter options for a specific race event's results
       description: |
         Provides dynamic filter options for refining the results of a specific race event. This includes category types, speed types, age groups, gender, and countries, tailored to the specific context of the race event identified by `{eventId}`.
       parameters:
@@ -422,7 +422,7 @@ paths:
       tags:
         - Runners
       operationId: listOrSearchRunners
-      summary: Retrieve a list of runners or search for runners
+      summary: Get a list of runners or search for runners
       description: |
         Retrieves a list of runners. You can search for runners by name by providing a search term.
       parameters:
@@ -452,7 +452,7 @@ paths:
       tags:
         - Runners
       operationId: getRunnerProfile
-      summary: Retrieve a runner's profile
+      summary: Get a runner's profile
       description: Retrieve detailed information about a specific runner.
       parameters:
         - in: path
@@ -1051,7 +1051,7 @@ components:
             enum: [I, S, T]
           example: [I, T]
           description: "May include none, one, or several of: I (for indoor), S (for split), and T (for track)."
-        lastnameFirstname:
+        fullName:
           type: string
           example: "Doe, John"
         lastname:
@@ -1094,10 +1094,44 @@ components:
       properties:
         runnerId:
           type: integer
-        name:
+          description: The unique identifier for the runner.
+        fullName:
           type: string
-        country:
+          description: Runner's lastname and firstname combined in a single string, typically comma-separated.
+        origName:
           type: string
+          description: The original, possibly non-Latin, name of the runner.
+        lastname:
+          type: string
+          description: Runner's last name.
+        firstname:
+          type: string
+          description: Runner's first name.
+        club:
+          type: string
+          description: The club or team with which the runner is affiliated.
+        residence:
+          type: string
+          description: The runner's place of residence.
+        nationality:
+          type: string
+          description: Two-letter ISO country code representing the runner's nationality.
+        gender:
+          type: string
+          enum: [M, F, O] # Assuming 'O' for other/non-binary; adjust as necessary for your application's requirements
+          description: The runner's gender. Use 'M' for male, 'F' for female, 'O' for other or non-binary.
+        yearOfBirth:
+          type: integer
+          format: int32
+          description: The year the runner was born.
+        dateOfBirth:
+          type: string
+          format: date
+          description: The runner's date of birth in YYYY-MM-DD format.
+        uri:
+          type: string
+          format: uri
+          description: URI to the runner's profile page.
     TopList:
       type: object
       properties:
@@ -1132,7 +1166,7 @@ components:
             enum: [I, S, T]
           example: [I, T]
           description: "Extra indicators such as I (for indoor), S (for split), and T (for track)."
-        lastnameFirstname:
+        fullName:
           type: string
           example: "Doe, John"
         lastName:
@@ -1195,7 +1229,7 @@ components:
         performanceNumeric:
           type: string
           example: "12:34:56" # or "123.566" for distance-based lists
-        lastnameFirstname:
+        fullName:
           type: string
           example: "Doe, John"
         lastName:

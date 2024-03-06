@@ -1,10 +1,8 @@
 // api/endpoints.ts
-/* eslint-disable babel/require-config-file */
 export const API_ENDPOINTS = {
-  events: "/mcalendar.php",
-  eventDetails: "/meventdetail.php",
-  eventResults: "/mgetresultevent.php",
-  runnerProfile: "/mgetresultperson.php",
-  // Any other endpoints
+  getRaces: "/mcalendar.php",
+  getRaceResults: "/mgetresultevent.php",
+  getEventDetails: "/meventdetail.php",
+  getRunnerProfile: "/mgetresultperson.php",
+  getTopRanks: "/mtoprankabroad.php",
 };
-/* eslint-enable babel/require-config-file */
