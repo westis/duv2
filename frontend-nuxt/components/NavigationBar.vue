@@ -26,16 +26,20 @@
     <v-btn
       :size="buttonSize"
       class="nav-item mx-0 px-3 text-body-2"
-      :class="{ 'v-btn--active': isActive('/races', { year: 'futur' }) }"
-      @click="navigateTo('/races', { year: 'futur' })"
+      :class="{ 'v-btn--active': isActive('/races', { sortOrder: 'ASC' }) }"
+      @click="
+        navigateTo('/races', { sortOrder: 'ASC', dateFrom: getTodaysDate() })
+      "
     >
       {{ smAndUp ? "Upcoming Races" : "Upcoming" }}
     </v-btn>
     <v-btn
       :size="buttonSize"
       class="nav-item mx-0 px-3 text-body-2"
-      :class="{ 'v-btn--active': isActive('/races', { year: 'past1' }) }"
-      @click="navigateTo('/races', { year: 'past1' })"
+      :class="{ 'v-btn--active': isActive('/races', { sortOrder: 'DESC' }) }"
+      @click="
+        navigateTo('/races', { sortOrder: 'DESC', dateTo: getTodaysDate() })
+      "
     >
       Results
     </v-btn>
@@ -148,6 +152,18 @@ const navItems = [
   },
   { title: "About", icon: "mdi-information", path: "/about" },
 ];
+
+const getTodaysDate = () => {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  let mm = today.getMonth() + 1; // January is 0!
+  let dd = today.getDate();
+
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+
+  return `${yyyy}-${mm}-${dd}`; // Format as YYYY-MM-DD
+};
 
 const navigateTo = (path: string, query: Record<string, string>) => {
   console.log("Current route query:", route.query);

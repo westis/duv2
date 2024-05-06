@@ -11,30 +11,45 @@ export const useRacesStore = defineStore("races", {
   }),
   actions: {
     async fetchRaces(
-      baseURL: string, // Ensure this parameter is accepted
-      year: string,
-      country: string,
-      dist: string,
-      cup: string = "",
-      rproof: string = "0",
-      mode: string = "list",
-      norslt: string = "",
-      page: number = 1
+      baseURL: string,
+      search = "",
+      raceType = "all",
+      raceSurface = "all",
+      dateFrom = "",
+      dateTo = "",
+      countries = "all",
+      distMinKm = "all",
+      distMaxKm = "all",
+      durMin = "all",
+      durMax = "all",
+      rankingEligible = "all",
+      resultStatus = "all",
+      sortOrder = "asc",
+      orderBy = "date",
+      limit = 25,
+      offset = 0
     ) {
       this.isLoading = true;
       this.error = null;
       try {
-        // Assuming the baseURL is now correctly passed in from the component
         const response: RacesResponse = await getRaces(
-          baseURL, // Pass the baseURL correctly to the getRaces function
-          year,
-          country,
-          dist,
-          cup,
-          rproof,
-          mode,
-          norslt,
-          page // Correctly passed as a number
+          baseURL,
+          search,
+          raceType,
+          raceSurface,
+          dateFrom,
+          dateTo,
+          countries,
+          distMinKm,
+          distMaxKm,
+          durMin,
+          durMax,
+          rankingEligible,
+          resultStatus,
+          sortOrder,
+          orderBy,
+          limit,
+          offset
         );
         this.races = response.Races;
       } catch (error) {

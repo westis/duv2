@@ -1,44 +1,58 @@
 // /api/racesApi.ts
 import type { RacesResponse } from "@/types/RacesResponse";
-import { API_ENDPOINTS } from "./endpoints";
 
-/**
- * Fetch races from the DUV Ultramarathon Statistics API using Nuxt 3's Composition API.
- * This function should be used within the setup() function or a composable.
- *
- * @param year - Year of the event.
- * @param country - Country code for the events.
- * @param dist - Distance category for the events.
- * @param cup - Cup category for the events, optional.
- * @param rproof - Ranking eligibility.
- * @param mode - Mode of display, optional.
- * @param norslt - Include events without results, optional.
- * @param page - Page number for pagination, optional.
- *
- * @returns Promise<RacesResponse> - The races response from the API.
- */
+// Directly fetch races from the new PHP backend API
 export async function getRaces(
-  baseURL: string, // Base URL passed as the first parameter
-  year: string,
-  country: string,
-  dist: string,
-  cup: string = "",
-  rproof: string,
-  mode: string = "",
-  norslt: string = "",
-  page: number = 1
+  baseURL: string,
+  search = "",
+  raceType = "all",
+  raceSurface = "all",
+  dateFrom = "",
+  dateTo = "",
+  countries = "all",
+  distMinKm = "all",
+  distMaxKm = "all",
+  durMin = "all",
+  durMax = "all",
+  rankingEligible = "all",
+  resultStatus = "all",
+  sortOrder = "asc",
+  orderBy = "date",
+  limit = 25,
+  offset = 0
 ): Promise<RacesResponse> {
-  // Manually construct the full URL with the base URL and the specific endpoint
-  const endpointPath = `${API_ENDPOINTS.getRaces}?year=${encodeURIComponent(
-    year
-  )}&country=${encodeURIComponent(country)}&dist=${encodeURIComponent(dist)}`;
-  const cupParam = cup ? `&cup=${encodeURIComponent(cup)}` : "";
-  const rproofParam = `&rproof=${encodeURIComponent(rproof)}`;
-  const modeParam = mode ? `&mode=${encodeURIComponent(mode)}` : "";
-  const norsltParam = norslt ? `&norslt=${encodeURIComponent(norslt)}` : "";
-  const pageParam = `&page=${encodeURIComponent(page)}`;
+  // Create an object with all parameters
+  const params: Record<string, string> = {
+    search,
+    raceType,
+    raceSurface,
+    dateFrom,
+    dateTo,
+    countries,
+    distMinKm,
+    distMaxKm,
+    durMin,
+    durMax,
+    rankingEligible,
+    resultStatus,
+    sortOrder,
+    orderBy,
+    limit: limit.toString(),
+    offset: offset.toString(),
+  };
 
-  const fullUrl = `${baseURL}${endpointPath}${cupParam}${rproofParam}${modeParam}${norsltParam}${pageParam}`;
+  // Remove any default or empty parameters
+  for (const key in params) {
+    if (params[key] === "" || params[key] === "all") {
+      delete params[key];
+    }
+  }
+
+  // Create a query string from the filtered parameters
+  const query = new URLSearchParams(params).toString();
+
+  // Construct the full URL with the filtered query string
+  const fullUrl = `${baseURL}/backend-php/races.php?${query}`;
 
   const response = await fetch(fullUrl).catch((err) => {
     console.error("Fetch error:", err);
