@@ -5,7 +5,11 @@
     </v-card-title>
 
     <v-row no-gutters class="text-opacity">
-      <v-col cols="4" sm="2" class="py-3 px-6 d-flex flex-column align-center">
+      <v-col
+        cols="4"
+        sm="2"
+        class="py-3 px-6 d-flex flex-column align-left justify-space-between"
+      >
         <v-sheet
           class="py-1 px-5 d-flex flex-column align-center rounded-lg date-container"
         >
@@ -24,7 +28,7 @@
       <v-col
         cols="8"
         sm="5"
-        class="py-0 px-0 d-flex flex-column align-left justify-center"
+        class="py-0 px-0 mx-auto d-flex flex-column align-left justify-center"
       >
         <v-sheet class="my-1">
           <v-icon class="ml-2" small>mdi-map-marker</v-icon>
@@ -56,8 +60,12 @@
         </v-sheet>
       </v-col>
 
-      <v-col cols="12" sm="5" class="pt-0 d-flex flex-column justify-center">
-        <v-sheet class="align-center justify-center">
+      <v-col
+        cols="12"
+        sm="5"
+        class="pt-0 d-flex flex-column align-right justify-center"
+      >
+        <v-sheet class="align-right justify-center">
           <v-btn
             class="ma-2 bg-primary"
             variant="text"
