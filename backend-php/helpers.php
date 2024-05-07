@@ -23,12 +23,12 @@ function convertDurationToHours($duration) {
 
 function formatRaceDistance($length) {
     $km = convertLengthToKm($length);
-    return $km !== null ? "{$km} km" : "";
+    return $km !== null ? "{$km}km" : "";
 }
 
 function formatRaceDuration($duration) {
     $hours = convertDurationToHours($duration);
-    return $hours !== null ? "{$hours} h" : "";
+    return $hours !== null ? "{$hours}h" : "";
 }
 
 function mapRaceType($eventType) {
@@ -45,3 +45,5 @@ function mapRaceSurface($eventType) {
     if (in_array($eventType, [6, 14])) return 'indoor';
     return 'unknown';
 }
+
+

@@ -33,6 +33,10 @@ switch ($endpoint) {
         break;
 
     default:
-        require 'races_list.php';
+        if ($eventId) {
+            require 'race_details.php';
+        } else {
+            require 'races_list.php';
+        }
         break;
 }
