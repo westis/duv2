@@ -1,0 +1,6 @@
+1. npx nuxi@latest init <project-name>
+2. cd <project-name>
+3. configure nuxt.config.ts: https://nuxt.com/docs/getting-started/configuration
+4. Install TypeScript, npm install -D typescript
+5. Install TailwindCSS: https://tailwindcss.com/docs/guides/nuxtjs
+5. Install shadcn-vue, npx nuxi@latest module add shadcn-nuxt and then read from https://www.shadcn-vue.com/docs/installation/nuxt.html
