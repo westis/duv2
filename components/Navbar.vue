@@ -238,9 +238,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
-import { format, subYears } from "date-fns";
-
+import { ref, computed, watch } from "vue";
+import { format, subYears, addYears } from "date-fns";
 import { useMagicKeys } from "@vueuse/core";
 import { Button } from "@/components/ui/button";
 import {
@@ -309,48 +308,32 @@ const toggleSubmenu = (menuTitle: string) => {
   expandedMenus.value[menuTitle] = !expandedMenus.value[menuTitle];
 };
 
-const getSubmenuItems = (menuTitle: string) => {
-  switch (menuTitle) {
-    case "Events":
-      return eventsItems;
-    case "Statistics":
-      return statisticsItems;
-    case "About":
-      return aboutItems;
-    default:
-      return [];
-  }
-};
+const today = new Date();
+const oneYearAgo = subYears(today, 1);
+const oneYearLater = addYears(today, 1);
 
-// Keyboard shortcut functionality
-const { Cmd_k, Ctrl_k } = useMagicKeys();
-const shortcutPressed = computed(() => Cmd_k.value || Ctrl_k.value);
-
-const handleKeyDown = (event: KeyboardEvent) => {
-  if ((event.metaKey || event.ctrlKey) && event.key === "k") {
-    event.preventDefault();
-    toggleSearch();
-  }
-};
-
-onMounted(() => {
-  window.addEventListener("keydown", handleKeyDown);
+const calendarLink = computed(() => {
+  const fromDate = format(today, "yyyy-MM-dd");
+  const toDate = format(oneYearLater, "yyyy-MM-dd");
+  return `/events?from=${fromDate}&to=${toDate}&order=asc`;
 });
 
-onUnmounted(() => {
-  window.removeEventListener("keydown", handleKeyDown);
+const resultsLink = computed(() => {
+  const fromDate = format(oneYearAgo, "yyyy-MM-dd");
+  const toDate = format(today, "yyyy-MM-dd");
+  return `/events?from=${fromDate}&to=${toDate}&order=desc`;
 });
 
 // Define eventsItems, statisticsItems, and aboutItems
-const eventsItems = [
+const eventsItems = computed(() => [
   {
     title: "Calendar",
-    href: "/calendar",
+    href: calendarLink.value,
     description: "View upcoming ultramarathon events",
   },
   {
     title: "Results",
-    href: "/results",
+    href: resultsLink.value,
     description: "Check results from past events",
   },
   {
@@ -358,7 +341,7 @@ const eventsItems = [
     href: "/championships",
     description: "Information about championship events",
   },
-];
+]);
 
 const statisticsItems = [
   {
@@ -398,11 +381,24 @@ const aboutItems = [
   },
 ];
 
-const links = [
-  { title: "Calendar", href: "/calendar" },
-  { title: "Results", href: "/results" },
+const getSubmenuItems = (menuTitle: string) => {
+  switch (menuTitle) {
+    case "Events":
+      return eventsItems.value;
+    case "Statistics":
+      return statisticsItems;
+    case "About":
+      return aboutItems;
+    default:
+      return [];
+  }
+};
+
+const links = computed(() => [
+  { title: "Calendar", href: calendarLink.value },
+  { title: "Results", href: resultsLink.value },
   { title: "Toplists", href: "/toplists" },
-];
+]);
 
 const searchOptions = [
   { title: "Search Runner", action: "searchRunner" },
@@ -413,7 +409,7 @@ const searchOptions = [
 const handleItemSelect = (item: any) => {
   if (item.href) {
     // Navigate to the link
-    navigateTo(item.href);
+    navigateTo(typeof item.href === "function" ? item.href() : item.href);
   } else if (item.action) {
     // Handle search actions
     switch (item.action) {
@@ -431,21 +427,22 @@ const handleItemSelect = (item: any) => {
   toggleSearch(); // Close the search dialog after selection
 };
 
-const today = new Date();
-const oneYearAgo = subYears(today, 1);
+// Keyboard shortcut functionality
+const { Cmd_k, Ctrl_k } = useMagicKeys();
+const shortcutPressed = computed(() => Cmd_k.value || Ctrl_k.value);
 
-const calendarLink = computed(() => {
-  const fromDate = format(today, "yyyy-MM-dd");
-  const toDate = format(
-    new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()),
-    "yyyy-MM-dd"
-  );
-  return `/events?from=${fromDate}&to=${toDate}`;
+const handleKeyDown = (event: KeyboardEvent) => {
+  if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+    event.preventDefault();
+    toggleSearch();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("keydown", handleKeyDown);
 });
 
-const resultsLink = computed(() => {
-  const fromDate = format(oneYearAgo, "yyyy-MM-dd");
-  const toDate = format(today, "yyyy-MM-dd");
-  return `/events?from=${fromDate}&to=${toDate}`;
+onUnmounted(() => {
+  window.removeEventListener("keydown", handleKeyDown);
 });
 </script>

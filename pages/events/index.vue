@@ -28,6 +28,7 @@ const loading = ref(true);
 const filters = ref({
   from: (route.query.from as string) || undefined,
   to: (route.query.to as string) || undefined,
+  order: (route.query.order as string) || "desc",
 });
 
 const fetchEvents = async () => {
@@ -59,6 +60,7 @@ watch(
     filters.value = {
       from: (newQuery.from as string) || undefined,
       to: (newQuery.to as string) || undefined,
+      order: (newQuery.order as string) || "desc",
     };
     fetchEvents();
   },
@@ -98,6 +100,7 @@ onMounted(() => {
     <EventFilters
       :initial-from="filters.from"
       :initial-to="filters.to"
+      :initial-order="filters.order"
       @update:filters="handleFiltersChange"
     />
 

@@ -82,11 +82,24 @@ The DUV Ultramarathon Statistics website aims to present events, results, and st
 
 #### 1.5. URL Parameters and Filters Synchronization
 
-- The date range filter in the EventFilters component is synchronized with the URL parameters.
-- When the user changes the date range in the filter, the URL is updated accordingly.
-- If the user navigates to the page with date range parameters in the URL, the filter is initialized with these values.
-- If no date range parameters are provided in the URL, the filter defaults to showing events from today to one year in the future.
-- All other filter changes are also reflected in the URL parameters and vice versa.
+- All filters, including date range, sort order, and other filter options, must be synchronized across:
+  1. URL parameters
+  2. Filter components on the page
+  3. Navigation menu links (Calendar and Results)
+- When a user navigates to the events page:
+  - If URL parameters are present, they should be used to set the initial filter states.
+  - If no URL parameters are present, default filters should be applied (e.g., upcoming year for Calendar, past year for Results).
+- When filters are changed on the page:
+  - The URL should be updated to reflect the new filter states.
+  - The filter components should update accordingly.
+- When Calendar or Results are clicked in the navigation menu:
+  - The URL should be updated with the appropriate parameters.
+  - The page should reload with the new filters applied.
+  - The filter components should reflect the new filter states.
+- The sort order (ascending or descending) should be consistent with the selected date range:
+  - Ascending for future events (Calendar)
+  - Descending for past events (Results)
+- Any manual changes to the URL parameters should trigger a re-fetch of data and update of filter components.
 
 #### 1.6. API Call Notes
 
@@ -454,6 +467,7 @@ GET https://statistik.d-u-v.org/json/mtoprankabroad.php?country=GER&cnt=10&Langu
 - **Data Fetching**: All data fetching should be done in server components using `useFetch` and pass the data down as props to child components.
 - **API Implementation**: Create server-side API routes in `/server/api` for data fetching.
 - **Avoid Axios**: Use Nuxt's built-in `useFetch` composable instead of Axios.
+- radix-vue does NOT have an export called DateValue, so never try to use it!!
 
 ### 2. Environment Variables
 

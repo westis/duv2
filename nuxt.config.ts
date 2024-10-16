@@ -25,4 +25,5 @@ export default defineNuxtConfig({
     },
   },
   compatibilityDate: "2024-10-15",
+  css: ["~/assets/css/v-calendar.css"],
 });
