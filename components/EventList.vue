@@ -66,6 +66,40 @@ const pageNumbers = computed(() => {
 
 const { mapEventType, getEventTypeColor, getSurfaceColor, getIAULabelColor } =
   useEventTypeMapper();
+
+const getEventTypeVariant = (event: Event) => {
+  const { type } = mapEventType(event);
+  switch (type) {
+    case "Fixed-distance":
+      return "blue";
+    case "Fixed-time":
+      return "yellow";
+    case "Backyard Ultra":
+      return "violet";
+    case "Stage race":
+      return "rose";
+    case "Walking":
+      return "emerald";
+    default:
+      return "secondary";
+  }
+};
+
+const getSurfaceVariant = (event: Event) => {
+  const { surface } = mapEventType(event);
+  switch (surface) {
+    case "Road":
+      return "gray";
+    case "Trail":
+      return "green";
+    case "Track":
+      return "red";
+    case "Indoor":
+      return "purple";
+    default:
+      return "secondary";
+  }
+};
 </script>
 
 <template>
@@ -113,11 +147,8 @@ const { mapEventType, getEventTypeColor, getSurfaceColor, getIAULabelColor } =
             </div>
             <div class="flex flex-wrap gap-2 mb-3">
               <Badge
-                variant="secondary"
-                :class="[
-                  getEventTypeColor(event),
-                  'text-xs px-2 py-1 rounded-full',
-                ]"
+                :variant="getEventTypeVariant(event)"
+                class="text-xs px-2 py-1 rounded-full"
               >
                 <template
                   v-if="
@@ -140,11 +171,8 @@ const { mapEventType, getEventTypeColor, getSurfaceColor, getIAULabelColor } =
                   mapEventType(event).type === 'Stage Race' ||
                   mapEventType(event).surface !== 'Unknown'
                 "
-                variant="secondary"
-                :class="[
-                  getSurfaceColor(event),
-                  'text-xs px-2 py-1 rounded-full',
-                ]"
+                :variant="getSurfaceVariant(event)"
+                class="text-xs px-2 py-1 rounded-full"
               >
                 {{
                   mapEventType(event).type === "Stage Race"
@@ -157,7 +185,7 @@ const { mapEventType, getEventTypeColor, getSurfaceColor, getIAULabelColor } =
           <div
             class="flex sm:flex-col justify-end p-4 space-y-2 space-x-2 sm:space-x-0"
           >
-            <Button class="flex-1 sm:w-full" variant="outline">
+            <Button class="flex-1 sm:w-full" variant="secondary">
               <InfoIcon class="h-4 w-4 mr-2" />
               Details
             </Button>

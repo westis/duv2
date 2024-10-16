@@ -1,12 +1,19 @@
 <template>
-  <div class="min-h-screen bg-background text-foreground">
-    <Navbar />
-    <main class="container mx-auto py-8">
-      <NuxtPage />
-    </main>
-  </div>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-// No need to import Navbar, it's auto-imported
+useHead({
+  titleTemplate: "%s - DUV Ultramarathon Statistics",
+  meta: [
+    {
+      name: "description",
+      content:
+        "DUV Ultramarathon Statistics - Comprehensive data on ultramarathon events worldwide",
+    },
+  ],
+  link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+});
 </script>
