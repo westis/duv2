@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  MapPinIcon,
+  RulerIcon,
+  ClockIcon,
+  TimerIcon,
+  InfoIcon,
+  BarChartIcon,
+} from "lucide-vue-next";
 import {
   Pagination,
   PaginationList,
@@ -20,14 +23,7 @@ import {
   PaginationPrev,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  CalendarIcon,
-  MapPinIcon,
-  RulerIcon,
-  ClockIcon,
-} from "lucide-vue-next";
+import { useEventTypeMapper } from "@/composables/useEventTypeMapper";
 
 interface Event {
   EventID: string;
@@ -68,59 +64,8 @@ const pageNumbers = computed(() => {
   return pages;
 });
 
-const getTypeColor = (typeNumber: string) => {
-  const colors = [
-    "bg-neutral-200/80 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200",
-    "bg-green-200/80 dark:bg-green-800/80 text-green-800 dark:text-green-200",
-    "bg-neutral-300/80 dark:bg-neutral-700/80 text-neutral-700 dark:text-neutral-300",
-    "bg-pink-200/80 dark:bg-pink-800/80 text-pink-800 dark:text-pink-200",
-    "bg-orange-200/80 dark:bg-orange-800/80 text-orange-800 dark:text-orange-200",
-    "bg-indigo-200/80 dark:bg-indigo-800/80 text-indigo-800 dark:text-indigo-200",
-    "bg-purple-200/80 dark:bg-purple-800/80 text-purple-800 dark:text-purple-200",
-    "bg-yellow-200/80 dark:bg-yellow-800/80 text-yellow-800 dark:text-yellow-200",
-    "bg-teal-200/80 dark:bg-teal-800/80 text-teal-800 dark:text-teal-200",
-    "bg-cyan-200/80 dark:bg-cyan-800/80 text-cyan-800 dark:text-cyan-200",
-    "bg-neutral-300/80 dark:bg-neutral-700/80 text-neutral-700 dark:text-neutral-300",
-    "bg-neutral-200/80 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200",
-    "bg-orange-200/80 dark:bg-orange-800/80 text-orange-800 dark:text-orange-200",
-    "bg-indigo-200/80 dark:bg-indigo-800/80 text-indigo-800 dark:text-indigo-200",
-  ];
-  const index = parseInt(typeNumber) - 1;
-  return colors[index] || colors[0];
-};
-
-const getDurationLengthColor = (event: Event) => {
-  return event.Length
-    ? "bg-sky-200/80 dark:bg-sky-800/80 text-sky-800 dark:text-sky-200"
-    : "bg-amber-200/80 dark:bg-amber-800/80 text-amber-800 dark:text-amber-200";
-};
-
-const typeNameMap = {
-  "1": "Road",
-  "2": "Trail",
-  "3": "Road Loop",
-  "4": "Stage",
-  "5": "Track",
-  "6": "Indoor",
-  "7": "Friendship",
-  "8": "Invitational",
-  "9": "Elimination Race",
-  "10": "Backyard Ultra",
-  "11": "Walk (Road)",
-  "12": "Walk Loop",
-  "13": "Walk (Track)",
-  "14": "Walk (Indoor)",
-};
-
-const getEventType = (typeNumber: string) => {
-  return typeNameMap[typeNumber as keyof typeof typeNameMap] || "Unknown";
-};
-
-const iauLabelColors = {
-  G: "bg-yellow-200 text-yellow-800",
-  S: "bg-gray-200 text-gray-800",
-  B: "bg-amber-200 text-amber-800",
-};
+const { mapEventType, getEventTypeColor, getSurfaceColor, getIAULabelColor } =
+  useEventTypeMapper();
 </script>
 
 <template>
@@ -128,81 +73,102 @@ const iauLabelColors = {
   <div v-else-if="events.length === 0" class="text-center py-8">
     No events found.
   </div>
-  <div v-else>
-    <div class="overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead class="w-[100px] text-base">Date</TableHead>
-            <TableHead class="text-base">Event</TableHead>
-            <TableHead class="w-[120px] text-base">Distance/Duration</TableHead>
-            <TableHead class="w-[100px] text-base">Type</TableHead>
-            <TableHead class="w-[200px] text-base">Location</TableHead>
-            <TableHead class="text-right w-[200px] text-base"
-              >Actions</TableHead
+  <div v-else class="space-y-4">
+    <Card v-for="event in events" :key="event.EventID">
+      <CardContent class="p-0">
+        <div class="flex flex-col sm:flex-row">
+          <div
+            class="sm:w-40 p-4 bg-gray-50 dark:bg-gray-800 flex flex-col justify-center items-start"
+          >
+            <div
+              class="text-base font-semibold text-gray-800 dark:text-gray-200"
             >
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow v-for="event in events" :key="event.EventID">
-            <TableCell class="font-medium whitespace-nowrap text-base">
-              <div class="flex items-center space-x-2">
-                <CalendarIcon class="h-4 w-4 text-muted-foreground" />
-                <span>{{ event.Startdate }}</span>
-              </div>
-            </TableCell>
-            <TableCell class="text-base">
-              <div class="flex flex-wrap items-center gap-2">
-                <span>{{ event.EventName }}</span>
+              {{ event.Startdate }}
+            </div>
+            <div
+              class="flex items-center text-sm text-gray-600 dark:text-gray-400 mt-1"
+            >
+              <MapPinIcon class="h-4 w-4 mr-1" />
+              {{ event.City }}, {{ event.Country }}
+            </div>
+          </div>
+          <div class="flex-grow p-4">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center">
+                <h3
+                  class="text-lg font-semibold text-gray-800 dark:text-gray-200 mr-2"
+                >
+                  {{ event.EventName }}
+                </h3>
                 <Badge
                   v-if="['G', 'S', 'B'].includes(event.IAULabel)"
-                  variant="secondary"
-                  :class="`${
-                    iauLabelColors[event.IAULabel]
-                  } text-xs px-1 py-0 leading-5 font-normal`"
+                  :class="[
+                    getIAULabelColor(event.IAULabel),
+                    'text-xs px-2 py-1 rounded-full',
+                  ]"
                 >
                   IAU {{ event.IAULabel }}
                 </Badge>
               </div>
-            </TableCell>
-            <TableCell class="text-base">
+            </div>
+            <div class="flex flex-wrap gap-2 mb-3">
               <Badge
                 variant="secondary"
-                :class="`whitespace-nowrap ${getDurationLengthColor(
-                  event
-                )} text-xs`"
+                :class="[
+                  getEventTypeColor(event),
+                  'text-xs px-2 py-1 rounded-full',
+                ]"
               >
-                <RulerIcon v-if="event.Length" class="h-3 w-3 mr-1" />
-                <ClockIcon v-else class="h-3 w-3 mr-1" />
-                <span>{{ event.Length || event.Duration }}</span>
+                <template
+                  v-if="
+                    ['Backyard Ultra', 'Elimination Race'].includes(
+                      mapEventType(event).type
+                    )
+                  "
+                >
+                  <TimerIcon class="h-3 w-3 mr-1 inline" />
+                  <span>{{ mapEventType(event).type }}</span>
+                </template>
+                <template v-else>
+                  <RulerIcon v-if="event.Length" class="h-3 w-3 mr-1 inline" />
+                  <ClockIcon v-else class="h-3 w-3 mr-1 inline" />
+                  <span>{{ event.Length || event.Duration }}</span>
+                </template>
               </Badge>
-            </TableCell>
-            <TableCell class="text-base">
               <Badge
+                v-if="
+                  mapEventType(event).type === 'Stage Race' ||
+                  mapEventType(event).surface !== 'Unknown'
+                "
                 variant="secondary"
-                :class="`whitespace-nowrap ${getTypeColor(
-                  event.EventType
-                )} text-xs`"
+                :class="[
+                  getSurfaceColor(event),
+                  'text-xs px-2 py-1 rounded-full',
+                ]"
               >
-                {{ getEventType(event.EventType) }}
+                {{
+                  mapEventType(event).type === "Stage Race"
+                    ? "Stage Race"
+                    : mapEventType(event).surface
+                }}
               </Badge>
-            </TableCell>
-            <TableCell class="text-base">
-              <div class="flex items-center space-x-2">
-                <MapPinIcon class="h-4 w-4 text-muted-foreground" />
-                <span>{{ event.City }} ({{ event.Country }})</span>
-              </div>
-            </TableCell>
-            <TableCell class="text-right text-base">
-              <div class="flex justify-end space-x-2">
-                <Button variant="outline" size="sm">Details</Button>
-                <Button size="sm">Results</Button>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </div>
+            </div>
+          </div>
+          <div
+            class="flex sm:flex-col justify-end p-4 space-y-2 space-x-2 sm:space-x-0"
+          >
+            <Button class="flex-1 sm:w-full" variant="outline">
+              <InfoIcon class="h-4 w-4 mr-2" />
+              Details
+            </Button>
+            <Button class="flex-1 sm:w-full">
+              <BarChartIcon class="h-4 w-4 mr-2" />
+              Results
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
 
     <div class="mt-4">
       <Pagination>
