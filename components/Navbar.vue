@@ -24,19 +24,36 @@
                   <ul
                     class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]"
                   >
-                    <li v-for="item in eventsItems" :key="item.title">
+                    <li>
                       <NavigationMenuLink :as-child="true">
                         <NuxtLink
-                          :to="item.href"
+                          :to="calendarLink"
                           class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                         >
                           <div class="text-sm font-medium leading-none">
-                            {{ item.title }}
+                            Calendar
                           </div>
                           <p
                             class="line-clamp-2 text-sm leading-snug text-muted-foreground"
                           >
-                            {{ item.description }}
+                            View upcoming events for the next year
+                          </p>
+                        </NuxtLink>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink :as-child="true">
+                        <NuxtLink
+                          :to="resultsLink"
+                          class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        >
+                          <div class="text-sm font-medium leading-none">
+                            Results
+                          </div>
+                          <p
+                            class="line-clamp-2 text-sm leading-snug text-muted-foreground"
+                          >
+                            View results from the past year
                           </p>
                         </NuxtLink>
                       </NavigationMenuLink>
@@ -221,7 +238,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
+import { format, subYears } from "date-fns";
 
 import { useMagicKeys } from "@vueuse/core";
 import { Button } from "@/components/ui/button";
@@ -412,4 +430,22 @@ const handleItemSelect = (item: any) => {
   }
   toggleSearch(); // Close the search dialog after selection
 };
+
+const today = new Date();
+const oneYearAgo = subYears(today, 1);
+
+const calendarLink = computed(() => {
+  const fromDate = format(today, "yyyy-MM-dd");
+  const toDate = format(
+    new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()),
+    "yyyy-MM-dd"
+  );
+  return `/events?from=${fromDate}&to=${toDate}`;
+});
+
+const resultsLink = computed(() => {
+  const fromDate = format(oneYearAgo, "yyyy-MM-dd");
+  const toDate = format(today, "yyyy-MM-dd");
+  return `/events?from=${fromDate}&to=${toDate}`;
+});
 </script>

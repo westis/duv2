@@ -14,27 +14,66 @@ interface Event {
   RecordProof: string;
 }
 
+interface Filters {
+  year?: string;
+  country?: string;
+  dist?: string;
+  cups?: string;
+  rproof?: string;
+  norslt?: string;
+  from?: string;
+  to?: string;
+  page?: string;
+  perpage?: string;
+  eventType?: string;
+  order?: string;
+}
+
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event);
+  const query = getQuery(event) as Filters;
   const {
-    year = "futur",
+    year,
     country = "all",
     dist = "all",
     cups = "all",
-    rproof = "0",
-    norslt = "0",
+    rproof,
+    norslt,
     from,
     to,
-    page = 1,
-    perpage = 20,
+    page = "1",
+    perpage = "20",
+    eventType,
+    order,
   } = query;
 
   // Construct the API URL with all relevant parameters
-  let apiUrl = `https://statistik.d-u-v.org/json/mcalendar.php?year=${year}&country=${country}&dist=${dist}&cups=${cups}&rproof=${rproof}&norslt=${norslt}&page=${page}&perpage=${perpage}`;
+  const params = new URLSearchParams({
+    country,
+    dist,
+    cups,
+    page,
+    perpage,
+  });
 
-  // Add optional date range parameters if provided
-  if (from) apiUrl += `&from=${from}`;
-  if (to) apiUrl += `&to=${to}`;
+  // Handle year, from, and to parameters
+  if (year) {
+    params.append("year", year);
+    params.append("order", year === "futur" ? "asc" : "desc");
+  } else if (from && to) {
+    params.append("from", from);
+    params.append("to", to);
+    params.append("order", order || "desc");
+  } else {
+    // Default to past events if no year or date range is specified
+    params.append("year", "past");
+    params.append("order", "desc");
+  }
+
+  if (rproof) params.append("rproof", rproof);
+  if (norslt) params.append("norslt", norslt);
+  if (eventType) params.append("eventType", eventType);
+
+  const apiUrl = `https://statistik.d-u-v.org/json/mcalendar.php?${params.toString()}`;
 
   const response = await fetch(apiUrl);
   const data = await response.json();

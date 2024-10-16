@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import EventList from "@/components/events/EventList.vue";
-import EventFilter from "@/components/events/EventFilter.vue";
+import EventList from "@/components/EventList.vue";
+import EventFilters from "@/components/EventFilters.vue";
 
 interface Event {
   EventID: string;
@@ -11,8 +11,10 @@ interface Event {
   Country: string;
   Startdate: string;
   Length: string;
+  Duration: string;
   EventType: string;
   Results: string;
+  IAULabel: string;
 }
 
 const route = useRoute();
@@ -23,6 +25,10 @@ const perPage = ref(20);
 const events = ref<Event[]>([]);
 const total = ref(0);
 const loading = ref(true);
+const filters = ref({
+  from: (route.query.from as string) || undefined,
+  to: (route.query.to as string) || undefined,
+});
 
 const fetchEvents = async () => {
   loading.value = true;
@@ -33,6 +39,7 @@ const fetchEvents = async () => {
         query: {
           page: page.value,
           perpage: perPage.value,
+          ...filters.value,
         },
       }
     );
@@ -47,8 +54,12 @@ const fetchEvents = async () => {
 
 watch(
   () => route.query,
-  () => {
-    page.value = Number(route.query.page) || 1;
+  (newQuery) => {
+    page.value = Number(newQuery.page) || 1;
+    filters.value = {
+      from: (newQuery.from as string) || undefined,
+      to: (newQuery.to as string) || undefined,
+    };
     fetchEvents();
   },
   { immediate: true }
@@ -57,13 +68,38 @@ watch(
 const handlePageChange = (newPage: number) => {
   router.push({ query: { ...route.query, page: newPage } });
 };
+
+const handleFiltersChange = (newFilters: any) => {
+  filters.value = { ...filters.value, ...newFilters };
+  page.value = 1;
+  router.push({ query: { ...filters.value, page: 1 } });
+};
+
+onMounted(() => {
+  if (!route.query.from || !route.query.to) {
+    const today = new Date();
+    const oneYearLater = new Date(
+      today.getFullYear() + 1,
+      today.getMonth(),
+      today.getDate()
+    );
+    handleFiltersChange({
+      from: today.toISOString().split("T")[0],
+      to: oneYearLater.toISOString().split("T")[0],
+    });
+  }
+});
 </script>
 
 <template>
   <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6">Upcoming Events</h1>
+    <h1 class="text-3xl font-bold mb-6">Events</h1>
 
-    <EventFilter />
+    <EventFilters
+      :initial-from="filters.from"
+      :initial-to="filters.to"
+      @update:filters="handleFiltersChange"
+    />
 
     <EventList
       :events="events"

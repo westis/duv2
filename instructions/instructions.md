@@ -37,24 +37,27 @@ The DUV Ultramarathon Statistics website aims to present events, results, and st
 
 #### 1.1. List All Events
 
-- **Description**: Display a list of all ultramarathon events, filtered by parameters such as future or past events.
+- **Description**: Display a table of all ultramarathon events, filtered by parameters such as future or past events.
 - **Endpoint**: `/api/events`
 - **Parameters**:
-  - `year`: `"futur"` for future events, `"past"` for past events.
-  - Optional filters: `from`, `to`, `eventType`, `distance`, `duration`, `surface`, `country`, `rankingEligible`, `withResults`.
+  - `year` (optional): `"futur"` for future events, `"past"` (default) for past events. `year` and `from`/`to` cannot be used simultaneously.
+  - `from` and `to` (optional): Date range for events. Must be used together and cannot be used with `year`.
+  - `order` (optional): `"asc"` for ascending order (default for future events), `"desc"` for descending order (default for past events).
+    - If `from` and `to` span both past and future events, `order` defaults to `"desc"`.
+  - Other optional filters: `eventType`, `country`, `rproof`, `norslt`.
 
 #### 1.2. Event Filters
 
 - **Filters at the Top**:
+  - **Event Type**: Let the user select event type (Fixed Distance, Fixed Time, Backyard Ultra, Stage Race, Walking, Other, with All being the default). If other than All, other filters below may be shown conditionally.
   - **Date Range**: `from` and `to` parameters.
-  - **Event Type**: Fixed-distance, Fixed-time, Backyard ultra, Stage race, Walking, Other.
-  - **Distance Slider**: For fixed-distance events.
-  - **Duration Slider**: For fixed-time events.
+  - **Distance Slider**: For fixed-distance events only, with a range for distance.
+  - **Duration**: Applicable for fixed-time events only.
   - **Surface**: Applicable for fixed-distance or fixed-time events.
   - **Country**: Country selector.
   - **Checkboxes**:
-    - **Ranking Eligible**: Filter events that are eligible for ranking.
-    - **With Results**: Filter events that have results available.
+    - **Record Eligible**: Filter events that are eligible for records (`rproof`).
+    - **With Results**: Filter events that have results available (`norslt`).
 
 #### 1.3. Events Table
 
@@ -74,10 +77,18 @@ The DUV Ultramarathon Statistics website aims to present events, results, and st
 #### 1.4. Menu Navigation
 
 - **Events Menu**:
-  - **Calendar**: Navigates to events page with `year=futur`.
-  - **Results**: Navigates to events page with `year=past`.
+  - **Calendar**: Navigates to events page with `from` set to today's date and `to` set to one year from today.
+  - **Results**: Navigates to events page with `from` set to one year ago and `to` set to today's date.
 
-#### 1.5. API Call Notes
+#### 1.5. URL Parameters and Filters Synchronization
+
+- The date range filter in the EventFilters component is synchronized with the URL parameters.
+- When the user changes the date range in the filter, the URL is updated accordingly.
+- If the user navigates to the page with date range parameters in the URL, the filter is initialized with these values.
+- If no date range parameters are provided in the URL, the filter defaults to showing events from today to one year in the future.
+- All other filter changes are also reflected in the URL parameters and vice versa.
+
+#### 1.6. API Call Notes
 
 - **Parameter Optimization**: Exclude parameters in API calls that have no values to optimize requests.
 
@@ -170,6 +181,11 @@ The DUV Ultramarathon Statistics website uses several API endpoints to fetch dat
   - `"all"`: All events.
   - Specific year (e.g., `"2024"`).
   - Empty: Use `from` and `to` parameters instead.
+- **from**: Start date for race filtering (format: `yyyy-mm-dd`).
+- **to**: End date for race filtering (format: `yyyy-mm-dd`).
+- **order**:
+  - `"asc"`: Ascending order (default for future events).
+  - `"desc"`: Descending order (default for past events).
 - **dist**: Event distance (default is `all`).
 - **country**: Country code (e.g., `GER` for Germany).
 - **cups**: Cup events (`all` by default).
@@ -187,21 +203,31 @@ The DUV Ultramarathon Statistics website uses several API endpoints to fetch dat
 - **plain**: Returns only the pure page content without filter lists and language-specific labels (`0` by default).
 - **page**: Specific page of a longer list (`1` by default).
 - **perpage**: Number of records per page (`400` by default).
-- **from**: Start date for race filtering (format: `yyyy-mm-dd`).
-- **to**: End date for race filtering (format: `yyyy-mm-dd`).
 - **splits**: Excludes splits/stages from the calendar list (`0` by default).
 - **Language**: Language for GUI labels and filter lists (`EN` by default).
 - **label**:
   - `"IAU"`: Return only IAU Label events.
   - Empty: All events.
 
-#### 1.3. Example Request
+#### 1.3. Usage Notes
+
+- The `year` parameter cannot be used simultaneously with `from` and `to`.
+- If `from` and `to` are used, both must be provided.
+- The `order` parameter is automatically set based on the `year` parameter:
+  - For `year="futur"`, `order` defaults to `"asc"`.
+  - For `year="past"`, `order` defaults to `"desc"`.
+- When using `from` and `to`:
+  - If not specified, `order` defaults to `"desc"`.
+  - You can explicitly set `order` to `"asc"` or `"desc"` as needed.
+- If neither `year` nor `from`/`to` are provided, the API defaults to past events with descending order.
+
+#### 1.4. Example Request
 
 ```http
 GET https://statistik.d-u-v.org/json/mcalendar.php?year=futur&country=GER&plain=1&perpage=50&Language=EN
 ```
 
-#### 1.4. Example Response
+#### 1.5. Example Response
 
 - The response will be a JSON array of event objects containing details such as event ID, name, date, country, and more.
 
