@@ -221,7 +221,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, watch } from "vue";
 
 import { useMagicKeys } from "@vueuse/core";
 import { Button } from "@/components/ui/button";
@@ -247,11 +247,21 @@ const colorMode = useColorMode();
 const isSearchOpen = ref(false);
 const isMobileMenuOpen = ref(false);
 
-const logoSrc = computed(() => {
-  return colorMode.value === "dark"
+const logoSrc = ref(
+  colorMode.preference === "dark"
     ? "/duv_logo_with_name_white.png"
-    : "/duv_logo_with_name.png";
-});
+    : "/duv_logo_with_name.png"
+);
+
+watch(
+  () => colorMode.preference,
+  (newPreference) => {
+    logoSrc.value =
+      newPreference === "dark"
+        ? "/duv_logo_with_name_white.png"
+        : "/duv_logo_with_name.png";
+  }
+);
 
 const toggleColorMode = () => {
   colorMode.preference = colorMode.preference === "dark" ? "light" : "dark";
@@ -317,17 +327,17 @@ onUnmounted(() => {
 const eventsItems = [
   {
     title: "Calendar",
-    href: "/events/calendar",
+    href: "/calendar",
     description: "View upcoming ultramarathon events",
   },
   {
     title: "Results",
-    href: "/events/results",
+    href: "/results",
     description: "Check results from past events",
   },
   {
     title: "Championships",
-    href: "/events/championships",
+    href: "/championships",
     description: "Information about championship events",
   },
 ];
@@ -335,17 +345,17 @@ const eventsItems = [
 const statisticsItems = [
   {
     title: "Toplists",
-    href: "/statistics/toplists",
+    href: "/toplists",
     description: "View top performers in various categories",
   },
   {
     title: "Records",
-    href: "/statistics/records",
+    href: "/records",
     description: "Browse ultrarunning records",
   },
   {
     title: "Country Stats",
-    href: "/statistics/country-stats",
+    href: "/country-stats",
     description: "Statistics by country",
   },
 ];
@@ -371,9 +381,9 @@ const aboutItems = [
 ];
 
 const links = [
-  { title: "Calendar", href: "/events/calendar" },
-  { title: "Results", href: "/events/results" },
-  { title: "Toplists", href: "/statistics/toplists" },
+  { title: "Calendar", href: "/calendar" },
+  { title: "Results", href: "/results" },
+  { title: "Toplists", href: "/toplists" },
 ];
 
 const searchOptions = [
