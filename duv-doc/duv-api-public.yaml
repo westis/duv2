@@ -13,6 +13,170 @@ components:
       in: header
       name: X-API-Key
   schemas:
+    # Response wrapper schemas
+    PaginatedResponse:
+      type: object
+      description: Standard wrapper for paginated collection responses
+      properties:
+        data:
+          type: array
+          description: Array of resource objects
+          items:
+            type: object
+        pagination:
+          type: object
+          properties:
+            total:
+              type: integer
+              description: Total number of resources available
+            limit:
+              type: integer
+              description: Number of items per page
+            offset:
+              type: integer
+              description: Starting position of the results
+            next:
+              type: string
+              format: uri
+              description: URL to the next page of results (if available)
+            previous:
+              type: string
+              format: uri
+              description: URL to the previous page of results (if available)
+      required:
+        - data
+        - pagination
+
+    EventsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
+        pagination:
+          $ref: "#/components/schemas/PaginatedResponse/properties/pagination"
+      required:
+        - data
+        - pagination
+
+    ResultsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Result"
+        pagination:
+          $ref: "#/components/schemas/PaginatedResponse/properties/pagination"
+      required:
+        - data
+        - pagination
+
+    RunnersResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Runner"
+        pagination:
+          $ref: "#/components/schemas/PaginatedResponse/properties/pagination"
+      required:
+        - data
+        - pagination
+
+    # Error response schemas
+    Error:
+      type: object
+      description: Standard error response format
+      properties:
+        status:
+          type: integer
+          description: HTTP status code
+        code:
+          type: string
+          description: Application-specific error code
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: array
+          description: Additional error details (if available)
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: The field that caused the error
+              reason:
+                type: string
+                description: Reason for the error
+      required:
+        - status
+        - code
+        - message
+
+    ValidationError:
+      type: object
+      description: Validation error response
+      allOf:
+        - $ref: "#/components/schemas/Error"
+        - type: object
+          properties:
+            code:
+              example: "VALIDATION_ERROR"
+            status:
+              example: 400
+
+    AuthenticationError:
+      type: object
+      description: Authentication error response
+      allOf:
+        - $ref: "#/components/schemas/Error"
+        - type: object
+          properties:
+            code:
+              example: "AUTHENTICATION_ERROR"
+            status:
+              example: 401
+
+    AuthorizationError:
+      type: object
+      description: Authorization error response
+      allOf:
+        - $ref: "#/components/schemas/Error"
+        - type: object
+          properties:
+            code:
+              example: "AUTHORIZATION_ERROR"
+            status:
+              example: 403
+
+    NotFoundError:
+      type: object
+      description: Resource not found error response
+      allOf:
+        - $ref: "#/components/schemas/Error"
+        - type: object
+          properties:
+            code:
+              example: "RESOURCE_NOT_FOUND"
+            status:
+              example: 404
+
+    ServerError:
+      type: object
+      description: Internal server error response
+      allOf:
+        - $ref: "#/components/schemas/Error"
+        - type: object
+          properties:
+            code:
+              example: "INTERNAL_SERVER_ERROR"
+            status:
+              example: 500
+
     Event:
       type: object
       properties:
@@ -838,9 +1002,87 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Event"
+                $ref: "#/components/schemas/EventsResponse"
+              example:
+                data:
+                  - eventId: "42600"
+                    name: "100km Lauf Biel/Bienne"
+                    edition: "60"
+                    country: "SUI"
+                    city: "Biel/Bienne"
+                    date: "2018-06-08T22:00:00Z"
+                    endDate: "2018-06-09T22:00:00Z"
+                    distance: 100
+                    distanceOriginal: "100km"
+                    eventType: 1
+                    altitude: "770m D+"
+                    finishers: 387
+                    finishersMen: 320
+                    finishersWomen: 67
+                    timeLimit: "21:00:00"
+                    resultsStatus: "C"
+                    iauLabel: "B"
+                    recordProof: "Y"
+                    website: "https://www.100km.ch"
+                    organizer: "Verein 100km Biel/Bienne"
+                  - eventId: "60546"
+                    name: "Comrades Marathon"
+                    edition: "93"
+                    country: "RSA"
+                    city: "Durban"
+                    date: "2018-06-10T05:30:00Z"
+                    distance: 90.184
+                    distanceOriginal: "90.184km"
+                    eventType: 1
+                    altitude: "Up Run 1800m D+"
+                    finishers: 16146
+                    finishersMen: 11040
+                    finishersWomen: 5106
+                    timeLimit: "12:00:00"
+                    resultsStatus: "C"
+                    iauLabel: "G"
+                    recordProof: "Y"
+                    website: "https://www.comrades.com"
+                    organizer: "Comrades Marathon Association"
+                pagination:
+                  total: 8974
+                  limit: 100
+                  offset: 0
+                  next: "/api/v1/events?limit=100&offset=100"
+                  previous: null
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+              example:
+                status: 400
+                code: "VALIDATION_ERROR"
+                message: "Invalid request parameters"
+                details:
+                  - field: "year"
+                    reason: "Must be a valid year (e.g., 2024)"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationError"
+              example:
+                status: 401
+                code: "AUTHENTICATION_ERROR"
+                message: "API key is missing or invalid"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+              example:
+                status: 500
+                code: "INTERNAL_SERVER_ERROR"
+                message: "An unexpected error occurred"
   /events/{eventId}:
     get:
       summary: Retrieve a specific event by ID
@@ -854,6 +1096,52 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Event"
+              example:
+                eventId: "42600"
+                name: "100km Lauf Biel/Bienne"
+                edition: "60"
+                country: "SUI"
+                city: "Biel/Bienne"
+                date: "2018-06-08T22:00:00Z"
+                endDate: "2018-06-09T22:00:00Z"
+                distance: 100
+                distanceOriginal: "100km"
+                eventType: 1
+                altitude: "770m D+"
+                finishers: 387
+                finishersMen: 320
+                finishersWomen: 67
+                timeLimit: "21:00:00"
+                resultsStatus: "C"
+                iauLabel: "B"
+                recordProof: "Y"
+                website: "https://www.100km.ch"
+                organizer: "Verein 100km Biel/Bienne"
+                additionalInfo: "Night run from Biel to Biel"
+                fee: "CHF 140"
+                fieldLimit: "1500 participants"
+                contact: "Organization Committee"
+                email: "info@100km.ch"
+                phone: "+41 32 323 13 17"
+                address: "Zentralstrasse 19, Postfach"
+                postcode: "2502"
+                courseDescription: "Circular course starting and finishing in Biel"
+        "404":
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+              example:
+                status: 404
+                code: "RESOURCE_NOT_FOUND"
+                message: "Event with ID '999999' not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
   /events/{eventId}/results:
     get:
       summary: Retrieve results for a specific event
@@ -870,9 +1158,67 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Result"
+                $ref: "#/components/schemas/ResultsResponse"
+              example:
+                data:
+                  - perfId: "1234567"
+                    eventId: "42600"
+                    runnerId: "2302"
+                    rank: 1
+                    rankGender: 1
+                    rankCategory: 1
+                    timeGross: "06:50:23"
+                    timeNet: "06:50:23"
+                    distance: 100
+                    category: "M40"
+                    categoryGerman: "M40"
+                    rankCategoryGerman: 1
+                    categoryIAU: "M"
+                    rankCategoryIAU: 1
+                    club: "LG Ultralauf"
+                    scores: 876
+                    age: 43.7
+                    rankInternationalYear: 14
+                    rankNationalYear: 2
+                    isExcluded: false
+                  - perfId: "1234568"
+                    eventId: "42600"
+                    runnerId: "3561"
+                    rank: 2
+                    rankGender: 2
+                    rankCategory: 1
+                    timeGross: "07:02:15"
+                    timeNet: "07:02:15"
+                    distance: 100
+                    category: "M35"
+                    categoryGerman: "M35"
+                    rankCategoryGerman: 1
+                    categoryIAU: "M"
+                    rankCategoryIAU: 2
+                    club: "Eintracht Frankfurt"
+                    scores: 843
+                    age: 37.2
+                    rankInternationalYear: 26
+                    rankNationalYear: 3
+                    isExcluded: false
+                pagination:
+                  total: 387
+                  limit: 100
+                  offset: 0
+                  next: "/api/v1/events/42600/results?limit=100&offset=100"
+                  previous: null
+        "404":
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
   /results:
     get:
       summary: Retrieve results filtered by event or runner
@@ -896,9 +1242,19 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Result"
+                $ref: "#/components/schemas/ResultsResponse"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
   /runners:
     get:
       summary: Retrieve list of runners
@@ -927,9 +1283,47 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Runner"
+                $ref: "#/components/schemas/RunnersResponse"
+              example:
+                data:
+                  - runnerId: "2302"
+                    firstName: "Max"
+                    lastName: "Mustermann"
+                    nationality: "GER"
+                    gender: "M"
+                    birthYear: 1975
+                    club: "LG Ultralauf"
+                    city: "Berlin"
+                    totalMileage: 3480.5
+                    raceCount: 34
+                  - runnerId: "3561"
+                    firstName: "Erika"
+                    lastName: "Musterfrau"
+                    nationality: "SUI"
+                    gender: "W"
+                    birthYear: 1980
+                    club: "Swiss Ultra Runners"
+                    city: "Zürich"
+                    totalMileage: 1850.2
+                    raceCount: 18
+                pagination:
+                  total: 92345
+                  limit: 100
+                  offset: 0
+                  next: "/api/v1/runners?limit=100&offset=100"
+                  previous: null
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
   /runners/{runnerId}:
     get:
       summary: Retrieve a runner by ID
@@ -944,6 +1338,40 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Runner"
+              example:
+                runnerId: "2302"
+                firstName: "Max"
+                lastName: "Mustermann"
+                originalName: "Max Mustermann"
+                originalNameFirstName: "Max"
+                originalNameLastName: "Mustermann"
+                nationality: "GER"
+                nationality2: null
+                gender: "M"
+                birthYear: 1975
+                birthDate: "1975-04-15"
+                club: "LG Ultralauf"
+                city: "Berlin"
+                totalMileage: 3480.5
+                raceCount: 34
+                comments: "National team member 2018-2023"
+                privacy: 0
+        "404":
+          description: Runner not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+              example:
+                status: 404
+                code: "RESOURCE_NOT_FOUND"
+                message: "Runner with ID '999999' not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
   /runners/{runnerId}/results:
     get:
       summary: Retrieve results for a specific runner
@@ -960,6 +1388,16 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Result"
+                $ref: "#/components/schemas/ResultsResponse"
+        "404":
+          description: Runner not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
