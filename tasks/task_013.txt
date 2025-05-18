@@ -1,0 +1,45 @@
+# Task ID: 13
+# Title: Write Email to Jürgen
+# Status: pending
+# Dependencies: 5
+# Priority: low
+# Description: Compose an email to Jürgen explaining the API migration proposal and outlining next steps.
+# Details:
+Compose an email with the following structure:
+
+Subject: "DUV API v1 Migration Proposal"
+
+Body:
+```
+Hi Jürgen,
+
+I've completed the initial work on the DUV API v1 migration as we discussed. This new API will provide standardized JSON responses, interactive documentation, and improved security through API keys.
+
+Key benefits:
+- Consistent field names and data formats across all endpoints
+- Self-documenting API with interactive Swagger UI
+- API key authentication for protected data
+- Gradual migration path that won't disrupt the current site
+
+You can view the API documentation here: [GitHub Pages URL]
+
+I've attached the OpenAPI specification file (duv-api-public.yaml) which defines all endpoints and data structures.
+
+Next steps for implementation:
+1. Create the api_keys table in the database (SQL script attached)
+2. Implement the API helper functions and endpoints as outlined in the PRD
+3. Create the admin UI for managing API keys
+4. Update frontend code to use the new endpoints
+
+Let me know if you have any questions or need any clarification on the implementation details.
+
+Best regards,
+Daniel
+```
+
+Attach:
+1. duv-api-public.yaml
+2. create_api_keys_table.sql
+
+# Test Strategy:
+Review the email for clarity and completeness. Ensure all attachments are included and the GitHub Pages URL is correct.

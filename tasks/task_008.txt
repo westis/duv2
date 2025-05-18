@@ -1,0 +1,41 @@
+# Task ID: 8
+# Title: Implement events.php Endpoint
+# Status: pending
+# Dependencies: 3, 7
+# Priority: medium
+# Description: Create the /api/v1/events.php endpoint to provide a list of events with standardized field names.
+# Details:
+Create a file named 'events.php' in the /api/v1/ directory with the following content:
+```php
+<?php
+require 'helpers.php';
+$db = connectToDatabase();
+validateApiKey($db, false); // public access
+
+// Optional: read filter params
+$year = $_GET['year'] ?? date('Y');
+
+$query = "SELECT
+  ID AS id,
+  EventName AS name,
+  CountryCode AS country,
+  DATE_FORMAT(Startdate,'%Y-%m-%d') AS date,
+  Distance AS distance_km
+FROM tevent
+WHERE YEAR(Startdate)=?";
+$stmt = $db->prepare($query);
+$stmt->bind_param('i', $year);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$events = [];
+while ($row = $result->fetch_assoc()) {
+  $events[] = $row;
+}
+
+outputJson($events);
+```
+Ensure field names match those defined in the OpenAPI specification.
+
+# Test Strategy:
+Test the endpoint with various query parameters. Verify the response format matches the OpenAPI specification. Test with and without API keys to ensure public access works correctly.

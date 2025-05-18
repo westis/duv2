@@ -1,0 +1,15 @@
+# Task ID: 4
+# Title: Set Up Swagger UI Locally
+# Status: in-progress
+# Dependencies: 3
+# Priority: medium
+# Description: Download and configure Swagger UI to provide interactive documentation for the API.
+# Details:
+1. Download Swagger UI ZIP from https://github.com/swagger-api/swagger-ui/releases
+2. Unzip to a directory named 'duv-docs/'
+3. Edit duv-docs/index.html to set url: 'duv-api-public.yaml'
+4. Open the index.html file in a browser to verify the documentation displays correctly
+5. Test the interactive features to ensure they work as expected
+
+# Test Strategy:
+Open the Swagger UI in multiple browsers to verify compatibility. Test the interactive documentation features to ensure they correctly display API endpoints, parameters, and response schemas.

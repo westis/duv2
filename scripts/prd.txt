@@ -1,0 +1,251 @@
+# Product Requirements Document (PRD): `/api/v1/` Migration for DUV Ultra Marathon Stats
+
+**Version:** 1.0 │ **Date:** May 18, 2025
+
+---
+
+## 1. Overview
+
+We will build a modern, consistent, and secure REST API under `/api/v1/` that runs alongside the current `/json/*.php` scripts. This API:
+
+* Standardizes JSON field names, formats, and error handling based on the SQL schema.
+* Uses API Key authentication for restricted data.
+* Provides interactive, self-documenting documentation via Swagger UI.
+* Enables gradual endpoint-by-endpoint migration without disrupting the live site.
+
+---
+
+## 2. Background & Rationale
+
+The existing PHP scripts exhibit:
+
+* **Inconsistent data**: mixed date formats, varied field names, missing or extra fields.
+* **No centralized docs**: each endpoint must be inspected individually.
+* **High maintenance burden**: duplicative logic across scripts increases error risk.
+
+Moving to a single, SQL-driven API spec ensures:
+
+* **Uniform JSON structure**: consistent fields and types.
+* **Discoverability**: one Swagger UI page lists all endpoints, parameters, and schemas.
+* **Security**: API Keys control access to sensitive data.
+* **Maintainability**: changes in SQL or spec propagate to all endpoints.
+
+---
+
+## 3. Goals
+
+1. **Standardization:** Uniform JSON structure and naming conventions.
+2. **Discoverability:** Interactive Swagger UI documentation.
+3. **Security:** API Key-based auth for protected endpoints.
+4. **Incremental Migration:** Allow new `/api/v1/` endpoints to replace old scripts one at a time.
+
+---
+
+## 4. Scope
+
+### In-Scope (Phase 1)
+
+* **OpenAPI Spec:** Generate and refine `duv-api-public.yaml` from `duv.sql`.
+* **API Keys:** MySQL `api_keys` table + PHP header validation.
+* **Core Endpoints (Read-only):**
+
+  * `/api/v1/events.php` → events list
+  * `/api/v1/eventdetail.php` → details for one event
+  * `/api/v1/performances.php` → performance results by event
+  * `/api/v1/runners.php` → runner profile by ID
+* **Documentation:** Swagger UI served via GitHub Pages.
+* **Frontend Tasks:** Update fetch calls to use new endpoints and include API Key headers.
+
+### Out-of-Scope (Phase 1)
+
+* Create, Update, Delete operations.
+* OAuth2/JWT, rate limiting, caching or load balancing.
+
+---
+
+## 5. Implementation Steps
+
+### A. Daniel's (You) Preparation
+
+1. **Install Node.js**
+
+   * Download Windows LTS from [https://nodejs.org](https://nodejs.org) and install.
+
+2. **Install the schema-to-OpenAPI tool**
+   We will use **platformatic** to generate an OpenAPI spec directly from MySQL.
+
+   In your project folder's terminal, run:
+   ```bash
+   npm install platformatic @platformatic/db
+   ```
+
+3. **Create a configuration file**
+   Create a file named `platformatic.json` with the following content:
+   ```json
+   {
+     "db": {
+       "connectionString": "mysql://root@localhost/ultradb"
+     }
+   }
+   ```
+
+4. **Generate the initial OpenAPI spec**
+   Generate the OpenAPI specification using:
+   ```bash
+   npx platformatic db schema openapi > duv-openapi.yaml
+   ```
+
+5. **Refine Spec to `duv-api-public.yaml`**
+
+   * Load in editor, **remove** private tables/fields.
+   * **Rename** columns (e.g. `Startdate` → `date`), set JSON types/formats.
+   * **Add** descriptions for each endpoint and parameter.
+
+6. **Set Up Swagger UI Locally**
+
+   * Download Swagger UI ZIP: [https://github.com/swagger-api/swagger-ui/releases](https://github.com/swagger-api/swagger-ui/releases).
+   * Unzip to `duv-docs/`.
+   * In `duv-docs/index.html`, set `url: 'duv-api-public.yaml'`.
+   * Open in browser to verify.
+
+7. **Publish Docs via GitHub Pages**
+
+   * Create repo `duv-api-docs`, push `duv-docs/` and `duv-api-public.yaml`.
+   * In repo settings, enable GitHub Pages (branch `main`, root).
+   * Note published URL.
+
+8. **Email to Jürgen**
+
+   * **Subject:** "DUV API v1 Migration Proposal"
+   * **Body:**
+
+     * Briefly explain the new `/api/v1/` API and reasons (standardization, docs, security).
+     * Include GitHub Pages URL and attach `duv-api-public.yaml`.
+     * Outline Jürgen's next steps (see Section 5B).
+
+---
+
+### B. Jürgen's Implementation
+
+1. **Create `api_keys` Table**
+
+   ```sql
+   CREATE TABLE api_keys (
+     `key` VARCHAR(64) PRIMARY KEY,
+     user_id INT NOT NULL,
+     expires DATETIME,
+     active BOOL DEFAULT TRUE
+   );
+   ```
+
+2. **Admin UI for API Keys**
+
+   * Simple PHP page (`admin/api_keys.php`): generates random keys, inserts into `api_keys`, displays new key once.
+
+3. **Common Helper File: `/api/v1/helpers.php`**
+
+   ```php
+   <?php
+   // helpers.php
+   function connectToDatabase() {
+     return new mysqli('localhost','user','pass','duv');
+   }
+
+   function validateApiKey($db, $required = true) {
+     $key = $_SERVER['HTTP_X_API_KEY'] ?? '';
+     if (!$key && !$required) return true;
+
+     $stmt = $db->prepare(
+       'SELECT user_id FROM api_keys WHERE `key`=? AND active=1'
+     );
+     $stmt->bind_param('s', $key);
+     $stmt->execute();
+     if ($stmt->get_result()->num_rows === 0) {
+       if ($required) {
+         http_response_code(401);
+         echo json_encode(['error'=>'Invalid API key']);
+         exit;
+       }
+       return false;
+     }
+     return $stmt->get_result()->fetch_assoc()['user_id'];
+   }
+
+   function outputJson($data) {
+     header('Content-Type: application/json');
+     echo json_encode($data);
+     exit;
+   }
+   ```
+
+4. **Endpoint Templates (read-only)**
+
+#### `api/v1/events.php`
+
+```php
+<?php
+require 'helpers.php';
+$db = connectToDatabase();
+validateApiKey($db, false); // public access
+
+// Optional: read filter params
+year = $_GET['year'] ?? date('Y');
+
+$query = "SELECT
+  ID AS id,
+  EventName AS name,
+  CountryCode AS country,
+  DATE_FORMAT(Startdate,'%Y-%m-%d') AS date,
+  Distance AS distance_km
+FROM tevent
+WHERE YEAR(Startdate)=?";
+$stmt = $db->prepare($query);
+$stmt->bind_param('i', $year);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$events = [];
+while ($row = $result->fetch_assoc()) {
+  $events[] = $row;
+}
+
+outputJson($events);
+```
+
+#### Repeat for other endpoints (`eventdetail.php`, `performances.php`, `runners.php`)
+
+* Validate API key (pass `true` for restricted fields).
+* Map SQL columns to JSON keys per `duv-api-public.yaml`.
+* Call `outputJson()`.
+
+5. **Testing**
+
+   * Use `curl -H "X-API-Key: <key>"` to test each endpoint.
+   * Confirm correct JSON schema and HTTP status codes.
+
+6. **Front-End Migration**
+
+   * In JavaScript/HTML, replace old fetch URLs with:
+
+     ```js
+     fetch('/api/v1/events.php', {
+       headers: { 'X-API-Key': '<key>' }
+     });
+     ```
+   * Deploy and verify page behavior.
+
+7. **Cleanup**
+
+   * Once all frontend pages point to `/api/v1/`, archive or delete old `/json/*.php` scripts.
+
+---
+
+## 6. Success Criteria
+
+* **Consistency:** All responses match the OpenAPI schema.
+* **Documentation:** Swagger UI page is accessible and up-to-date.
+* **Security:** Restricted data only appears with a valid API Key.
+* **Migration:** Frontend fully uses `/api/v1/` without regressions.
+* **Deprecated Endpoints:** Old `/json` scripts can be retired cleanly.
+
+*End of PRD.*

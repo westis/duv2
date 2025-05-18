@@ -1,0 +1,59 @@
+# Task ID: 10
+# Title: Implement performances.php Endpoint
+# Status: pending
+# Dependencies: 3, 7
+# Priority: medium
+# Description: Create the /api/v1/performances.php endpoint to provide performance results for a specific event.
+# Details:
+Create a file named 'performances.php' in the /api/v1/ directory:
+```php
+<?php
+require 'helpers.php';
+$db = connectToDatabase();
+$hasApiKey = validateApiKey($db, false); // optional auth for restricted fields
+
+// Required parameter
+$eventId = $_GET['event_id'] ?? null;
+if (!$eventId) {
+  http_response_code(400);
+  outputJson(['error' => 'Event ID is required']);
+}
+
+$query = "SELECT
+  p.ID AS id,
+  p.RunnerID AS runner_id,
+  CONCAT(r.FirstName, ' ', r.LastName) AS runner_name,
+  r.CountryCode AS country,
+  p.Place AS place,
+  p.Time AS time_seconds,
+  CONCAT(FLOOR(p.Time/3600), ':', LPAD(FLOOR((p.Time%3600)/60), 2, '0'), ':', LPAD(p.Time%60, 2, '0')) AS time_formatted";
+  
+// Add restricted fields if API key is provided
+if ($hasApiKey) {
+  $query .= ",
+  r.Email AS email,
+  r.DateOfBirth AS date_of_birth";
+}
+
+$query .= "
+FROM tperformance p
+JOIN trunner r ON p.RunnerID = r.ID
+WHERE p.EventID=?
+ORDER BY p.Place";
+
+$stmt = $db->prepare($query);
+$stmt->bind_param('i', $eventId);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$performances = [];
+while ($row = $result->fetch_assoc()) {
+  $performances[] = $row;
+}
+
+outputJson($performances);
+```
+Ensure field names match those defined in the OpenAPI specification.
+
+# Test Strategy:
+Test the endpoint with valid and invalid event IDs. Test with and without API keys to verify restricted fields are only included with valid authentication. Verify the response format matches the OpenAPI specification.

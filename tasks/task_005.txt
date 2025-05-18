@@ -1,0 +1,17 @@
+# Task ID: 5
+# Title: Publish Documentation via GitHub Pages
+# Status: pending
+# Dependencies: 4
+# Priority: medium
+# Description: Create a GitHub repository and publish the Swagger UI documentation using GitHub Pages.
+# Details:
+1. Create a new GitHub repository named 'duv-api-docs'
+2. Push the duv-docs/ directory and duv-api-public.yaml file to the repository
+3. In the repository settings, enable GitHub Pages:
+   - Select branch: main
+   - Select folder: / (root)
+4. Wait for GitHub Pages to build and deploy the site
+5. Note the published URL for inclusion in the email to Jürgen
+
+# Test Strategy:
+Verify the GitHub Pages site is accessible and displays the Swagger UI correctly. Test all interactive features to ensure they work in the published environment.

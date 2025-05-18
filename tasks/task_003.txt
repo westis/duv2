@@ -1,0 +1,20 @@
+# Task ID: 3
+# Title: Refine OpenAPI Specification
+# Status: done
+# Dependencies: 2
+# Priority: high
+# Description: Refine the generated OpenAPI specification to create duv-api-public.yaml by removing private tables/fields and standardizing field names.
+# Details:
+1. Create a copy of duv-openapi.yaml named duv-api-public.yaml
+2. Remove all private tables and sensitive fields
+3. Rename columns to follow consistent naming conventions (e.g., Startdate → date)
+4. Set appropriate JSON types and formats for each field
+5. Add descriptions for each endpoint and parameter
+6. Ensure all four core endpoints are properly defined:
+   - /api/v1/events.php
+   - /api/v1/eventdetail.php
+   - /api/v1/performances.php
+   - /api/v1/runners.php
+
+# Test Strategy:
+Validate the refined YAML against OpenAPI 3.0 specification. Review manually to ensure all private data has been removed and naming conventions are consistent.

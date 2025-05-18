@@ -1,0 +1,20 @@
+# Task ID: 6
+# Title: Create SQL Script for api_keys Table
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Prepare the SQL script to create the api_keys table for API authentication.
+# Details:
+Create a SQL script file named 'create_api_keys_table.sql' with the following content:
+```sql
+CREATE TABLE api_keys (
+  `key` VARCHAR(64) PRIMARY KEY,
+  user_id INT NOT NULL,
+  expires DATETIME,
+  active BOOL DEFAULT TRUE
+);
+```
+Include any necessary indexes or foreign key constraints to link with the existing user table.
+
+# Test Strategy:
+Validate the SQL script syntax. Test the script in a development database to ensure it creates the table with the correct structure and constraints.

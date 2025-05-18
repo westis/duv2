@@ -1,0 +1,156 @@
+openapi: 3.1.1
+info:
+  title: DUV Ultra Marathon API
+  version: 1.0.0
+  description: Modern read-only REST API for DUV Ultra Marathon statistics.
+servers:
+  - url: /api/v1
+security: [] # No global security; each operation can override if needed
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    Event:
+      type: object
+      properties:
+        eventId:
+          type: string
+        name:
+          type: string
+        country:
+          type: string
+        date:
+          type: string
+          format: date
+        distance:
+          type: number
+      required:
+        - eventId
+        - name
+        - date
+        - distance
+    Result:
+      type: object
+      properties:
+        perfId:
+          type: string
+        eventId:
+          type: string
+        runnerId:
+          type: string
+        rank:
+          type: integer
+        timeGross:
+          type: string
+        timeNet:
+          type: string
+        category:
+          type: string
+      required:
+        - perfId
+        - eventId
+        - runnerId
+        - rank
+    Runner:
+      type: object
+      properties:
+        runnerId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nationality:
+          type: string
+        yob:
+          type: integer
+        club:
+          type: string
+      required:
+        - runnerId
+        - firstName
+        - lastName
+        - nationality
+paths:
+  /events:
+    get:
+      summary: Retrieve list of events
+      operationId: getEvents
+      parameters:
+        - name: year
+          in: query
+          description: Filter events by year
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Array of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+  /events/{eventId}:
+    get:
+      summary: Retrieve a specific event by ID
+      operationId: getEventById
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          description: Unique event identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Event object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+  /results:
+    get:
+      summary: Retrieve results filtered by event or runner
+      operationId: getResults
+      parameters:
+        - name: eventId
+          in: query
+          description: Filter results by event ID
+          schema:
+            type: string
+        - name: runnerId
+          in: query
+          description: Filter results by runner ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Array of result objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Result"
+  /runners/{runnerId}:
+    get:
+      summary: Retrieve a runner by ID
+      operationId: getRunnerById
+      parameters:
+        - name: runnerId
+          in: path
+          required: true
+          description: Unique runner identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Runner object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Runner"

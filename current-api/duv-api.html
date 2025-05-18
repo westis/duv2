@@ -1,0 +1,222 @@
+<div id="mainbox">   <!-- begin of main content  -->
+
+<h2>JSON pages</h2>
+<p>For some of the standard PHP scripts producing HTML pages there is a corresponding script producing json output.</p>
+<ul>
+<li>They are located in subfolder json (https://statistik.d-u-v.org/json/)</li>
+<li>and they have a prefix 'm' in the script name. </li>
+</ul>
+<p>Usually the json-producing pages accept the same parameters as the html-producing pages.
+But some json pages accept additional parameters.</p>
+
+<table border="1"><tbody><tr>
+    <th>Purpose</th>    
+    <th>html page</th>
+    <th>Example Param(s)</th>
+    <th>Full set of filter params</th>
+    <th>json page</th>
+    <th>Add. params for json</th>
+    <th>Note</th>
+  </tr>
+  <tr>
+    <td>National records/best performances</td>
+    <td><a href="https://statistik.d-u-v.org/bestperfcountry.php?nat=ALB&amp;dist=12h&amp;language=EN" target="_blank">bestperfcountry.php</a></td>
+    <td>?nat=ALB&amp;dist=12h</td>
+    <td>?nat=ALB<br>
+    &amp;dist=12h<br>
+    &amp;type=0<br>
+    &amp;cat=YOB</td>    
+    <td><a href="https://statistik.d-u-v.org/json/mbestperfcountry.php?nat=ALB&amp;dist=12h&amp;type=0&amp;cat=YOB&amp;language=EN" target="_blank">json/mbestperfcountry.php</a></td>
+    <td>language</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Calendar</td>
+    <td><a href="https://statistik.d-u-v.org/calendar.php?year=futur&amp;country=GER" target="_blank">calendar.php</a></td>
+    <td>?year=futur&amp;country=GER</td>
+    <td>?year=futur<br>
+    &amp;dist=all<br>
+    &amp;country=GER<br>
+    &amp;cups=all<br>
+    &amp;rproof=0<br>
+    &amp;mode=list<br>
+    &amp;radius=<br>
+    &amp;norslt=1</td>    
+    <td><a href="https://statistik.d-u-v.org/json/mcalendar.php?year=futur&amp;country=GER" target="_blank">json/mcalendar.php</a></td>
+    <td>plain, page, perpage, from, to, splits, language</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+     <td>Event detail page</td>
+    <td><a href="https://statistik.d-u-v.org/eventdetail.php?event=101140" target="_blank">eventdetail.php</a></td>
+    <td>?event=101140</td>
+    <td>?event=101140</td>
+    <td><a href="https://statistik.d-u-v.org/json/meventdetail.php?event=101140" target="_blank">json/meventdetail.php</a></td>
+    <td>language</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>International Rankings</td>
+    <td><a href="https://statistik.d-u-v.org/getintbestlist.php?dist=6h&amp;year=2024&amp;gender=W" target="_blank">getintbestlist.php</a></td>
+    <td>?dist=6h&amp;year=2024&amp;gender=W</td>
+    <td>?year=2024<br>
+    &amp;dist=6h<br>
+    &amp;gender=W<br>
+    &amp;cat=all<br>
+    &amp;nat=all<br>
+    &amp;label=IAU<br>
+    &amp;hili=none<br>
+    &amp;tt=netto</td>
+    <td><a href="https://statistik.d-u-v.org/json/mgetintbestlist.php?dist=6h&amp;year=2024&amp;gender=W" target="_blank">json/mgetintbestlist.php</a></td>
+    <td>plain, page, perpage, language</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Results of single race</td>
+    <td><a href="https://statistik.d-u-v.org/getresultevent.php?event=101140" target="_blank">getresultevent.php</a></td>
+    <td>?event=101140</td>
+    <td>?event=101140<br>
+    &amp;cat=all<br>
+    &amp;country=GER<br>
+    &amp;speed=1<br>
+    &amp;aktype=2</td>
+    <td><a href="https://statistik.d-u-v.org/json/mgetresultevent.php?event=101140" target="_blank">json/mgetresultevent.php</a></td>
+    <td>plain, page, perpage, jsonescape, language</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Athlete's profile</td>
+    <td><a href="https://statistik.d-u-v.org/getresultperson.php?runner=2302" target="_blank">getresultperson.php</a></td>
+    <td>?runner=2302</td>
+    <td>?runner=2302</td>
+    <td><a href="https://statistik.d-u-v.org/json/mgetresultperson.php?runner=2302" target="_blank">json/mgetresultperson.php</a></td>
+    <td>plain, label, language</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Event search</td>
+    <td><a href="https://statistik.d-u-v.org/searchevent.php?sname=mors" target="_blank">searchevent.php</a></td>
+    <td>?sname=mors</td>
+    <td>?sname=mors<br>
+    &amp;dist=50<br>
+    &amp;nat=RUS</td>
+    <td><a href="https://statistik.d-u-v.org/json/msearchevent.php?sname=mors" target="_blank">json/msearchevent.php</a></td>
+    <td>jsonescape, language</td>
+    <td><ol>
+        <li>Instead of using several parameters it is also possible to use only sname with the values separated by commas. 
+        E.g. <b>?sname=mors,100km,POL</b> will be split internally into filter parameters and return only 100km races in Poland, not the Mors 100mi races in Denmark.<br>
+        This is analog to the normal event search in GUI.</li>
+        <li>By default a wildcard % is added at begin and end of sname: %mors%.</li>
+        <li>A numerical value for sname (with at least 3 digits) is interpreted as EventID and only returns this single event.</li>
+        </ol>
+    </td>
+  </tr>
+  <tr>
+    <td>Runner search</td>
+    <td><a href="https://statistik.d-u-v.org/searchrunner.php?sname=M%C3%BCller" target="_blank">searchrunner.php</a></td>
+    <td>?sname=Müller</td>
+    <td>?sname=Müller<br>
+    &amp;fname=Hans<br>
+    &amp;nat=GER<br>
+    &amp;exact=1
+    &amp;fuzzy=0</td>
+    <td><a href="https://statistik.d-u-v.org/json/msearchrunner.php?sname=M%C3%BCller" target="_blank">json/msearchrunner.php</a></td>
+    <td>page, perpage, jsonescape</td>
+    <td><ol>        
+        <li>Instead of using several parameters it is also possible to use only sname with the values separated by commas. 
+        E.g. <b>?sname=Müller,Hans,GER</b> will be split internally into filter parameters and return only Hans Müllers in Germany, 
+        not the Hans Müllers in Switzerland.<br>
+        This is analog to the normal person search in GUI.</li>
+        <li>By default a wildcard % is appended to the end of lastname and at begin and end of firstname: Müller%, %Hans%.</li>
+        <li>If param exact=1 (true) then no wildcard % will be attached to the end of the lastname.</li>
+        <li>If param fuzzy=1 (true) then a SOUNDEX search will be performed. This will reduce the maximum hit count to 400 (otherwise 4000).
+        If both, exact and fuzzy are true, then exact has priority and fuzzy will be ignored.</li>
+        <li>Filter parameters are connected in SQL statement with logical AND, i.e. if fname and nat are given, then this will make the search more restrictive and yields less hits.</li>
+        <li>A numerical value for sname (with at least 2 digits) is interpreted as PersonID and only returns this single runner.</li>        
+        </ol>
+    </td>
+  </tr>
+  <tr>
+    <td>Top rankings abroad</td>
+    <td><a href="https://statistik.d-u-v.org/toprankabroad.php?country=GER" target="_blank">toprankabroad.php</a></td>
+    <td>?country=GER</td>
+    <td>?year=2024<br>
+    &amp;dist=all<br>
+    &amp;country=GER<br>
+    &amp;cnt=3<br>
+    &amp;gender=all</td>
+    <td><a href="https://statistik.d-u-v.org/json/mtoprankabroad.php?country=GER" target="_blank">json/mtoprankabroad.php</a></td>
+    <td>language</td>
+    <td>&nbsp;</td>
+  </tr>
+</tbody></table>
+
+<h3>Additional parameters for json producing pages</h3>
+<table border="1"><tbody><tr>
+    <th>Param name</th>    
+    <th>Description</th>
+    <th>Default value</th>
+    <th>other values</th>
+  </tr>
+  <tr>
+    <td>plain</td>
+    <td>Delivers only the pure page content (lists) without filter lists and language-specific labels</td>
+    <td>0&nbsp;&nbsp;(=False)</td>
+    <td>1 or any positive integer &nbsp;(=True)</td>
+  </tr>
+  <tr>
+    <td>page</td>
+    <td>Delivers only a certain page subset of a longer list</td>
+    <td>1</td>
+    <td>1 or any integer &gt; 0</td>
+  </tr>
+  <tr>
+    <td>perpage</td>
+    <td>number of records per page (chunk size)</td>
+    <td>400</td>
+    <td>any positive integer &lt;= default value</td>
+  </tr>
+  <tr>
+    <td>from</td>
+    <td>Delivers only races with startdate in the range between the from-date and the to-date</td>
+    <td>&nbsp;</td>
+    <td>a valid isodate yyyy-mm-dd</td>
+  </tr>
+  <tr>
+    <td>to</td>
+    <td>Delivers only races with startdate in the range between the from-date and the to-date</td>
+    <td>&nbsp;</td>
+    <td>a valid isodate yyyy-mm-dd</td>
+  </tr>
+  <tr>
+    <td>language</td>
+    <td>Language used for the GUI labels (nlsText) and filter lists</td>
+    <td>usually taken from cookie, or: EN</td>
+    <td>DE, EN, FR, IT, ES, RU, JA, ZH</td>
+  </tr>
+   <tr>
+    <td>jsonescape</td>
+    <td>Delivers escaped Unicode chars in json output. Needs to be set to true for getting orignames correctly into Excel.</td>
+    <td>0&nbsp;&nbsp;(=False)</td>
+    <td>1 or any positive integer &nbsp;(=True)</td>
+  </tr>
+  <tr>
+    <td>label</td>
+    <td>Delivers only IAU labelled races</td>
+    <td>0&nbsp;&nbsp;(=False)</td>
+    <td>1 or any positive integer &nbsp;(=True)</td>
+  </tr>
+   <tr>
+    <td>splits</td>
+    <td>Exlude splits/stages from being shown in calendar list. Usually only relevant for events which have already results included.</td>
+    <td>0&nbsp;&nbsp;(=False)</td>
+    <td>1 or any positive integer &nbsp;(=True)</td>
+  </tr>
+</tbody></table>
+
+
+
+	</div>   <!-- end of mainbox -->
+	
+</div>  <!-- end of container -->
+

@@ -1,0 +1,14 @@
+# Task ID: 1
+# Title: Install Node.js and Required Tools
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Set up the development environment by installing Node.js and the schema-to-OpenAPI tool (@platformatic/sql-openapi).
+# Details:
+1. Download Windows LTS from https://nodejs.org and install
+2. Open command prompt or PowerShell
+3. Run `npm install -g @platformatic/sql-openapi` to install the schema-to-OpenAPI tool globally
+4. Verify installation with `node --version` and `sql-openapi --version`
+
+# Test Strategy:
+Verify successful installation by running version check commands. Ensure Node.js is properly installed and the sql-openapi tool is accessible from the command line.
