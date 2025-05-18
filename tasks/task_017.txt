@@ -1,0 +1,62 @@
+# Task ID: 17
+# Title: Task #17: Implement Event-Race Hierarchy in API Structure
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Restructure the API to introduce a hierarchical relationship between events and races, renaming the current `/events` resource to `/races` and creating appropriate nested resources to reflect the parent-child relationship.
+# Details:
+This task involves a significant restructuring of the API to better model the domain:
+
+1. Rename the current `/events` resource to `/races` in all API endpoints
+2. Design new endpoints to represent the hierarchical relationship:
+   - `/events` - to manage top-level event entities
+   - `/events/{eventId}/races` - to manage races within a specific event
+   - `/races/{raceId}` - for direct access to specific races
+3. Define a comprehensive Race schema that includes:
+   - Distance (e.g., 5K, 10K, marathon)
+   - Category (e.g., adult, youth, elite)
+   - Start time
+   - Course information
+   - Any race-specific rules or requirements
+4. Update the API specification document to reflect these changes
+5. Modify existing endpoints to maintain backward compatibility where possible
+6. Update database schema to support the new hierarchy
+7. Implement data migration scripts to convert existing event data to the new structure
+8. Update any backend services that interact with these endpoints
+9. Coordinate with frontend developers to ensure they're aware of the upcoming changes
+
+Consider implementing a versioning strategy (e.g., `/v2/events`) to maintain backward compatibility during the transition period. Document any breaking changes clearly for API consumers.
+
+# Test Strategy:
+To verify successful implementation of the event-race hierarchy:
+
+1. Unit Testing:
+   - Write comprehensive unit tests for all new and modified endpoints
+   - Verify proper validation of race properties (distance, category)
+   - Test error handling for invalid event-race relationships
+
+2. Integration Testing:
+   - Test the complete flow of creating events and associated races
+   - Verify that races are properly associated with their parent events
+   - Test retrieval of races both through the event hierarchy and directly
+
+3. Migration Verification:
+   - Create test cases that verify all existing data has been properly migrated
+   - Compare record counts before and after migration
+   - Verify sample records maintain all their original data in the new structure
+
+4. API Contract Testing:
+   - Use tools like Postman or Pact to verify the API conforms to the updated specification
+   - Test all CRUD operations on both events and races
+
+5. Backward Compatibility:
+   - If maintaining backward compatibility, test that old API calls still function correctly
+   - Verify deprecation warnings are properly returned if applicable
+
+6. Performance Testing:
+   - Benchmark the performance of nested queries (e.g., retrieving all races for an event)
+   - Compare with previous implementation to ensure no significant performance degradation
+
+7. Documentation Verification:
+   - Ensure API documentation accurately reflects the new structure
+   - Verify examples in documentation work as expected

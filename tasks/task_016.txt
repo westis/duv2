@@ -148,11 +148,45 @@ Phase 1 will focus on implementing read-only endpoints for the core resources. T
 These endpoints will serve as the foundation for the API. Future phases will expand to include write operations (POST, PUT/PATCH, DELETE) for each resource.
 </info added on 2025-05-18T19:14:30.582Z>
 
-## 4. Design specialized non-CRUD endpoints [pending]
+## 4. Design specialized non-CRUD endpoints [done]
 ### Dependencies: 16.3
 ### Description: Identify and design specialized endpoints for complex operations that don't fit the standard CRUD pattern.
 ### Details:
 Review the schema and business requirements to identify operations that don't fit the standard CRUD pattern (e.g., actions, calculations, reports, bulk operations). Design appropriate endpoints for these operations, following RESTful principles where possible. Document the HTTP methods, URL patterns, request parameters, and response formats for each specialized endpoint. Explain the rationale behind each non-standard endpoint.
+<info added on 2025-05-18T19:38:38.685Z>
+Review the schema and business requirements to identify operations that don't fit the standard CRUD pattern (e.g., actions, calculations, reports, bulk operations). Design appropriate endpoints for these operations, following RESTful principles where possible. Document the HTTP methods, URL patterns, request parameters, and response formats for each specialized endpoint. Explain the rationale behind each non-standard endpoint.
+
+Based on the DUV schema analysis, the following specialized non-CRUD endpoints have been identified:
+
+1. Search Endpoints:
+   - GET /search/events
+     • Query param: `query` (string, required) — full-text search on eventName and city
+     • Response: 200 → array of `Event`
+     • Rationale: enables autocomplete and event lookup by keyword
+
+   - GET /search/runners
+     • Query param: `query` (string, required) — search on firstName and lastName
+     • Response: 200 → array of `Runner`
+     • Rationale: supports runner lookup and search functionality in the UI
+
+2. Filtered View Endpoints:
+   - GET /events/calendar
+     • Query params:
+       ◦ `year` (integer, required)
+       ◦ `distance` (string, optional) — e.g. '50km', '100km'
+     • Response: 200 → array of `Event`
+     • Rationale: returns a list of events organized for calendar display, filtered by year and optionally distance
+
+3. Specialized Report Endpoints:
+   - GET /results/abroad
+     • Query params:
+       ◦ `nationality` (string, required)
+       ◦ `year` (integer, optional)
+     • Response: 200 → array of `Result`
+     • Rationale: lists performances in races outside a runner's home country for border-crossing statistics
+
+These specialized endpoints follow RESTful principles while addressing complex business requirements that go beyond basic CRUD operations. They provide targeted functionality for search, filtered views, and specialized reports that will enhance the application's usability.
+</info added on 2025-05-18T19:38:38.685Z>
 
 ## 5. Define response schemas and error handling [pending]
 ### Dependencies: 16.3, 16.4
@@ -171,4 +205,10 @@ Specify the authentication mechanism to be used (e.g., API keys, JWT tokens, OAu
 ### Description: Compile all API design elements into a comprehensive OpenAPI/Swagger specification document.
 ### Details:
 Create an OpenAPI/Swagger specification document that includes all endpoints, parameters, request bodies, response schemas, authentication requirements, and examples. Organize the documentation in a logical structure, grouping related endpoints. Include descriptive information about each resource and operation. Add examples for requests and responses. Document any API versioning strategy and backward compatibility considerations. Ensure the specification can be imported into API documentation tools.
+
+## 8. Document reusable parameters [in-progress]
+### Dependencies: None
+### Description: Extract every parameter used by our Phase 1 endpoints and define them in components.parameters with name, in, required flag, schema type, description, and best-practice settings (style, explode) for OpenAPI 3.1.1. Then reference them in each path operation.
+### Details:
+
 

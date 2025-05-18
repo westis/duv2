@@ -154,3 +154,77 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Runner"
+  /runners:
+    get:
+      summary: Retrieve list of runners
+      operationId: getRunners
+      parameters:
+        - name: nationality
+          in: query
+          description: Filter runners by nationality code (e.g. 'GER')
+          schema:
+            type: string
+        - name: club
+          in: query
+          description: Filter runners by club name
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Maximum number of runners to return
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Number of runners to skip
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Array of runner objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Runner"
+  /events/{eventId}/results:
+    get:
+      summary: Retrieve results for a specific event
+      operationId: getResultsByEvent
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          description: Event ID to filter results
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Array of result objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Result"
+  /runners/{runnerId}/results:
+    get:
+      summary: Retrieve results for a specific runner
+      operationId: getResultsByRunner
+      parameters:
+        - name: runnerId
+          in: path
+          required: true
+          description: Runner ID to filter results
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Array of result objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Result"
