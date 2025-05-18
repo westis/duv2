@@ -1,0 +1,6 @@
+# Ignore local database dump secrets
+/duv.sql
+# Node modules
+/node_modules/
+# XAMPP or other local-only files
+/xampp/
