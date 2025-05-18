@@ -1,4 +1,4 @@
-# Product Requirements Document (PRD): `/api/v1/` Migration for DUV Ultra Marathon Stats
+# Product Requirements Document (PRD): `/api/v1/` Migration for DUV Ultramarathon Statistics Stats
 
 **Version:** 1.0 │ **Date:** May 18, 2025
 

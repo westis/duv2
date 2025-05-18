@@ -19,22 +19,350 @@
       }
       body {
         margin: 0;
-        background: #fafafa;
+        /* Default to dark mode */
+        background-color: #282c34; /* Dark background */
+        color: #abb2bf; /* Light grey text for general page */
+        font-family: sans-serif; /* Basic font */
       }
+
+      /* Light mode styles */
+      body.light-mode {
+        background-color: #fafafa;
+        color: #333;
+      }
+
+      .theme-container {
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #21252b; /* Slightly different dark for header */
+        border-bottom: 1px solid #333;
+      }
+
+      body.light-mode .theme-container {
+        background-color: #f0f0f0; /* Light grey for header in light mode */
+        border-bottom: 1px solid #ddd;
+      }
+
+      #duv-logo {
+        height: 40px; /* Adjusted height */
+      }
+
+      #theme-toggle {
+        padding: 8px 15px;
+        border: 1px solid #61afef; /* Blue border */
+        background-color: transparent;
+        color: #61afef; /* Blue text */
+        cursor: pointer;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+      #theme-toggle:hover {
+        background-color: rgba(97, 175, 239, 0.1);
+      }
+
+      body.light-mode #theme-toggle {
+        border: 1px solid #007bff; /* Standard blue for light mode */
+        color: #007bff;
+      }
+      body.light-mode #theme-toggle:hover {
+        background-color: rgba(0, 123, 255, 0.1);
+      }
+
+      /* --- Dark Mode Styles for Swagger UI --- */
+      body:not(.light-mode) .swagger-ui {
+        /* General text color for Swagger UI content if not overridden by more specific rules */
+        color: #abb2bf;
+      }
+
+      body:not(.light-mode) .swagger-ui .opblock-tag,
+      body:not(.light-mode) .swagger-ui .opblock-summary-description,
+      body:not(.light-mode) .swagger-ui .info .title,
+      body:not(.light-mode) .swagger-ui .info .description,
+      body:not(.light-mode) .swagger-ui .info .renderedMarkdown p,
+      body:not(.light-mode) .swagger-ui .info .renderedMarkdown h1,
+      body:not(.light-mode) .swagger-ui .info .renderedMarkdown h2,
+      body:not(.light-mode) .swagger-ui .info .renderedMarkdown h3,
+      body:not(.light-mode) .swagger-ui .info .renderedMarkdown li,
+      body:not(.light-mode) .swagger-ui .model-title,
+      body:not(.light-mode) .swagger-ui .model-description,
+      body:not(.light-mode) .swagger-ui .prop-type,
+      body:not(.light-mode) .swagger-ui .prop-format,
+      body:not(.light-mode) .swagger-ui label,
+      body:not(.light-mode) .swagger-ui .dialog-ux-header h3,
+      body:not(.light-mode) .swagger-ui .dialog-ux-content p {
+        color: #abb2bf !important; /* Ensuring general text is light */
+      }
+
+      body:not(.light-mode) .swagger-ui .info .title span small pre {
+        color: #98c379 !important; /* Version / OAS badge text */
+        background-color: #2c313a !important;
+      }
+
+      body:not(.light-mode) .swagger-ui .opblock-tag {
+        border-bottom-color: #444;
+      }
+      body:not(.light-mode) .swagger-ui .opblock-summary-method {
+        background: #3a3f4a !important;
+      }
+
+      body:not(.light-mode) .swagger-ui .opblock.opblock-get {
+        border-color: #61afef;
+        background: rgba(97, 175, 239, 0.05);
+      }
+      body:not(.light-mode)
+        .swagger-ui
+        .opblock.opblock-get
+        .opblock-summary-method {
+        background: #61afef !important;
+      }
+      body:not(.light-mode) .swagger-ui .opblock.opblock-post {
+        border-color: #98c379;
+        background: rgba(152, 195, 121, 0.05);
+      }
+      body:not(.light-mode)
+        .swagger-ui
+        .opblock.opblock-post
+        .opblock-summary-method {
+        background: #98c379 !important;
+      }
+      body:not(.light-mode) .swagger-ui .opblock.opblock-put {
+        border-color: #e5c07b;
+        background: rgba(229, 192, 123, 0.05);
+      }
+      body:not(.light-mode)
+        .swagger-ui
+        .opblock.opblock-put
+        .opblock-summary-method {
+        background: #e5c07b !important;
+      }
+      body:not(.light-mode) .swagger-ui .opblock.opblock-delete {
+        border-color: #e06c75;
+        background: rgba(224, 108, 117, 0.05);
+      }
+      body:not(.light-mode)
+        .swagger-ui
+        .opblock.opblock-delete
+        .opblock-summary-method {
+        background: #e06c75 !important;
+      }
+
+      body:not(.light-mode) .swagger-ui .opblock-summary-path,
+      body:not(.light-mode) .swagger-ui .opblock-summary-path__deprecated {
+        color: #c6c8c6 !important; /* Path text */
+      }
+
+      body:not(.light-mode) .swagger-ui .parameter__name,
+      body:not(.light-mode) .swagger-ui .parameter__type,
+      body:not(.light-mode) .swagger-ui .parameter__in {
+        color: #c5c8c6 !important;
+      }
+      body:not(.light-mode) .swagger-ui .parameter__description {
+        color: #a0a0a0 !important;
+      }
+
+      body:not(.light-mode) .swagger-ui .response-col_status {
+        color: #e6e6e6 !important;
+      }
+      body:not(.light-mode) .swagger-ui .response-col_links {
+        color: #61afef !important; /* Link color */
+      }
+
+      body:not(.light-mode) .swagger-ui table thead tr th,
+      body:not(.light-mode) .swagger-ui table thead tr td,
+      body:not(.light-mode)
+        .swagger-ui
+        .parameters-col_description
+        > div
+        > span {
+        color: #e6e6e6 !important; /* Table headers and main parameter description text */
+        border-bottom-color: #444 !important;
+      }
+      body:not(.light-mode) .swagger-ui table tbody tr td {
+        color: #abb2bf !important; /* Table body text */
+        border-color: #3a3f4a !important;
+      }
+
+      body:not(.light-mode) .swagger-ui .model-example .tab li button.active {
+        color: #282c34 !important;
+        background: #abb2bf !important;
+      }
+      body:not(.light-mode) .swagger-ui .model-example .tab li button {
+        color: #abb2bf !important;
+      }
+      body:not(.light-mode) .swagger-ui .model-example .highlight-code pre,
+      body:not(.light-mode) .swagger-ui .model-example .highlight-code code {
+        background: #21252b !important;
+        color: #abb2bf !important;
+      }
+      body:not(.light-mode)
+        .swagger-ui
+        .responses-inner
+        > div
+        > div
+        > table
+        > thead
+        > tr
+        > th {
+        border-bottom-color: #444 !important;
+      }
+
+      body:not(.light-mode) .swagger-ui .prop-name,
+      body:not(.light-mode) .swagger-ui .prop-name .star {
+        color: #e6e6e6 !important; /* Property names in schemas */
+      }
+      body:not(.light-mode) .swagger-ui .prop-type {
+        color: #98c379 !important; /* Data types in schemas (e.g., string, integer) */
+      }
+      body:not(.light-mode) .swagger-ui .prop-description {
+        color: #a0a0a0 !important; /* Descriptions for schema properties */
+      }
+      body:not(.light-mode) .swagger-ui .model,
+      body:not(.light-mode) .swagger-ui .model .property.primitive {
+        color: #abb2bf !important;
+      }
+      body:not(.light-mode) .swagger-ui .model-toggle {
+        color: #61afef !important;
+      }
+
+      body:not(.light-mode) .swagger-ui .btn {
+        color: #abb2bf !important;
+        border-color: #555 !important;
+      }
+      body:not(.light-mode) .swagger-ui .btn:hover {
+        border-color: #777 !important;
+      }
+      body:not(.light-mode) .swagger-ui .btn.execute {
+        background-color: #61afef !important;
+        color: #282c34 !important;
+        border-color: #61afef !important;
+      }
+      body:not(.light-mode) .swagger-ui .btn.authorize {
+        border-color: #98c379 !important;
+        color: #98c379 !important;
+      }
+      body:not(.light-mode) .swagger-ui .btn.authorize span {
+        color: #98c379 !important;
+      }
+      body:not(.light-mode) .swagger-ui .btn.authorize svg {
+        fill: #98c379 !important;
+      }
+
+      body:not(.light-mode) .swagger-ui input,
+      body:not(.light-mode) .swagger-ui textarea,
+      body:not(.light-mode) .swagger-ui select {
+        background: #21252b !important;
+        color: #e6e6e6 !important;
+        border-color: #444 !important;
+      }
+      body:not(.light-mode) .swagger-ui .opblock-section-header {
+        background: #2c313a !important;
+        border-color: #444 !important;
+      }
+      body:not(.light-mode) .swagger-ui .opblock-section-header h4 {
+        color: #e6e6e6 !important;
+      }
+
+      body:not(.light-mode) .swagger-ui .dialog-ux {
+        background: #2c313a !important;
+        border-color: #444 !important;
+      }
+      body:not(.light-mode) .swagger-ui .dialog-ux-header {
+        background: #21252b !important;
+        border-bottom-color: #444 !important;
+      }
+      body:not(.light-mode)
+        .swagger-ui
+        .dialog-ux-header
+        .btn.modal-ux-header_x {
+        border: none !important;
+        color: #abb2bf !important;
+      }
+      body:not(.light-mode) .swagger-ui .auth-container .wrapper {
+        border-color: #444 !important;
+      }
+      body:not(.light-mode) .swagger-ui .auth-container .errors {
+        color: #e06c75 !important;
+        background-color: rgba(224, 108, 117, 0.1) !important;
+      }
+
+      body:not(.light-mode) .swagger-ui .scheme-container {
+        background: #2c313a !important;
+        border-color: #444 !important;
+        box-shadow: none !important;
+      }
+      body:not(.light-mode) .swagger-ui .schemes select {
+        background-color: #21252b !important;
+      }
+
+      /* Links */
+      body:not(.light-mode) .swagger-ui a {
+        color: #61afef !important;
+      }
+      body:not(.light-mode) .swagger-ui .markdown a {
+        color: #61afef !important;
+      }
+
+      /* --- End Dark Mode Styles for Swagger UI --- */
     </style>
   </head>
   <body>
+    <div class="theme-container">
+      <img id="duv-logo" src="duv_logo_with_name_white.png" alt="DUV Logo" />
+      <button id="theme-toggle">Toggle Light/Dark Mode</button>
+    </div>
     <div id="swagger-ui"></div>
     <script src="swagger-ui-bundle.js"></script>
     <script src="swagger-ui-standalone-preset.js"></script>
     <script>
       window.onload = function () {
+        const logoElement = document.getElementById("duv-logo");
+        const toggleButton = document.getElementById("theme-toggle");
+        const bodyElement = document.body;
+
+        const lightModeLogo = "duv_logo_with_name.png";
+        const darkModeLogo = "duv_logo_with_name_white.png";
+
+        // Function to apply theme
+        function applyTheme(theme) {
+          if (theme === "light") {
+            bodyElement.classList.add("light-mode");
+            logoElement.src = lightModeLogo;
+          } else {
+            bodyElement.classList.remove("light-mode");
+            logoElement.src = darkModeLogo;
+          }
+        }
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) {
+          applyTheme(savedTheme);
+        } else {
+          applyTheme("dark"); // Default to dark mode
+        }
+
+        // Toggle button event listener
+        toggleButton.addEventListener("click", function () {
+          const isLightMode = bodyElement.classList.contains("light-mode");
+          if (isLightMode) {
+            applyTheme("dark");
+            localStorage.setItem("theme", "dark");
+          } else {
+            applyTheme("light");
+            localStorage.setItem("theme", "light");
+          }
+        });
+
+        // Swagger UI setup
         window.ui = SwaggerUIBundle({
-          url: "duv-api-public.yaml", // <-- Your OpenAPI spec file
+          url: "duv-api-public.yaml",
           dom_id: "#swagger-ui",
           deepLinking: true,
           presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-          layout: "StandaloneLayout",
+          layout: "BaseLayout",
+          plugins: [SwaggerUIBundle.plugins.DownloadUrl],
         });
       };
     </script>

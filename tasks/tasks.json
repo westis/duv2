@@ -276,7 +276,7 @@
             4
           ],
           "details": "Specify the authentication mechanism to be used (e.g., API keys, JWT tokens, OAuth). Document how authentication credentials should be passed in requests. For each endpoint, define authorization requirements: which user roles can access it, what operations are permitted for each role, and any resource-level permissions. Create a matrix mapping endpoints to required permissions. Document any rate limiting or usage constraints that will be applied.",
-          "status": "pending",
+          "status": "done",
           "testStrategy": "Review the authentication and authorization design with security stakeholders. Verify that the design follows security best practices and meets compliance requirements."
         },
         {

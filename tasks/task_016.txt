@@ -194,7 +194,7 @@ These specialized endpoints follow RESTful principles while addressing complex b
 ### Details:
 Define JSON response schemas for each endpoint, including field names, data types, and example values. Create a consistent structure for collection responses that includes pagination metadata. Standardize error response formats with appropriate HTTP status codes, error codes, error messages, and additional details. Document how validation errors, authentication errors, authorization errors, and server errors will be represented. Include examples of successful and error responses for each endpoint.
 
-## 6. Specify authentication and authorization requirements [pending]
+## 6. Specify authentication and authorization requirements [done]
 ### Dependencies: 16.3, 16.4
 ### Description: Define authentication mechanisms and authorization rules for each endpoint.
 ### Details:
