@@ -81,6 +81,33 @@ components:
         organizer:
           type: string
           description: Organizing body/promoter
+        additionalInfo:
+          type: string
+          description: Additional information about the event
+        fee:
+          type: string
+          description: Registration fee information
+        fieldLimit:
+          type: string
+          description: Maximum number of participants allowed
+        contact:
+          type: string
+          description: Contact person or information
+        email:
+          type: string
+          description: Contact email address
+        phone:
+          type: string
+          description: Contact phone number
+        address:
+          type: string
+          description: Event address
+        postcode:
+          type: string
+          description: Postal/ZIP code
+        courseDescription:
+          type: string
+          description: Description of the course
       required:
         - eventId
         - name
@@ -119,6 +146,24 @@ components:
         category:
           type: string
           description: Age/performance category
+        categoryEvent:
+          type: string
+          description: Event-specific category
+        rankCategoryEvent:
+          type: integer
+          description: Rank within event-specific category
+        categoryGerman:
+          type: string
+          description: German category system (e.g., M40)
+        rankCategoryGerman:
+          type: integer
+          description: Rank within German category system
+        categoryIAU:
+          type: string
+          description: IAU/international category
+        rankCategoryIAU:
+          type: integer
+          description: Rank within IAU/international category
         club:
           type: string
           description: Club/team affiliation for this performance
@@ -128,6 +173,18 @@ components:
         age:
           type: number
           description: Runner's age at time of performance
+        rankInternationalYear:
+          type: integer
+          description: Rank in international yearly rankings
+        rankNationalYear:
+          type: integer
+          description: Rank in national yearly rankings
+        isExcluded:
+          type: boolean
+          description: Whether this result is excluded from rankings
+        comments:
+          type: string
+          description: Additional comments or notes about the performance
       required:
         - perfId
         - eventId
@@ -148,6 +205,12 @@ components:
         originalName:
           type: string
           description: Name in original script/characters
+        originalNameFirstName:
+          type: string
+          description: First name in original script/characters
+        originalNameLastName:
+          type: string
+          description: Last name in original script/characters
         nationality:
           type: string
           description: Primary nationality code
@@ -165,6 +228,10 @@ components:
           type: string
           format: date
           description: Full birth date (if known)
+        deathDate:
+          type: string
+          format: date
+          description: Date of death (if applicable)
         club:
           type: string
           description: Primary club affiliation
@@ -177,6 +244,12 @@ components:
         raceCount:
           type: integer
           description: Number of races completed
+        comments:
+          type: string
+          description: Additional comments or notes
+        privacy:
+          type: integer
+          description: Privacy setting level
       required:
         - runnerId
         - firstName
