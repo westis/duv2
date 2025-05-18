@@ -82,6 +82,7 @@ components:
       required: false
       schema:
         type: integer
+        example: 2024
       style: form
       explode: true
     EventIdParam:
@@ -91,6 +92,7 @@ components:
       required: true
       schema:
         type: string
+        example: "42600"
       style: simple
       explode: false
     RunnerIdParam:
@@ -100,6 +102,7 @@ components:
       required: true
       schema:
         type: string
+        example: "2302"
       style: simple
       explode: false
     EventIdQueryParam:
@@ -109,6 +112,7 @@ components:
       required: false
       schema:
         type: string
+        example: "42600"
       style: form
       explode: true
     RunnerIdQueryParam:
@@ -118,6 +122,7 @@ components:
       required: false
       schema:
         type: string
+        example: "2302"
       style: form
       explode: true
     NationalityParam:
@@ -127,6 +132,7 @@ components:
       required: false
       schema:
         type: string
+        example: "GER"
       style: form
       explode: true
     ClubParam:
@@ -136,24 +142,29 @@ components:
       required: false
       schema:
         type: string
+        example: "LG Ultralauf"
       style: form
       explode: true
     IAULabelParam:
       name: iauLabel
       in: query
-      description: Filter events with IAU certification label
+      description: "Filter events with IAU certification label. Values: Y (Yes), N (No), T (Trail), G (Gold), S (Silver), B (Bronze)"
       required: false
       schema:
-        type: boolean
+        type: string
+        enum: [Y, N, T, G, S, B]
+        example: "Y"
       style: form
       explode: true
     RecordProofParam:
       name: recordProof
       in: query
-      description: Filter events that are eligible for records
+      description: "Filter events eligible for records. Values: Y (Yes), N (No)"
       required: false
       schema:
-        type: boolean
+        type: string
+        enum: [Y, N]
+        example: "Y"
       style: form
       explode: true
     DurationParam:
@@ -240,6 +251,7 @@ components:
       required: false
       schema:
         type: integer
+        example: 100
       style: form
       explode: true
     OffsetParam:
@@ -249,6 +261,7 @@ components:
       required: false
       schema:
         type: integer
+        example: 0
       style: form
       explode: true
     CountryParam:
@@ -258,6 +271,7 @@ components:
       required: false
       schema:
         type: string
+        example: "GER"
       style: form
       explode: true
     PerfIdParam:
@@ -276,6 +290,7 @@ components:
       required: false
       schema:
         type: string
+        example: "marathon"
       style: form
       explode: true
     CityParam:
@@ -285,6 +300,7 @@ components:
       required: false
       schema:
         type: string
+        example: "Berlin"
       style: form
       explode: true
     EditionParam:
@@ -294,6 +310,7 @@ components:
       required: false
       schema:
         type: string
+        example: "12"
       style: form
       explode: true
     TypeParam:
@@ -303,6 +320,7 @@ components:
       required: false
       schema:
         type: integer
+        example: 1
       style: form
       explode: true
     DateFromParam:
@@ -313,6 +331,7 @@ components:
       schema:
         type: string
         format: date
+        example: "2024-01-01"
       style: form
       explode: true
     DateToParam:
@@ -323,6 +342,7 @@ components:
       schema:
         type: string
         format: date
+        example: "2024-12-31"
       style: form
       explode: true
     DistanceMinParam:
@@ -332,6 +352,7 @@ components:
       required: false
       schema:
         type: number
+        example: 50
       style: form
       explode: true
     DistanceMaxParam:
@@ -341,6 +362,7 @@ components:
       required: false
       schema:
         type: number
+        example: 100
       style: form
       explode: true
     EventsSortByParam:
@@ -351,6 +373,7 @@ components:
       schema:
         type: string
         enum: [date, name, distance, country, city]
+        example: "date"
       style: form
       explode: true
     ResultsSortByParam:
@@ -361,6 +384,7 @@ components:
       schema:
         type: string
         enum: [time, distance, rank, date, runnerName]
+        example: "rank"
       style: form
       explode: true
     RunnersSortByParam:
@@ -371,6 +395,7 @@ components:
       schema:
         type: string
         enum: [name, nationality, mileage, raceCount, yob]
+        example: "name"
       style: form
       explode: true
     GenderParam:
@@ -381,6 +406,7 @@ components:
       schema:
         type: string
         enum: [M, W, X]
+        example: "M"
       style: form
       explode: true
     YOBParam:
@@ -390,26 +416,29 @@ components:
       required: false
       schema:
         type: integer
+        example: 1980
       style: form
       explode: true
     ResultsStatusParam:
       name: resultsStatus
       in: query
-      description: Filter events by results status
+      description: "Filter events by results status. Values: N (no results), C (complete), P (partial), O (postponed), I (insufficient list), R (revoked/cancelled), S (shortened, too short), T (to do / in preparation), Z (no finishers)"
       required: false
       schema:
         type: string
         enum: [N, C, P, O, I, R, S, T, Z]
+        example: "C"
       style: form
       explode: true
     FutureStatusParam:
       name: futureStatus
       in: query
-      description: Filter events by future scheduling status
+      description: "Filter events by future scheduling status. Values: D (discontinued), B (Biannual, every second year), S (Skip next year)"
       required: false
       schema:
         type: string
         enum: [D, B, S]
+        example: "B"
       style: form
       explode: true
     CreatedAfterParam:
@@ -420,6 +449,7 @@ components:
       schema:
         type: string
         format: date-time
+        example: "2024-01-01T00:00:00Z"
       style: form
       explode: true
     ChangedAfterParam:
@@ -430,6 +460,7 @@ components:
       schema:
         type: string
         format: date-time
+        example: "2024-01-01T00:00:00Z"
       style: form
       explode: true
     OrderParam:
@@ -449,6 +480,7 @@ components:
       required: false
       schema:
         type: string
+        example: "DUV Trophy"
       style: form
       explode: true
     RadiusParam:
@@ -462,12 +494,15 @@ components:
           lat:
             type: number
             format: float
+            example: 52.5200
           lon:
             type: number
             format: float
+            example: 13.4050
           distance:
             type: integer
             minimum: 1
+            example: 50
       style: deepObject
       explode: true
     TimeTypeParam:
@@ -501,6 +536,73 @@ components:
         type: string
         enum: [DE, EN, FR, IT, ES, RU, JA, ZH]
         default: EN
+        example: "EN"
+      style: form
+      explode: true
+    FinisherMinParam:
+      name: finisherMin
+      in: query
+      description: "Filter events by minimum number of total finishers"
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        example: 50
+      style: form
+      explode: true
+    FinisherMaxParam:
+      name: finisherMax
+      in: query
+      description: "Filter events by maximum number of total finishers"
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        example: 1000
+      style: form
+      explode: true
+    FinisherMenMinParam:
+      name: finisherMenMin
+      in: query
+      description: "Filter events with at least this many male finishers"
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        example: 10
+      style: form
+      explode: true
+    FinisherMenMaxParam:
+      name: finisherMenMax
+      in: query
+      description: "Filter events with at most this many male finishers"
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        example: 100
+      style: form
+      explode: true
+    FinisherWomenMinParam:
+      name: finisherWomenMin
+      in: query
+      description: "Filter events with at least this many female finishers"
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        example: 5
+      style: form
+      explode: true
+    FinisherWomenMaxParam:
+      name: finisherWomenMax
+      in: query
+      description: "Filter events with at most this many female finishers"
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        example: 50
       style: form
       explode: true
 paths:
@@ -523,6 +625,12 @@ paths:
         - $ref: "#/components/parameters/FutureStatusParam"
         - $ref: "#/components/parameters/IAULabelParam"
         - $ref: "#/components/parameters/RecordProofParam"
+        - $ref: "#/components/parameters/FinisherMinParam"
+        - $ref: "#/components/parameters/FinisherMaxParam"
+        - $ref: "#/components/parameters/FinisherMenMinParam"
+        - $ref: "#/components/parameters/FinisherMenMaxParam"
+        - $ref: "#/components/parameters/FinisherWomenMinParam"
+        - $ref: "#/components/parameters/FinisherWomenMaxParam"
         - $ref: "#/components/parameters/CupParam"
         - $ref: "#/components/parameters/RadiusParam"
         - $ref: "#/components/parameters/CreatedAfterParam"
@@ -600,19 +708,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Result"
-  /results/{perfId}:
-    get:
-      summary: Retrieve a specific result by ID
-      operationId: getResultById
-      parameters:
-        - $ref: "#/components/parameters/PerfIdParam"
-      responses:
-        "200":
-          description: Result object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Result"
   /runners:
     get:
       summary: Retrieve list of runners
