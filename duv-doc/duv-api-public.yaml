@@ -18,15 +18,69 @@ components:
       properties:
         eventId:
           type: string
+          description: Unique event identifier
         name:
           type: string
+          description: Event name
+        edition:
+          type: string
+          description: Edition identifier/number
         country:
           type: string
+          description: Country code
+        city:
+          type: string
+          description: City name
         date:
           type: string
-          format: date
+          format: date-time
+          description: Event start date
+        endDate:
+          type: string
+          format: date-time
+          description: Event end date for multi-day events
         distance:
           type: number
+          description: Distance in kilometers (normalized value)
+        distanceOriginal:
+          type: string
+          description: Original distance description (e.g. "100 miles")
+        duration:
+          type: string
+          description: Duration for time-based events (e.g. "24h")
+        eventType:
+          type: integer
+          description: Type of event (1=Road, 2=Trail, etc.)
+        altitude:
+          type: string
+          description: Altitude difference
+        finishers:
+          type: integer
+          description: Total number of finishers
+        finishersMen:
+          type: integer
+          description: Number of male finishers
+        finishersWomen:
+          type: integer
+          description: Number of female finishers
+        timeLimit:
+          type: string
+          description: Time limit for the event
+        resultsStatus:
+          type: string
+          description: Status of results (N=none, C=complete, etc.)
+        iauLabel:
+          type: string
+          description: IAU certification status
+        recordProof:
+          type: string
+          description: Record eligibility status
+        website:
+          type: string
+          description: Event website URL
+        organizer:
+          type: string
+          description: Organizing body/promoter
       required:
         - eventId
         - name
@@ -37,18 +91,43 @@ components:
       properties:
         perfId:
           type: string
+          description: Unique performance identifier
         eventId:
           type: string
+          description: Associated event identifier
         runnerId:
           type: string
+          description: Associated runner identifier
         rank:
           type: integer
+          description: Overall rank in the event
+        rankGender:
+          type: integer
+          description: Rank within gender category
+        rankCategory:
+          type: integer
+          description: Rank within age category
         timeGross:
           type: string
+          description: Gross/gun time
         timeNet:
           type: string
+          description: Net/chip time
+        distance:
+          type: number
+          description: Distance achieved (for time-based events)
         category:
           type: string
+          description: Age/performance category
+        club:
+          type: string
+          description: Club/team affiliation for this performance
+        scores:
+          type: number
+          description: Calculated performance score
+        age:
+          type: number
+          description: Runner's age at time of performance
       required:
         - perfId
         - eventId
@@ -59,16 +138,45 @@ components:
       properties:
         runnerId:
           type: string
+          description: Unique runner identifier
         firstName:
           type: string
+          description: First name
         lastName:
           type: string
+          description: Last name
+        originalName:
+          type: string
+          description: Name in original script/characters
         nationality:
           type: string
-        yob:
+          description: Primary nationality code
+        nationality2:
+          type: string
+          description: Secondary nationality code
+        gender:
+          type: string
+          enum: [M, W, X]
+          description: Gender (M=male, W=female, X=other)
+        birthYear:
           type: integer
+          description: Year of birth
+        birthDate:
+          type: string
+          format: date
+          description: Full birth date (if known)
         club:
           type: string
+          description: Primary club affiliation
+        city:
+          type: string
+          description: Home city
+        totalMileage:
+          type: number
+          description: Total ultramarathon mileage
+        raceCount:
+          type: integer
+          description: Number of races completed
       required:
         - runnerId
         - firstName
@@ -174,6 +282,7 @@ components:
       required: false
       schema:
         type: string
+        example: "24h"
       style: form
       explode: true
     RankFilterParam:
@@ -184,6 +293,7 @@ components:
       schema:
         type: integer
         minimum: 1
+        example: 10
       style: form
       explode: true
     AgeCategoryParam:
@@ -193,6 +303,7 @@ components:
       required: false
       schema:
         type: string
+        example: "M40"
       style: form
       explode: true
     CategoryParam:
@@ -212,6 +323,7 @@ components:
       schema:
         type: integer
         minimum: 0
+        example: 5
       style: form
       explode: true
     RaceCountMaxParam:
@@ -222,6 +334,7 @@ components:
       schema:
         type: integer
         minimum: 0
+        example: 50
       style: form
       explode: true
     MileageMinParam:
@@ -232,6 +345,7 @@ components:
       schema:
         type: number
         minimum: 0
+        example: 100
       style: form
       explode: true
     MileageMaxParam:
@@ -242,6 +356,7 @@ components:
       schema:
         type: number
         minimum: 0
+        example: 1000
       style: form
       explode: true
     LimitParam:
@@ -398,6 +513,17 @@ components:
         example: "name"
       style: form
       explode: true
+    OrderParam:
+      name: order
+      in: query
+      description: Sort order
+      required: false
+      schema:
+        type: string
+        enum: [asc, desc]
+        example: "asc"
+      style: form
+      explode: true
     GenderParam:
       name: gender
       in: query
@@ -463,16 +589,6 @@ components:
         example: "2024-01-01T00:00:00Z"
       style: form
       explode: true
-    OrderParam:
-      name: order
-      in: query
-      description: Sort order
-      required: false
-      schema:
-        type: string
-        enum: [asc, desc]
-      style: form
-      explode: true
     CupParam:
       name: cup
       in: query
@@ -514,6 +630,7 @@ components:
         type: string
         enum: [net, gross]
         default: net
+        example: "net"
       style: form
       explode: true
     AgeGroupingParam:
@@ -525,6 +642,7 @@ components:
         type: string
         enum: [iau, german, event, yob]
         default: iau
+        example: "german"
       style: form
       explode: true
     LanguageParam:

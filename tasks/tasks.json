@@ -264,7 +264,7 @@
             4
           ],
           "details": "Define JSON response schemas for each endpoint, including field names, data types, and example values. Create a consistent structure for collection responses that includes pagination metadata. Standardize error response formats with appropriate HTTP status codes, error codes, error messages, and additional details. Document how validation errors, authentication errors, authorization errors, and server errors will be represented. Include examples of successful and error responses for each endpoint.",
-          "status": "pending",
+          "status": "in-progress",
           "testStrategy": "Validate that response schemas accurately represent the data from the underlying database schema. Ensure error responses provide sufficient information for troubleshooting while maintaining security."
         },
         {

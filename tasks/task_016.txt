@@ -188,7 +188,7 @@ Based on the DUV schema analysis, the following specialized non-CRUD endpoints h
 These specialized endpoints follow RESTful principles while addressing complex business requirements that go beyond basic CRUD operations. They provide targeted functionality for search, filtered views, and specialized reports that will enhance the application's usability.
 </info added on 2025-05-18T19:38:38.685Z>
 
-## 5. Define response schemas and error handling [pending]
+## 5. Define response schemas and error handling [in-progress]
 ### Dependencies: 16.3, 16.4
 ### Description: Create detailed JSON response schemas for all endpoints and standardize error response formats.
 ### Details:
