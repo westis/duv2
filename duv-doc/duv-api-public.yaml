@@ -74,17 +74,401 @@ components:
         - firstName
         - lastName
         - nationality
+  parameters:
+    YearParam:
+      name: year
+      in: query
+      description: Filter events by year (integer)
+      required: false
+      schema:
+        type: integer
+      style: form
+      explode: true
+    EventIdParam:
+      name: eventId
+      in: path
+      description: Unique event identifier
+      required: true
+      schema:
+        type: string
+      style: simple
+      explode: false
+    RunnerIdParam:
+      name: runnerId
+      in: path
+      description: Unique runner identifier
+      required: true
+      schema:
+        type: string
+      style: simple
+      explode: false
+    EventIdQueryParam:
+      name: eventId
+      in: query
+      description: Filter results by event ID
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    RunnerIdQueryParam:
+      name: runnerId
+      in: query
+      description: Filter results by runner ID
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    NationalityParam:
+      name: nationality
+      in: query
+      description: Filter runners by nationality code (e.g. 'GER')
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    ClubParam:
+      name: club
+      in: query
+      description: Filter runners by club name
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    IAULabelParam:
+      name: iauLabel
+      in: query
+      description: Filter events with IAU certification label
+      required: false
+      schema:
+        type: boolean
+      style: form
+      explode: true
+    RecordProofParam:
+      name: recordProof
+      in: query
+      description: Filter events that are eligible for records
+      required: false
+      schema:
+        type: boolean
+      style: form
+      explode: true
+    DurationParam:
+      name: duration
+      in: query
+      description: Filter events by duration (e.g., 24h, 48h)
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    RankFilterParam:
+      name: maxRank
+      in: query
+      description: Filter results with rank up to this value
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      style: form
+      explode: true
+    AgeCategoryParam:
+      name: ageCategory
+      in: query
+      description: Filter results by age category code (e.g. M40, W55)
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    CategoryParam:
+      name: category
+      in: query
+      description: Filter results by category code
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    RaceCountMinParam:
+      name: raceCountMin
+      in: query
+      description: Filter runners by minimum number of races completed
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+      style: form
+      explode: true
+    RaceCountMaxParam:
+      name: raceCountMax
+      in: query
+      description: Filter runners by maximum number of races completed
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+      style: form
+      explode: true
+    MileageMinParam:
+      name: mileageMin
+      in: query
+      description: Filter runners by minimum total ultramarathon mileage
+      required: false
+      schema:
+        type: number
+        minimum: 0
+      style: form
+      explode: true
+    MileageMaxParam:
+      name: mileageMax
+      in: query
+      description: Filter runners by maximum total ultramarathon mileage
+      required: false
+      schema:
+        type: number
+        minimum: 0
+      style: form
+      explode: true
+    LimitParam:
+      name: limit
+      in: query
+      description: Maximum number of items to return
+      required: false
+      schema:
+        type: integer
+      style: form
+      explode: true
+    OffsetParam:
+      name: offset
+      in: query
+      description: Number of items to skip
+      required: false
+      schema:
+        type: integer
+      style: form
+      explode: true
+    CountryParam:
+      name: country
+      in: query
+      description: Filter events by country code (e.g. 'GER')
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    PerfIdParam:
+      name: perfId
+      in: path
+      description: Unique performance identifier
+      required: true
+      schema:
+        type: string
+      style: simple
+      explode: false
+    NameSearchParam:
+      name: search
+      in: query
+      description: Full-text search on text fields (e.g., event name, city, runner name)
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    CityParam:
+      name: city
+      in: query
+      description: Filter by city (partial match)
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    EditionParam:
+      name: edition
+      in: query
+      description: Filter by edition identifier
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    TypeParam:
+      name: type
+      in: query
+      description: Filter by event type code
+      required: false
+      schema:
+        type: integer
+      style: form
+      explode: true
+    DateFromParam:
+      name: dateFrom
+      in: query
+      description: Filter events starting on or after this date
+      required: false
+      schema:
+        type: string
+        format: date
+      style: form
+      explode: true
+    DateToParam:
+      name: dateTo
+      in: query
+      description: Filter events starting on or before this date
+      required: false
+      schema:
+        type: string
+        format: date
+      style: form
+      explode: true
+    DistanceMinParam:
+      name: distanceMin
+      in: query
+      description: Minimum event distance (km)
+      required: false
+      schema:
+        type: number
+      style: form
+      explode: true
+    DistanceMaxParam:
+      name: distanceMax
+      in: query
+      description: Maximum event distance (km)
+      required: false
+      schema:
+        type: number
+      style: form
+      explode: true
+    EventsSortByParam:
+      name: sortBy
+      in: query
+      description: Field to sort events by
+      required: false
+      schema:
+        type: string
+        enum: [date, name, distance, country, city]
+      style: form
+      explode: true
+    ResultsSortByParam:
+      name: sortBy
+      in: query
+      description: Field to sort results by
+      required: false
+      schema:
+        type: string
+        enum: [time, distance, rank, date, runnerName]
+      style: form
+      explode: true
+    RunnersSortByParam:
+      name: sortBy
+      in: query
+      description: Field to sort runners by
+      required: false
+      schema:
+        type: string
+        enum: [name, nationality, mileage, raceCount, yob]
+      style: form
+      explode: true
+    GenderParam:
+      name: gender
+      in: query
+      description: Filter by gender code (M, W, X)
+      required: false
+      schema:
+        type: string
+        enum: [M, W, X]
+      style: form
+      explode: true
+    YOBParam:
+      name: yob
+      in: query
+      description: Filter by year of birth
+      required: false
+      schema:
+        type: integer
+      style: form
+      explode: true
+    ResultsStatusParam:
+      name: resultsStatus
+      in: query
+      description: Filter events by results status
+      required: false
+      schema:
+        type: string
+        enum: [N, C, P, O, I, R, S, T, Z]
+      style: form
+      explode: true
+    FutureStatusParam:
+      name: futureStatus
+      in: query
+      description: Filter events by future scheduling status
+      required: false
+      schema:
+        type: string
+        enum: [D, B, S]
+      style: form
+      explode: true
+    CreatedAfterParam:
+      name: createdAfter
+      in: query
+      description: Filter entities created on or after this date
+      required: false
+      schema:
+        type: string
+        format: date-time
+      style: form
+      explode: true
+    ChangedAfterParam:
+      name: changedAfter
+      in: query
+      description: Filter entities modified on or after this date
+      required: false
+      schema:
+        type: string
+        format: date-time
+      style: form
+      explode: true
+    OrderParam:
+      name: order
+      in: query
+      description: Sort order
+      required: false
+      schema:
+        type: string
+        enum: [asc, desc]
+      style: form
+      explode: true
 paths:
   /events:
     get:
       summary: Retrieve list of events
       operationId: getEvents
       parameters:
-        - name: year
-          in: query
-          description: Filter events by year
-          schema:
-            type: integer
+        - $ref: "#/components/parameters/YearParam"
+        - $ref: "#/components/parameters/CountryParam"
+        - $ref: "#/components/parameters/CityParam"
+        - $ref: "#/components/parameters/EditionParam"
+        - $ref: "#/components/parameters/TypeParam"
+        - $ref: "#/components/parameters/DateFromParam"
+        - $ref: "#/components/parameters/DateToParam"
+        - $ref: "#/components/parameters/DistanceMinParam"
+        - $ref: "#/components/parameters/DistanceMaxParam"
+        - $ref: "#/components/parameters/DurationParam"
+        - $ref: "#/components/parameters/ResultsStatusParam"
+        - $ref: "#/components/parameters/FutureStatusParam"
+        - $ref: "#/components/parameters/IAULabelParam"
+        - $ref: "#/components/parameters/RecordProofParam"
+        - $ref: "#/components/parameters/CreatedAfterParam"
+        - $ref: "#/components/parameters/ChangedAfterParam"
+        - $ref: "#/components/parameters/NameSearchParam"
+        - $ref: "#/components/parameters/EventsSortByParam"
+        - $ref: "#/components/parameters/OrderParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
       responses:
         "200":
           description: Array of events
@@ -99,12 +483,7 @@ paths:
       summary: Retrieve a specific event by ID
       operationId: getEventById
       parameters:
-        - name: eventId
-          in: path
-          required: true
-          description: Unique event identifier
-          schema:
-            type: string
+        - $ref: "#/components/parameters/EventIdParam"
       responses:
         "200":
           description: Event object
@@ -112,21 +491,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Event"
-  /results:
+  /events/{eventId}/results:
     get:
-      summary: Retrieve results filtered by event or runner
-      operationId: getResults
+      summary: Retrieve results for a specific event
+      operationId: getResultsByEvent
       parameters:
-        - name: eventId
-          in: query
-          description: Filter results by event ID
-          schema:
-            type: string
-        - name: runnerId
-          in: query
-          description: Filter results by runner ID
-          schema:
-            type: string
+        - $ref: "#/components/parameters/EventIdParam"
+        - $ref: "#/components/parameters/ResultsSortByParam"
+        - $ref: "#/components/parameters/OrderParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
       responses:
         "200":
           description: Array of result objects
@@ -136,49 +510,63 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Result"
-  /runners/{runnerId}:
+  /results:
     get:
-      summary: Retrieve a runner by ID
-      operationId: getRunnerById
+      summary: Retrieve results filtered by event or runner
+      operationId: getResults
       parameters:
-        - name: runnerId
-          in: path
-          required: true
-          description: Unique runner identifier
-          schema:
-            type: string
+        - $ref: "#/components/parameters/EventIdQueryParam"
+        - $ref: "#/components/parameters/RunnerIdQueryParam"
+        - $ref: "#/components/parameters/RankFilterParam"
+        - $ref: "#/components/parameters/AgeCategoryParam"
+        - $ref: "#/components/parameters/GenderParam"
+        - $ref: "#/components/parameters/ResultsSortByParam"
+        - $ref: "#/components/parameters/OrderParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
       responses:
         "200":
-          description: Runner object
+          description: Array of result objects
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Runner"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Result"
+  /results/{perfId}:
+    get:
+      summary: Retrieve a specific result by ID
+      operationId: getResultById
+      parameters:
+        - $ref: "#/components/parameters/PerfIdParam"
+      responses:
+        "200":
+          description: Result object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Result"
   /runners:
     get:
       summary: Retrieve list of runners
       operationId: getRunners
       parameters:
-        - name: nationality
-          in: query
-          description: Filter runners by nationality code (e.g. 'GER')
-          schema:
-            type: string
-        - name: club
-          in: query
-          description: Filter runners by club name
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Maximum number of runners to return
-          schema:
-            type: integer
-        - name: offset
-          in: query
-          description: Number of runners to skip
-          schema:
-            type: integer
+        - $ref: "#/components/parameters/NationalityParam"
+        - $ref: "#/components/parameters/ClubParam"
+        - $ref: "#/components/parameters/CityParam"
+        - $ref: "#/components/parameters/GenderParam"
+        - $ref: "#/components/parameters/YOBParam"
+        - $ref: "#/components/parameters/RaceCountMinParam"
+        - $ref: "#/components/parameters/RaceCountMaxParam"
+        - $ref: "#/components/parameters/MileageMinParam"
+        - $ref: "#/components/parameters/MileageMaxParam"
+        - $ref: "#/components/parameters/CreatedAfterParam"
+        - $ref: "#/components/parameters/ChangedAfterParam"
+        - $ref: "#/components/parameters/NameSearchParam"
+        - $ref: "#/components/parameters/RunnersSortByParam"
+        - $ref: "#/components/parameters/OrderParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
       responses:
         "200":
           description: Array of runner objects
@@ -188,37 +576,29 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Runner"
-  /events/{eventId}/results:
+  /runners/{runnerId}:
     get:
-      summary: Retrieve results for a specific event
-      operationId: getResultsByEvent
+      summary: Retrieve a runner by ID
+      operationId: getRunnerById
       parameters:
-        - name: eventId
-          in: path
-          required: true
-          description: Event ID to filter results
-          schema:
-            type: string
+        - $ref: "#/components/parameters/RunnerIdParam"
       responses:
         "200":
-          description: Array of result objects
+          description: Runner object
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Result"
+                $ref: "#/components/schemas/Runner"
   /runners/{runnerId}/results:
     get:
       summary: Retrieve results for a specific runner
       operationId: getResultsByRunner
       parameters:
-        - name: runnerId
-          in: path
-          required: true
-          description: Runner ID to filter results
-          schema:
-            type: string
+        - $ref: "#/components/parameters/RunnerIdParam"
+        - $ref: "#/components/parameters/ResultsSortByParam"
+        - $ref: "#/components/parameters/OrderParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
       responses:
         "200":
           description: Array of result objects

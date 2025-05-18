@@ -296,7 +296,7 @@
           "title": "Document reusable parameters",
           "description": "Extract every parameter used by our Phase 1 endpoints and define them in components.parameters with name, in, required flag, schema type, description, and best-practice settings (style, explode) for OpenAPI 3.1.1. Then reference them in each path operation.",
           "details": "",
-          "status": "in-progress",
+          "status": "done",
           "dependencies": [],
           "parentTaskId": 16
         }

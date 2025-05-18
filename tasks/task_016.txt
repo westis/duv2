@@ -206,7 +206,7 @@ Specify the authentication mechanism to be used (e.g., API keys, JWT tokens, OAu
 ### Details:
 Create an OpenAPI/Swagger specification document that includes all endpoints, parameters, request bodies, response schemas, authentication requirements, and examples. Organize the documentation in a logical structure, grouping related endpoints. Include descriptive information about each resource and operation. Add examples for requests and responses. Document any API versioning strategy and backward compatibility considerations. Ensure the specification can be imported into API documentation tools.
 
-## 8. Document reusable parameters [in-progress]
+## 8. Document reusable parameters [done]
 ### Dependencies: None
 ### Description: Extract every parameter used by our Phase 1 endpoints and define them in components.parameters with name, in, required flag, schema type, description, and best-practice settings (style, explode) for OpenAPI 3.1.1. Then reference them in each path operation.
 ### Details:
