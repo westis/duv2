@@ -442,6 +442,67 @@ components:
         enum: [asc, desc]
       style: form
       explode: true
+    CupParam:
+      name: cup
+      in: query
+      description: Filter events by cup series identifier
+      required: false
+      schema:
+        type: string
+      style: form
+      explode: true
+    RadiusParam:
+      name: radius
+      in: query
+      description: Filter events within a geographic radius (km) of specified coordinates
+      required: false
+      schema:
+        type: object
+        properties:
+          lat:
+            type: number
+            format: float
+          lon:
+            type: number
+            format: float
+          distance:
+            type: integer
+            minimum: 1
+      style: deepObject
+      explode: true
+    TimeTypeParam:
+      name: timeType
+      in: query
+      description: Specify which time to use for results (net or gross)
+      required: false
+      schema:
+        type: string
+        enum: [net, gross]
+        default: net
+      style: form
+      explode: true
+    AgeGroupingParam:
+      name: ageGrouping
+      in: query
+      description: Specify which age grouping system to use for categorizing results
+      required: false
+      schema:
+        type: string
+        enum: [iau, german, event, yob]
+        default: iau
+      style: form
+      explode: true
+    LanguageParam:
+      name: language
+      in: query
+      description: Preferred language for localized content
+      required: false
+      schema:
+        type: string
+        enum: [DE, EN, FR, IT, ES, RU, JA, ZH]
+        default: EN
+      style: form
+      explode: true
 paths:
   /events:
     get:
@@ -462,8 +523,11 @@ paths:
         - $ref: "#/components/parameters/FutureStatusParam"
         - $ref: "#/components/parameters/IAULabelParam"
         - $ref: "#/components/parameters/RecordProofParam"
+        - $ref: "#/components/parameters/CupParam"
+        - $ref: "#/components/parameters/RadiusParam"
         - $ref: "#/components/parameters/CreatedAfterParam"
         - $ref: "#/components/parameters/ChangedAfterParam"
+        - $ref: "#/components/parameters/LanguageParam"
         - $ref: "#/components/parameters/NameSearchParam"
         - $ref: "#/components/parameters/EventsSortByParam"
         - $ref: "#/components/parameters/OrderParam"
@@ -520,6 +584,9 @@ paths:
         - $ref: "#/components/parameters/RankFilterParam"
         - $ref: "#/components/parameters/AgeCategoryParam"
         - $ref: "#/components/parameters/GenderParam"
+        - $ref: "#/components/parameters/TimeTypeParam"
+        - $ref: "#/components/parameters/AgeGroupingParam"
+        - $ref: "#/components/parameters/LanguageParam"
         - $ref: "#/components/parameters/ResultsSortByParam"
         - $ref: "#/components/parameters/OrderParam"
         - $ref: "#/components/parameters/LimitParam"
@@ -567,6 +634,7 @@ paths:
         - $ref: "#/components/parameters/OrderParam"
         - $ref: "#/components/parameters/LimitParam"
         - $ref: "#/components/parameters/OffsetParam"
+        - $ref: "#/components/parameters/LanguageParam"
       responses:
         "200":
           description: Array of runner objects
@@ -582,6 +650,7 @@ paths:
       operationId: getRunnerById
       parameters:
         - $ref: "#/components/parameters/RunnerIdParam"
+        - $ref: "#/components/parameters/LanguageParam"
       responses:
         "200":
           description: Runner object
