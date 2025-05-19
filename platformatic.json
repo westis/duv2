@@ -1,5 +1,0 @@
-{
-  "db": {
-    "connectionString": "mysql://root@localhost/ultradb"
-  }
-}

@@ -125,7 +125,7 @@ Jürgen Schoch at DUV will implement the necessary PHP code to gradually introdu
 
 1. **Create Repository**
 
-   - Create a new GitHub repository named `duv-api-migration`
+   - Create a new GitHub repository named `duv2`
    - Initialize with README.md and .gitignore for PHP
    - Add license file (MIT recommended for open-source)
 
@@ -151,8 +151,8 @@ Jürgen Schoch at DUV will implement the necessary PHP code to gradually introdu
 2. **Clone Repository**
 
    ```bash
-   git clone https://github.com/your-username/duv-api-migration.git
-   cd duv-api-migration
+   git clone https://github.com/your-username/duv2.git
+   cd duv2
    ```
 
 3. **Database Configuration**
