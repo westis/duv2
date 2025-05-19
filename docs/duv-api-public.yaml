@@ -479,6 +479,54 @@ components:
               - firstName
               - lastName
               - nationality
+        performances:
+          type: array
+          description: Performance history for the runner (premium/admin only, if includePerformances=true)
+          items:
+            type: object
+            properties:
+              perfId:
+                type: string
+              raceId:
+                type: string
+              runnerId:
+                type: string
+              rank:
+                type: integer
+              timeGross:
+                type: string
+              timeNet:
+                type: string
+              distance:
+                type: number
+              categoryGerman:
+                type: string
+              rankCategoryGerman:
+                type: integer
+              categoryEvent:
+                type: string
+              rankCategoryEvent:
+                type: integer
+              categoryIAU:
+                type: string
+              rankCategoryIAU:
+                type: integer
+              scores:
+                type: number
+              age:
+                type: number
+              rankInternationalYear:
+                type: integer
+              rankNationalYear:
+                type: integer
+              isExcluded:
+                type: boolean
+              comments:
+                type: string
+              raceDate:
+                type: string
+              raceName:
+                type: string
       required:
         - runnerId
         - firstName
@@ -1090,6 +1138,10 @@ paths:
         **Authentication:**
         - Public tier: Limited to 100 races per request, basic data only
         - Authenticated tiers: Full access with all fields
+
+        **Field Visibility by Tier:**
+        - Public (no API key): All race fields (raceId, name, edition, country, city, date, endDate, distance, distanceOriginal, eventType, altitude, finishers, finishersMen, finishersWomen, timeLimit, resultsStatus, iauLabel, recordProof, website, organizer)
+        - Basic/Premium/Admin: Same fields as Public
       operationId: getRaces
       # Added tag
       tags:
@@ -1293,6 +1345,10 @@ paths:
         - Public tier: Limited to top 100 results with basic fields
         - Basic tier: All results with standard fields
         - Premium/Admin tiers: All results with extended fields
+
+        **Field Visibility by Tier:**
+        - Public (no API key): Basic result fields (perfId, raceId, runnerId, rank, timeGross, timeNet, distance, category)
+        - Basic/Premium/Admin: Full result fields (additional fields such as rankGender, rankCategory, categoryGerman, rankCategoryGerman, categoryIAU, rankCategoryIAU, club, scores, age, rankInternationalYear, rankNationalYear, isExcluded, comments)
       operationId: getRaceResults
       # Added tag
       tags:
@@ -1551,18 +1607,21 @@ paths:
         Returns detailed information about a specific runner.
 
         **Authentication:**
-        - Public tier: Basic data only, respecting privacy settings
-        - Basic tier: Standard fields, respecting privacy settings
-        - Premium/Admin tiers: Extended data with varying privacy restrictions
-
-        **Privacy:**
-        Access to personal details is controlled by the runner's privacy setting
-        and the authentication tier of the request.
+        - Public tier: see field visibility below
+        - Basic tier: see field visibility below
+        - Premium/Admin tiers: see field visibility below
 
         **Unified Profile:**
         The response returns a consolidated runner record by aggregating all database entries
         sharing the same ParentID. Alternate identities are listed under the `linkedProfiles`
-        array, each containing a `runnerId`, `firstName`, and `lastName`.
+        array, each containing a `runnerId`, `firstName`, `lastName`, and `nationality`.
+
+        **Field Visibility by Tier:**
+        - Public (no API key): `runnerId`, `firstName`, `lastName`, `nationality`, `gender`
+        - Basic (valid API key): adds `nationality2`, `birthYear`, `club`, `city`
+        - Premium/Admin: adds `birthDate` (premium) and `deathDate`, `privacy`, `comments`,
+          `raceCount`, `totalMileage`, `linkedProfiles`, `performances` (premium/admin)
+
       operationId: getRunnerById
       # Added tag
       tags:
@@ -1572,10 +1631,26 @@ paths:
         - ApiKeyAuth: [] # Enhanced access with authentication
       parameters:
         - $ref: "#/components/parameters/RunnerIdParam"
-        - $ref: "#/components/parameters/LanguageParam"
-        - $ref: "#/components/parameters/PrivacyLevelParam"
-        - $ref: "#/components/parameters/ExtendedFieldsParam"
-        - $ref: "#/components/parameters/TierOverrideParam"
+        - name: includePerformances
+          in: query
+          description: Set to true to include performance history (premium/admin only)
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Number of performances to return (for performances array)
+          required: false
+          schema:
+            type: integer
+            default: 100
+        - name: offset
+          in: query
+          description: Number of performances to skip (for performances array)
+          required: false
+          schema:
+            type: integer
+            default: 0
       responses:
         "200":
           description: Runner object
@@ -1613,6 +1688,49 @@ paths:
                     firstName: "Erika"
                     lastName: "Musterfrau"
                     nationality: "SUI"
+                performances:
+                  - perfId: "1234567"
+                    raceId: "42600"
+                    runnerId: "2302"
+                    rank: 1
+                    timeGross: "06:50:23"
+                    timeNet: "06:50:23"
+                    distance: 100
+                    categoryGerman: "M40"
+                    rankCategoryGerman: 1
+                    categoryEvent: "M"
+                    rankCategoryEvent: 1
+                    categoryIAU: "M"
+                    rankCategoryIAU: 1
+                    scores: 876
+                    age: 43.7
+                    rankInternationalYear: 14
+                    rankNationalYear: 2
+                    isExcluded: false
+                    comments: "National team member 2018-2023"
+                    raceDate: "2018-06-08T22:00:00Z"
+                    raceName: "100km Lauf Biel/Bienne"
+                  - perfId: "1234568"
+                    raceId: "42600"
+                    runnerId: "3561"
+                    rank: 2
+                    timeGross: "07:02:15"
+                    timeNet: "07:02:15"
+                    distance: 100
+                    categoryGerman: "M35"
+                    rankCategoryGerman: 1
+                    categoryEvent: "M"
+                    rankCategoryEvent: 2
+                    categoryIAU: "M"
+                    rankCategoryIAU: 2
+                    scores: 843
+                    age: 37.2
+                    rankInternationalYear: 26
+                    rankNationalYear: 3
+                    isExcluded: false
+                    comments: "Multiple Comrades finisher"
+                    raceDate: "2018-06-10T05:30:00Z"
+                    raceName: "Comrades Marathon"
         "404":
           description: Runner not found
           content:
