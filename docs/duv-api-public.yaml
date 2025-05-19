@@ -32,19 +32,19 @@ tags:
   - name: Races
     description: Race-related endpoints for retrieving lists and details of races
   - name: Results
-    description: Results/performance endpoints for specific races or runners
+    description: Performance data retrieval for races and flexible searching
   - name: Runners
-    description: Runner-related endpoints and personal data
+    description: Runner profiles and their performance histories
+  - name: Top Lists
+    description: Ranked collections of best performances by category
   - name: Records
     description: Course records, world records, and regional best performances
-  - name: Top Lists
-    description: Top lists of performances (all-time or by year)
 
-  # Additional endpoints (Phase 2+)
+  # Future endpoints (Phase 2+)
   - name: Statistics
-    description: Summary and analytical statistics endpoints
+    description: "[PLANNED] Summary and analytical statistics endpoints"
   - name: Admin
-    description: Administrative endpoints (requires Admin tier authentication)
+    description: "[PLANNED] Administrative endpoints (requires Admin tier authentication)"
 
 components:
   securitySchemes:
@@ -1263,13 +1263,13 @@ paths:
     get:
       summary: Retrieve results for a specific race
       description: |
-        Returns results/performances for a specific race.
+        Returns all runner results/performances for a specific race.
 
         **Authentication:**
         - Public tier: Limited to top 100 results with basic fields
         - Basic tier: All results with standard fields
         - Premium/Admin tiers: All results with extended fields
-      operationId: getResultsByRace
+      operationId: getRaceResults
       # Added tag
       tags:
         - Results
@@ -1350,17 +1350,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ServerError"
-  /results:
+  /performances:
     get:
-      summary: Retrieve results filtered by event or runner
+      summary: Search performances with flexible filtering
       description: |
-        Returns results/performances filtered by various criteria.
+        Returns performance data filtered by various criteria (race, runner, year, etc.).
+
+        This endpoint provides a flexible query interface to the performance database
+        that powers race results, runner histories, and toplists. Use it when you need
+        custom filtering across multiple dimensions.
 
         **Authentication:**
-        - Public tier: Limited to 100 results with basic fields
-        - Basic tier: Up to 1000 results with standard fields
-        - Premium/Admin tiers: Extended results with all fields
-      operationId: getResults
+        - Public tier: Limited to 100 performances with basic fields
+        - Basic tier: Up to 1000 performances with standard fields
+        - Premium/Admin tiers: Extended data with all fields
+      operationId: searchPerformances
       # Added tag
       tags:
         - Results
@@ -1579,21 +1583,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ServerError"
-  /runners/{runnerId}/results:
+  /runners/{runnerId}/performances:
     get:
-      summary: Retrieve results for a specific runner
+      summary: Retrieve performance history for a specific runner
       description: |
-        Returns all results/performances for a specific runner.
+        Returns all race performances for a specific runner.
 
         **Authentication:**
-        - Public tier: Limited to 100 most recent results, basic fields only
-        - Basic tier: All results with standard fields
-        - Premium/Admin tiers: All results with extended analysis fields
-      operationId: getResultsByRunner
+        - Public tier: Limited to 100 most recent performances, basic fields only
+        - Basic tier: All performances with standard fields
+        - Premium/Admin tiers: All performances with extended analysis fields
+      operationId: getRunnerPerformances
       # Added tag
       tags:
-        - Results
         - Runners
+        - Results
       security:
         - {} # Public access allowed (limited)
         - ApiKeyAuth: [] # Enhanced access with authentication
@@ -1625,15 +1629,21 @@ paths:
 
   # Added placeholder paths for future endpoints
 
-  /top-lists:
+  /toplists:
     get:
-      summary: Retrieve top lists of performances (all-time or by year)
+      summary: Retrieve ranked lists of best performances
       description: |
-        Returns top lists of performances across categories, optionally filtered by year.
+        Returns ranked collections of the best performances across various categories 
+        and distances, optionally filtered by year, gender, nation, or surface type.
+
+        These toplists provide a different view of the same performance data that appears
+        in race results and runner performance histories, focused on ranking the absolute
+        best performances rather than organizing by race or runner.
 
         **Authentication:**
-        - Public tier: Limited access (top 10)
-        - Basic/Premium tier: Extended access
+        - Public tier: Limited access (top 10 performances per category)
+        - Basic tier: Extended access (top 100 performances per category)
+        - Premium tier: Complete access (all ranked performances)
       operationId: getTopLists
       tags:
         - Top Lists
@@ -1679,11 +1689,13 @@ paths:
 
   /statistics/summary:
     get:
-      summary: Retrieve summary statistics across the database
+      summary: "[PLANNED] Retrieve summary statistics across the database"
       description: |
         Returns aggregated statistics like total number of events, runners, and results
         by various dimensions (year, country, distance, etc.)
         Based on tstat0 table data.
+
+        **Note: This endpoint is planned for Phase 2 and not yet implemented.**
 
         **Authentication:**
         - Basic tier or higher required
@@ -1721,10 +1733,12 @@ paths:
 
   /statistics/counts:
     get:
-      summary: Retrieve performance counts by various dimensions
+      summary: "[PLANNED] Retrieve performance counts by various dimensions"
       description: |
         Returns counts of performances by country, year, discipline, and gender.
         Based on tstat table data.
+
+        **Note: This endpoint is planned for Phase 2 and not yet implemented.**
 
         **Authentication:**
         - Public tier: Limited access
@@ -1784,10 +1798,12 @@ paths:
 
   /statistics/nationality:
     get:
-      summary: Retrieve performance and runner counts by nationality
+      summary: "[PLANNED] Retrieve performance and runner counts by nationality"
       description: |
         Returns counts of performances and unique runners by nationality, year, and gender.
         Based on tstat3 table data.
+
+        **Note: This endpoint is planned for Phase 2 and not yet implemented.**
 
         **Authentication:**
         - Public tier: Limited access
@@ -1854,9 +1870,11 @@ paths:
 
   /statistics/trends:
     get:
-      summary: Retrieve trend analysis over time
+      summary: "[PLANNED] Retrieve trend analysis over time"
       description: |
         Returns trend data for events, participation, performance levels over time
+
+        **Note: This endpoint is planned for Phase 2 and not yet implemented.**
 
         **Authentication:**
         - Premium tier or higher required
@@ -2072,9 +2090,11 @@ paths:
 
   /admin/users:
     get:
-      summary: Retrieve API users
+      summary: "[PLANNED] Retrieve API users"
       description: |
         Returns list of API users and their access tiers
+
+        **Note: This endpoint is planned for Phase 2 and not yet implemented.**
 
         **Authentication:**
         - Admin tier required
@@ -2127,10 +2147,12 @@ paths:
 
   /admin/submitted-races:
     get:
-      summary: Retrieve user-submitted races pending approval
+      summary: "[PLANNED] Retrieve user-submitted races pending approval"
       description: |
         Returns list of races submitted by users that need review and approval.
         Based on tevent_submit table.
+
+        **Note: This endpoint is planned for Phase 2 and not yet implemented.**
 
         **Authentication:**
         - Admin tier required
@@ -2215,9 +2237,11 @@ paths:
                 $ref: "#/components/schemas/ServerError"
 
     post:
-      summary: Create a new race submission
+      summary: "[PLANNED] Create a new race submission"
       description: |
         Submit a new race for approval
+
+        **Note: This endpoint is planned for Phase 2 and not yet implemented.**
 
         **Authentication:**
         - Basic tier or higher required
