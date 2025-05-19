@@ -1354,11 +1354,10 @@ paths:
     get:
       summary: Search performances with flexible filtering
       description: |
-        Returns performance data filtered by various criteria (race, runner, year, etc.).
+        Returns performance data filtered by any combination of supported criteria (race, runner, year, country, gender, age category, club, etc.).
 
-        This endpoint provides a flexible query interface to the performance database
-        that powers race results, runner histories, and toplists. Use it when you need
-        custom filtering across multiple dimensions.
+        **Purpose:**
+        This endpoint enables advanced, multidimensional search across all performances in the database. Use it for custom queries that go beyond the standard "by race", "by runner", or "toplist" endpoints. It is ideal for building custom reports, analytics dashboards, or search interfaces where you need to combine multiple filters (e.g., all performances by German women in 2023 for 100km races, or all sub-7 hour 100km performances by club).
 
         **Authentication:**
         - Public tier: Limited to 100 performances with basic fields
