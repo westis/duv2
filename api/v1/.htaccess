@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteBase /duv2/api/v1/
+
+# If the request is not a file or directory, rewrite to .php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L,QSA] 
