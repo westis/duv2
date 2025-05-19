@@ -1,7 +1,28 @@
 RewriteEngine On
 RewriteBase /duv2/api/v1/
 
-# If the request is not a file or directory, rewrite to .php
+# Only rewrite if not a real file or directory
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+
+# --- RESTful Routing Rules ---
+# 1. /races/12345/results → results.php?raceId=12345
+RewriteRule ^races/([0-9]+)/results$ results.php?raceId=$1 [L,QSA]
+# 2. /runners/([0-9]+)/performances → performances.php?runnerId=$1
+RewriteRule ^runners/([0-9]+)/performances$ performances.php?runnerId=$1 [L,QSA]
+# 3. /races/([0-9]+) → races.php?raceId=12345
+RewriteRule ^races/([0-9]+)$ races.php?raceId=$1 [L,QSA]
+# 4. /runners/([0-9]+) → runners.php?runnerId=12345
+RewriteRule ^runners/([0-9]+)$ runners.php?runnerId=$1 [L,QSA]
+# 5. /results/([0-9]+) → results.php?resultId=12345
+RewriteRule ^results/([0-9]+)$ results.php?resultId=$1 [L,QSA]
+# 6. /records/([a-zA-Z0-9_-]+) → records.php?type=xxx (for /records/german, etc.)
+RewriteRule ^records/([a-zA-Z0-9_-]+)$ records.php?type=$1 [L,QSA]
+# 7. /admin/([a-zA-Z0-9_-]+)$ → admin.php?action=xxx
+RewriteRule ^admin/([a-zA-Z0-9_-]+)$ admin.php?action=$1 [L,QSA]
+# 8. /toplists → toplists.php
+RewriteRule ^toplists$ toplists.php [L,QSA]
+# 9. /statistics/([a-zA-Z0-9_-]+)$ → statistics.php?type=xxx
+RewriteRule ^statistics/([a-zA-Z0-9_-]+)$ statistics.php?type=$1 [L,QSA]
+# 10. /resource → resource.php (fallback for all other top-level endpoints)
 RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L,QSA] 

@@ -1,0 +1,299 @@
+{
+  "info": {
+    "_postman_id": "duv-api-collection-001",
+    "name": "DUV API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET /races (all)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/races",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "races"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Response is JSON\", function () { pm.response.to.be.json; });",
+              "pm.test(\"Has data array\", function () { var json = pm.response.json(); pm.expect(json).to.have.property('data'); });",
+              "pm.test(\"Has pagination\", function () { var json = pm.response.json(); pm.expect(json).to.have.property('pagination'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /races?year=2024",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/races?year=2024",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "races"],
+          "query": [{ "key": "year", "value": "2024" }]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Response is JSON\", function () { pm.response.to.be.json; });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /races?country=GER",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/races?country=GER",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "races"],
+          "query": [{ "key": "country", "value": "GER" }]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /races/{raceId} (valid)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/races/42600",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "races", "42600"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Response is JSON\", function () { pm.response.to.be.json; });",
+              "pm.test(\"Has raceId\", function () { var json = pm.response.json(); pm.expect(json).to.have.property('raceId'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /races/{raceId} (invalid)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/races/999999",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "races", "999999"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /results?raceId=42600",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/results?raceId=42600",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "results"],
+          "query": [{ "key": "raceId", "value": "42600" }]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Response is JSON\", function () { pm.response.to.be.json; });",
+              "pm.test(\"Has data array\", function () { var json = pm.response.json(); pm.expect(json).to.have.property('data'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /results?runnerId=2302",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/results?runnerId=2302",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "results"],
+          "query": [{ "key": "runnerId", "value": "2302" }]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /results (no filter, should fail)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/results",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "results"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () { pm.response.to.have.status(400); });",
+              "pm.test(\"Error message for missing filter\", function () { var json = pm.response.json(); pm.expect(json).to.have.property('code', 'MISSING_FILTER'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /results?raceId=999999 (invalid)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/results?raceId=999999",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "results"],
+          "query": [{ "key": "raceId", "value": "999999" }]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Empty data array for invalid raceId\", function () { var json = pm.response.json(); pm.expect(json.data).to.be.an('array').that.is.empty; });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /results?raceId=42600&limit=2&offset=1 (pagination)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/results?raceId=42600&limit=2&offset=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "results"],
+          "query": [
+            { "key": "raceId", "value": "42600" },
+            { "key": "limit", "value": "2" },
+            { "key": "offset", "value": "1" }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Pagination present\", function () { var json = pm.response.json(); pm.expect(json).to.have.property('pagination'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /results?raceId=42600&sortBy=rank&order=desc (sorting)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/results?raceId=42600&sortBy=rank&order=desc",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "results"],
+          "query": [
+            { "key": "raceId", "value": "42600" },
+            { "key": "sortBy", "value": "rank" },
+            { "key": "order", "value": "desc" }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

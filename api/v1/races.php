@@ -17,6 +17,44 @@ try {
     $pdo = connectToDatabase();
     $user = authenticate($pdo, 'public'); // Adjust tier as needed
 
+    // Handle single race retrieval if raceId provided
+    if (isset($_GET['raceId'])) {
+        $raceId = intval($_GET['raceId']);
+        $singleSql = 'SELECT
+            EventID as raceId,
+            EventName as name,
+            Edition as edition,
+            Country as country,
+            City as city,
+            Startdate as date,
+            Enddate as endDate,
+            NormLen as distance,
+            Length as distanceOriginal,
+            EventType as eventType,
+            AltitudeDiff as altitude,
+            FinisherM + FinisherW as finishers,
+            FinisherM as finishersMen,
+            FinisherW as finishersWomen,
+            TimeLimit as timeLimit,
+            Results as resultsStatus,
+            IAULabel as iauLabel,
+            RecordProof as recordProof,
+            URL as website,
+            PromOrg as organizer
+          FROM tevent WHERE EventID = ?';
+        $stmt = $pdo->prepare($singleSql);
+        $stmt->execute([$raceId]);
+        $race = $stmt->fetch();
+        if (!$race) {
+            outputJson([
+                'status' => 404,
+                'code' => 'RESOURCE_NOT_FOUND',
+                'message' => "Race with ID '$raceId' not found"
+            ], 404);
+        }
+        outputJson($race);
+    }
+
     // Parse filters
     $filters = [];
     $params = [];
