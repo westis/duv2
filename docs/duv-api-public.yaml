@@ -25,6 +25,22 @@ info:
 servers:
   - url: /api/v1
 security: [] # Default: no authentication required (public tier)
+
+# Added tags for organizing endpoints into logical sections
+tags:
+  - name: Events
+    description: Event-related endpoints for retrieving single or multiple events
+  - name: Results
+    description: Results/performance endpoints for specific events or runners
+  - name: Runners
+    description: Runner-related endpoints and personal data
+  - name: Records
+    description: Course records, world records, and regional best performances
+  - name: Statistics
+    description: Statistical endpoints for aggregate data and summaries
+  - name: Admin
+    description: Administrative endpoints (requires Admin tier authentication)
+
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -1046,6 +1062,9 @@ paths:
         - Public tier: Limited to 100 events per request, basic data only
         - Authenticated tiers: Full access with all fields
       operationId: getEvents
+      # Added tag
+      tags:
+        - Events
       security:
         - {} # Public access allowed
         - ApiKeyAuth: [] # Optional authentication
@@ -1179,6 +1198,9 @@ paths:
         - Public tier: Basic event data only
         - Authenticated tiers: Full event details
       operationId: getEventById
+      # Added tag
+      tags:
+        - Events
       security:
         - {} # Public access allowed
         - ApiKeyAuth: [] # Optional authentication
@@ -1248,6 +1270,10 @@ paths:
         - Basic tier: All results with standard fields
         - Premium/Admin tiers: All results with extended fields
       operationId: getResultsByEvent
+      # Added tag
+      tags:
+        - Results
+        - Events
       security:
         - {} # Public access allowed (limited)
         - ApiKeyAuth: [] # Enhanced access with authentication
@@ -1335,6 +1361,9 @@ paths:
         - Basic tier: Up to 1000 results with standard fields
         - Premium/Admin tiers: Extended results with all fields
       operationId: getResults
+      # Added tag
+      tags:
+        - Results
       security:
         - {} # Public access allowed (limited)
         - ApiKeyAuth: [] # Enhanced access with authentication
@@ -1384,6 +1413,9 @@ paths:
         - Premium tier: Full access respecting privacy settings
         - Admin tier: Full access with ability to override some privacy restrictions
       operationId: getRunners
+      # Added tag
+      tags:
+        - Runners
       security:
         - {} # Public access allowed (limited)
         - ApiKeyAuth: [] # Enhanced access with authentication
@@ -1491,6 +1523,9 @@ paths:
         Access to personal details is controlled by the runner's privacy setting
         and the authentication tier of the request.
       operationId: getRunnerById
+      # Added tag
+      tags:
+        - Runners
       security:
         - {} # Public access allowed (limited)
         - ApiKeyAuth: [] # Enhanced access with authentication
@@ -1555,6 +1590,10 @@ paths:
         - Basic tier: All results with standard fields
         - Premium/Admin tiers: All results with extended analysis fields
       operationId: getResultsByRunner
+      # Added tag
+      tags:
+        - Results
+        - Runners
       security:
         - {} # Public access allowed (limited)
         - ApiKeyAuth: [] # Enhanced access with authentication
@@ -1577,6 +1616,370 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  # Added placeholder paths for future endpoints
+
+  /statistics/summary:
+    get:
+      summary: Retrieve summary statistics across the database
+      description: |
+        Returns aggregated statistics like total number of events, runners, and results
+        by various dimensions (year, country, distance, etc.)
+
+        **Authentication:**
+        - Basic tier or higher required
+      operationId: getSummaryStats
+      tags:
+        - Statistics
+      security:
+        - ApiKeyAuth: [] # Authentication required
+      parameters:
+        - $ref: "#/components/parameters/YearParam"
+        - $ref: "#/components/parameters/CountryParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: Summary statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalEvents:
+                    type: integer
+                  totalRunners:
+                    type: integer
+                  totalResults:
+                    type: integer
+                  eventsByYear:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        year:
+                          type: integer
+                        count:
+                          type: integer
+                  eventsByCountry:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        country:
+                          type: string
+                        count:
+                          type: integer
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  /statistics/trends:
+    get:
+      summary: Retrieve trend analysis over time
+      description: |
+        Returns trend data for events, participation, performance levels over time
+
+        **Authentication:**
+        - Premium tier or higher required
+      operationId: getTrendStats
+      tags:
+        - Statistics
+      security:
+        - ApiKeyAuth: [] # Authentication required
+      parameters:
+        - name: metric
+          in: query
+          description: Trend metric to analyze
+          required: true
+          schema:
+            type: string
+            enum: [event_count, avg_finishers, gender_ratio, finish_times]
+        - name: periodUnit
+          in: query
+          description: Time period unit for grouping
+          required: false
+          schema:
+            type: string
+            enum: [month, quarter, year, decade]
+            default: year
+        - $ref: "#/components/parameters/DateFromParam"
+        - $ref: "#/components/parameters/DateToParam"
+        - $ref: "#/components/parameters/CountryParam"
+      responses:
+        "200":
+          description: Trend analysis data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metric:
+                    type: string
+                  periodUnit:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        period:
+                          type: string
+                        value:
+                          type: number
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationError"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  /records:
+    get:
+      summary: Retrieve records across multiple categories
+      description: |
+        Returns world, national, age-group, and course records
+
+        **Authentication:**
+        - Public tier: Basic access
+        - Premium tier: Enhanced details
+      operationId: getRecords
+      tags:
+        - Records
+      parameters:
+        - name: recordType
+          in: query
+          description: Type of record
+          required: false
+          schema:
+            type: string
+            enum: [world, national, age_group, course]
+            default: world
+        - name: distance
+          in: query
+          description: Distance category (km)
+          required: false
+          schema:
+            type: number
+        - name: duration
+          in: query
+          description: Duration category (e.g., 24h)
+          required: false
+          schema:
+            type: string
+        - $ref: "#/components/parameters/CountryParam"
+        - $ref: "#/components/parameters/GenderParam"
+        - $ref: "#/components/parameters/AgeCategoryParam"
+      responses:
+        "200":
+          description: Record data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        recordId:
+                          type: string
+                        perfId:
+                          type: string
+                        runnerId:
+                          type: string
+                        recordType:
+                          type: string
+                        recordValue:
+                          type: string
+                        recordDate:
+                          type: string
+                          format: date-time
+                        eventId:
+                          type: string
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  /admin/users:
+    get:
+      summary: Retrieve API users
+      description: |
+        Returns list of API users and their access tiers
+
+        **Authentication:**
+        - Admin tier required
+      operationId: getApiUsers
+      tags:
+        - Admin
+      security:
+        - ApiKeyAuth: [] # Admin authentication required
+      responses:
+        "200":
+          description: List of API users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: integer
+                        username:
+                          type: string
+                        email:
+                          type: string
+                        role:
+                          type: string
+                        active:
+                          type: boolean
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationError"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  /admin/logs:
+    get:
+      summary: Retrieve API usage logs
+      description: |
+        Returns logs of API usage and errors
+
+        **Authentication:**
+        - Admin tier required
+      operationId: getApiLogs
+      tags:
+        - Admin
+      security:
+        - ApiKeyAuth: [] # Admin authentication required
+      parameters:
+        - name: startDate
+          in: query
+          description: Filter logs from this date
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          description: Filter logs until this date
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: logLevel
+          in: query
+          description: Minimum log level
+          required: false
+          schema:
+            type: string
+            enum: [info, warning, error, critical]
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: API logs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        logId:
+                          type: integer
+                        timestamp:
+                          type: string
+                          format: date-time
+                        userId:
+                          type: integer
+                        endpoint:
+                          type: string
+                        method:
+                          type: string
+                        status:
+                          type: integer
+                        responseTime:
+                          type: number
+                        userAgent:
+                          type: string
+                        ipAddress:
+                          type: string
+                        level:
+                          type: string
+                        message:
+                          type: string
+                  pagination:
+                    $ref: "#/components/schemas/PaginatedResponse/properties/pagination"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationError"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizationError"
         "500":
           description: Internal server error
           content:

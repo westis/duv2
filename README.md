@@ -50,19 +50,15 @@ This project implements a new `/api/v1/` API that runs alongside the current `/j
    - Import schema from `duv.sql`
    - Copy `.env.example` to `.env` and update credentials
 
-3. Install dependencies:
-
+3. Proof-of-Concept API Demo:
+   - **XAMPP**: Copy or symlink the `duv2` folder into `C:\xampp\htdocs` and ensure Apache & MySQL are running
+   - **Built-in PHP server**: Run `php -S localhost:8000` from the project root
+   - **Test** the endpoint at `http://localhost/duv2/api/v1/example.php`
+4. (Optional) Install dependencies:
    ```
    composer install
    npm install
    ```
-
-4. Start the development server:
-
-   ```
-   php -S localhost:8000
-   ```
-
 5. Access Swagger documentation:
    - Visit `https://your-username.github.io/duv2/` for online docs
    - Or view locally at `http://localhost:8000/docs/`
