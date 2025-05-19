@@ -456,6 +456,29 @@ components:
         privacy:
           type: integer
           description: Privacy setting level
+        linkedProfiles:
+          type: array
+          description: Linked runner profiles for alternate identities
+          items:
+            type: object
+            properties:
+              runnerId:
+                type: string
+                description: Linked runner identifier
+              firstName:
+                type: string
+                description: Linked runner first name
+              lastName:
+                type: string
+                description: Linked runner last name
+              nationality:
+                type: string
+                description: Linked runner nationality
+            required:
+              - runnerId
+              - firstName
+              - lastName
+              - nationality
       required:
         - runnerId
         - firstName
@@ -1474,6 +1497,15 @@ paths:
                     duvId: 0
                     privacy: 0
                     comments: "National team member 2018-2023"
+                    linkedProfiles:
+                      - runnerId: "7890"
+                        firstName: "Max"
+                        lastName: "Mustermann"
+                        nationality: "SUI"
+                      - runnerId: "4561"
+                        firstName: "Erika"
+                        lastName: "Musterfrau"
+                        nationality: "SUI"
                   - runnerId: "3561"
                     firstName: "Erika"
                     lastName: "Musterfrau"
@@ -1526,6 +1558,11 @@ paths:
         **Privacy:**
         Access to personal details is controlled by the runner's privacy setting
         and the authentication tier of the request.
+
+        **Unified Profile:**
+        The response returns a consolidated runner record by aggregating all database entries
+        sharing the same ParentID. Alternate identities are listed under the `linkedProfiles`
+        array, each containing a `runnerId`, `firstName`, and `lastName`.
       operationId: getRunnerById
       # Added tag
       tags:
@@ -1567,6 +1604,15 @@ paths:
                 duvId: 0
                 privacy: 0
                 comments: "National team member 2018-2023"
+                linkedProfiles:
+                  - runnerId: "7890"
+                    firstName: "Max"
+                    lastName: "Mustermann"
+                    nationality: "SUI"
+                  - runnerId: "4561"
+                    firstName: "Erika"
+                    lastName: "Musterfrau"
+                    nationality: "SUI"
         "404":
           description: Runner not found
           content:
@@ -2267,7 +2313,6 @@ paths:
                 eventName:
                   type: string
                   description: Race name
-                  required: true
                 edition:
                   type: string
                   description: Edition identifier/number
@@ -2278,7 +2323,6 @@ paths:
                   type: string
                   format: date-time
                   description: Event start date
-                  required: true
                 endDate:
                   type: string
                   format: date-time
@@ -2286,25 +2330,21 @@ paths:
                 length:
                   type: string
                   description: Original distance description (e.g. "100 miles")
-                  required: true
                 duration:
                   type: string
                   description: Duration for time-based events (e.g. "24h")
                 country:
                   type: string
                   description: Country code
-                  required: true
                 city:
                   type: string
                   description: City name
-                  required: true
                 website:
                   type: string
                   description: Event website URL
                 submitterEmail:
                   type: string
                   description: Email of the person submitting
-                  required: true
                 comments:
                   type: string
                   description: Additional comments
@@ -2496,7 +2536,6 @@ paths:
                   type: string
                   enum: [approve, reject, update]
                   description: Action to take on the submission
-                  required: true
                 comments:
                   type: string
                   description: Admin comments about the decision

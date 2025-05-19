@@ -174,4 +174,37 @@ function errorResponse($status, $code, $message, $details = []) {
         'message' => $message,
         'details' => $details,
     ], $status);
+}
+
+// Retrieve all linked runner entries and return a unified runner profile
+function getUnifiedRunnerProfile(PDO $pdo, int $runnerId) {
+    // Fetch the specified runner to determine main ID
+    $stmt = $pdo->prepare('SELECT PersonID, ParentID FROM tperson WHERE PersonID = ?');
+    $stmt->execute([$runnerId]);
+    $row = $stmt->fetch();
+    if (!$row) {
+        return null;
+    }
+    // Determine canonical runner ID
+    $mainId = ($row['ParentID'] && $row['ParentID'] > 0) ? $row['ParentID'] : $row['PersonID'];
+    // Fetch all profiles linked to main ID
+    $stmt2 = $pdo->prepare('SELECT * FROM tperson WHERE PersonID = ? OR ParentID = ?');
+    $stmt2->execute([$mainId, $mainId]);
+    $profiles = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+    // Separate main profile and linked variations
+    $mainProfile = null;
+    $linked = [];
+    foreach ($profiles as $p) {
+        if ($p['PersonID'] == $mainId) {
+            $mainProfile = $p;
+        } else {
+            $linked[] = $p;
+        }
+    }
+    if (!$mainProfile) {
+        return null;
+    }
+    // Attach linked profiles
+    $mainProfile['linkedProfiles'] = $linked;
+    return $mainProfile;
 } 
