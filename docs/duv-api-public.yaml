@@ -28,16 +28,21 @@ security: [] # Default: no authentication required (public tier)
 
 # Added tags for organizing endpoints into logical sections
 tags:
-  - name: Events
-    description: Event-related endpoints for retrieving single or multiple events
+  # Core endpoints (Phase 1)
+  - name: Races
+    description: Race-related endpoints for retrieving lists and details of races
   - name: Results
-    description: Results/performance endpoints for specific events or runners
+    description: Results/performance endpoints for specific races or runners
   - name: Runners
     description: Runner-related endpoints and personal data
   - name: Records
     description: Course records, world records, and regional best performances
+  - name: Top Lists
+    description: Top lists of performances (all-time or by year)
+
+  # Additional endpoints (Phase 2+)
   - name: Statistics
-    description: Statistical endpoints for aggregate data and summaries
+    description: Summary and analytical statistics endpoints
   - name: Admin
     description: Administrative endpoints (requires Admin tier authentication)
 
@@ -83,13 +88,13 @@ components:
         - data
         - pagination
 
-    EventsResponse:
+    RacesResponse:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: "#/components/schemas/Event"
+            $ref: "#/components/schemas/Race"
         pagination:
           $ref: "#/components/schemas/PaginatedResponse/properties/pagination"
       required:
@@ -213,15 +218,15 @@ components:
             status:
               example: 500
 
-    Event:
+    Race:
       type: object
       properties:
-        eventId:
+        raceId:
           type: string
-          description: Unique event identifier
+          description: Unique race identifier
         name:
           type: string
-          description: Event name
+          description: Race name
         edition:
           type: string
           description: Edition identifier/number
@@ -234,11 +239,11 @@ components:
         date:
           type: string
           format: date-time
-          description: Event start date
+          description: Race start date
         endDate:
           type: string
           format: date-time
-          description: Event end date for multi-day events
+          description: Race end date for multi-day events
         distance:
           type: number
           description: Distance in kilometers (normalized value)
@@ -248,9 +253,9 @@ components:
         duration:
           type: string
           description: Duration for time-based events (e.g. "24h")
-        eventType:
+        raceType:
           type: integer
-          description: Type of event (1=Road, 2=Trail, etc.)
+          description: Type of race (1=Road, 2=Trail, etc.)
         altitude:
           type: string
           description: Altitude difference
@@ -265,7 +270,7 @@ components:
           description: Number of female finishers
         timeLimit:
           type: string
-          description: Time limit for the event
+          description: Time limit for the race
         resultsStatus:
           type: string
           description: Status of results (N=none, C=complete, etc.)
@@ -277,13 +282,13 @@ components:
           description: Record eligibility status
         website:
           type: string
-          description: Event website URL
+          description: Race website URL
         organizer:
           type: string
           description: Organizing body/promoter
         additionalInfo:
           type: string
-          description: Additional information about the event
+          description: Additional information about the race
         fee:
           type: string
           description: Registration fee information
@@ -301,7 +306,7 @@ components:
           description: Contact phone number
         address:
           type: string
-          description: Event address
+          description: Race address
         postcode:
           type: string
           description: Postal/ZIP code
@@ -309,7 +314,7 @@ components:
           type: string
           description: Description of the course
       required:
-        - eventId
+        - raceId
         - name
         - date
         - distance
@@ -319,15 +324,15 @@ components:
         perfId:
           type: string
           description: Unique performance identifier
-        eventId:
+        raceId:
           type: string
-          description: Associated event identifier
+          description: Associated race identifier
         runnerId:
           type: string
           description: Associated runner identifier
         rank:
           type: integer
-          description: Overall rank in the event
+          description: Overall rank in the race
         rankGender:
           type: integer
           description: Rank within gender category
@@ -348,10 +353,10 @@ components:
           description: Age/performance category
         categoryEvent:
           type: string
-          description: Event-specific category
+          description: Race-specific category
         rankCategoryEvent:
           type: integer
-          description: Rank within event-specific category
+          description: Rank within race-specific category
         categoryGerman:
           type: string
           description: German category system (e.g., M40)
@@ -387,7 +392,7 @@ components:
           description: Additional comments or notes about the performance
       required:
         - perfId
-        - eventId
+        - raceId
         - runnerId
         - rank
     Runner:
@@ -466,10 +471,10 @@ components:
         example: 2024
       style: form
       explode: true
-    EventIdParam:
-      name: eventId
+    RaceIdParam:
+      name: raceId
       in: path
-      description: Unique event identifier
+      description: Unique race identifier
       required: true
       schema:
         type: string
@@ -486,10 +491,10 @@ components:
         example: "2302"
       style: simple
       explode: false
-    EventIdQueryParam:
-      name: eventId
+    RaceIdQueryParam:
+      name: raceId
       in: query
-      description: Filter results by event ID
+      description: Filter results by race ID
       required: false
       schema:
         type: string
@@ -753,10 +758,10 @@ components:
         example: 100
       style: form
       explode: true
-    EventsSortByParam:
+    RacesSortByParam:
       name: sortBy
       in: query
-      description: Field to sort events by
+      description: Field to sort races by
       required: false
       schema:
         type: string
@@ -1052,19 +1057,19 @@ components:
       style: form
       explode: true
 paths:
-  /events:
+  /races:
     get:
-      summary: Retrieve list of events
+      summary: Retrieve list of races
       description: |
-        Returns a list of events matching the specified criteria.
+        Returns a list of races matching the specified criteria.
 
         **Authentication:**
-        - Public tier: Limited to 100 events per request, basic data only
+        - Public tier: Limited to 100 races per request, basic data only
         - Authenticated tiers: Full access with all fields
-      operationId: getEvents
+      operationId: getRaces
       # Added tag
       tags:
-        - Events
+        - Races
       security:
         - {} # Public access allowed
         - ApiKeyAuth: [] # Optional authentication
@@ -1095,7 +1100,7 @@ paths:
         - $ref: "#/components/parameters/ChangedAfterParam"
         - $ref: "#/components/parameters/LanguageParam"
         - $ref: "#/components/parameters/NameSearchParam"
-        - $ref: "#/components/parameters/EventsSortByParam"
+        - $ref: "#/components/parameters/RacesSortByParam"
         - $ref: "#/components/parameters/OrderParam"
         - $ref: "#/components/parameters/LimitParam"
         - $ref: "#/components/parameters/OffsetParam"
@@ -1107,10 +1112,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EventsResponse"
+                $ref: "#/components/schemas/RacesResponse"
               example:
                 data:
-                  - eventId: "42600"
+                  - raceId: "42600"
                     name: "100km Lauf Biel/Bienne"
                     edition: "60"
                     country: "SUI"
@@ -1130,7 +1135,7 @@ paths:
                     recordProof: "Y"
                     website: "https://www.100km.ch"
                     organizer: "Verein 100km Biel/Bienne"
-                  - eventId: "60546"
+                  - raceId: "60546"
                     name: "Comrades Marathon"
                     edition: "93"
                     country: "RSA"
@@ -1153,7 +1158,7 @@ paths:
                   total: 8974
                   limit: 100
                   offset: 0
-                  next: "/api/v1/events?limit=100&offset=100"
+                  next: "/api/v1/races?limit=100&offset=100"
                   previous: null
         "400":
           description: Invalid request parameters
@@ -1184,37 +1189,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ServerError"
-              example:
-                status: 500
-                code: "INTERNAL_SERVER_ERROR"
-                message: "An unexpected error occurred"
-  /events/{eventId}:
+  /races/{raceId}:
     get:
-      summary: Retrieve a specific event by ID
+      summary: Retrieve a specific race by ID
       description: |
-        Returns detailed information about a specific event.
+        Returns detailed information about a specific race.
 
         **Authentication:**
-        - Public tier: Basic event data only
-        - Authenticated tiers: Full event details
-      operationId: getEventById
+        - Public tier: Basic race data only
+        - Authenticated tiers: Full race details
+      operationId: getRaceById
       # Added tag
       tags:
-        - Events
+        - Races
       security:
         - {} # Public access allowed
         - ApiKeyAuth: [] # Optional authentication
       parameters:
-        - $ref: "#/components/parameters/EventIdParam"
+        - $ref: "#/components/parameters/RaceIdParam"
       responses:
         "200":
           description: Event object
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Event"
+                $ref: "#/components/schemas/Race"
               example:
-                eventId: "42600"
+                raceId: "42600"
                 name: "100km Lauf Biel/Bienne"
                 edition: "60"
                 country: "SUI"
@@ -1252,33 +1253,32 @@ paths:
               example:
                 status: 404
                 code: "RESOURCE_NOT_FOUND"
-                message: "Event with ID '999999' not found"
         "500":
           description: Internal server error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ServerError"
-  /events/{eventId}/results:
+  /races/{raceId}/results:
     get:
-      summary: Retrieve results for a specific event
+      summary: Retrieve results for a specific race
       description: |
-        Returns results/performances for a specific event.
+        Returns results/performances for a specific race.
 
         **Authentication:**
         - Public tier: Limited to top 100 results with basic fields
         - Basic tier: All results with standard fields
         - Premium/Admin tiers: All results with extended fields
-      operationId: getResultsByEvent
+      operationId: getResultsByRace
       # Added tag
       tags:
         - Results
-        - Events
+        - Races
       security:
         - {} # Public access allowed (limited)
         - ApiKeyAuth: [] # Enhanced access with authentication
       parameters:
-        - $ref: "#/components/parameters/EventIdParam"
+        - $ref: "#/components/parameters/RaceIdParam"
         - $ref: "#/components/parameters/ResultsSortByParam"
         - $ref: "#/components/parameters/OrderParam"
         - $ref: "#/components/parameters/LimitParam"
@@ -1293,7 +1293,7 @@ paths:
               example:
                 data:
                   - perfId: "1234567"
-                    eventId: "42600"
+                    raceId: "42600"
                     runnerId: "2302"
                     rank: 1
                     rankGender: 1
@@ -1313,7 +1313,7 @@ paths:
                     rankNationalYear: 2
                     isExcluded: false
                   - perfId: "1234568"
-                    eventId: "42600"
+                    raceId: "42600"
                     runnerId: "3561"
                     rank: 2
                     rankGender: 2
@@ -1336,7 +1336,7 @@ paths:
                   total: 387
                   limit: 100
                   offset: 0
-                  next: "/api/v1/events/42600/results?limit=100&offset=100"
+                  next: "/api/v1/races/42600/results?limit=100&offset=100"
                   previous: null
         "404":
           description: Event not found
@@ -1368,7 +1368,7 @@ paths:
         - {} # Public access allowed (limited)
         - ApiKeyAuth: [] # Enhanced access with authentication
       parameters:
-        - $ref: "#/components/parameters/EventIdQueryParam"
+        - $ref: "#/components/parameters/RaceIdQueryParam"
         - $ref: "#/components/parameters/RunnerIdQueryParam"
         - $ref: "#/components/parameters/RankFilterParam"
         - $ref: "#/components/parameters/AgeCategoryParam"
@@ -1625,12 +1625,65 @@ paths:
 
   # Added placeholder paths for future endpoints
 
+  /top-lists:
+    get:
+      summary: Retrieve top lists of performances (all-time or by year)
+      description: |
+        Returns top lists of performances across categories, optionally filtered by year.
+
+        **Authentication:**
+        - Public tier: Limited access (top 10)
+        - Basic/Premium tier: Extended access
+      operationId: getTopLists
+      tags:
+        - Top Lists
+      parameters:
+        - $ref: "#/components/parameters/YearParam"
+        - name: distance
+          in: query
+          description: Distance category (e.g., '100km', '24h')
+          required: false
+          schema:
+            type: string
+        - name: surface
+          in: query
+          description: Surface type (road, trail, track, indoor)
+          required: false
+          schema:
+            type: string
+            enum: [road, trail, track, indoor]
+        - $ref: "#/components/parameters/CountryParam"
+        - $ref: "#/components/parameters/GenderParam"
+        - $ref: "#/components/parameters/AgeCategoryParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: Top lists of performances
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResultsResponse"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
   /statistics/summary:
     get:
       summary: Retrieve summary statistics across the database
       description: |
         Returns aggregated statistics like total number of events, runners, and results
         by various dimensions (year, country, distance, etc.)
+        Based on tstat0 table data.
 
         **Authentication:**
         - Basic tier or higher required
@@ -1639,11 +1692,6 @@ paths:
         - Statistics
       security:
         - ApiKeyAuth: [] # Authentication required
-      parameters:
-        - $ref: "#/components/parameters/YearParam"
-        - $ref: "#/components/parameters/CountryParam"
-        - $ref: "#/components/parameters/LimitParam"
-        - $ref: "#/components/parameters/OffsetParam"
       responses:
         "200":
           description: Summary statistics
@@ -1652,36 +1700,151 @@ paths:
               schema:
                 type: object
                 properties:
-                  totalEvents:
+                  totalPerformances:
                     type: integer
                   totalRunners:
                     type: integer
-                  totalResults:
+                  totalEvents:
                     type: integer
-                  eventsByYear:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        year:
-                          type: integer
-                        count:
-                          type: integer
-                  eventsByCountry:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        country:
-                          type: string
-                        count:
-                          type: integer
         "401":
           description: Authentication required
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthenticationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  /statistics/counts:
+    get:
+      summary: Retrieve performance counts by various dimensions
+      description: |
+        Returns counts of performances by country, year, discipline, and gender.
+        Based on tstat table data.
+
+        **Authentication:**
+        - Public tier: Limited access
+        - Basic tier or higher: Full access
+      operationId: getPerformanceCounts
+      tags:
+        - Statistics
+      parameters:
+        - $ref: "#/components/parameters/CountryParam"
+        - $ref: "#/components/parameters/YearParam"
+        - name: discipline
+          in: query
+          description: Discipline/distance category
+          required: false
+          schema:
+            type: string
+        - $ref: "#/components/parameters/GenderParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: Performance count statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        country:
+                          type: string
+                        year:
+                          type: integer
+                        discipline:
+                          type: string
+                        gender:
+                          type: string
+                        count:
+                          type: integer
+                  pagination:
+                    $ref: "#/components/schemas/PaginatedResponse/properties/pagination"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  /statistics/nationality:
+    get:
+      summary: Retrieve performance and runner counts by nationality
+      description: |
+        Returns counts of performances and unique runners by nationality, year, and gender.
+        Based on tstat3 table data.
+
+        **Authentication:**
+        - Public tier: Limited access
+        - Basic tier or higher: Full access
+      operationId: getNationalityCounts
+      tags:
+        - Statistics
+      parameters:
+        - name: nationality
+          in: query
+          description: Filter by nationality code
+          required: false
+          schema:
+            type: string
+        - $ref: "#/components/parameters/YearParam"
+        - $ref: "#/components/parameters/GenderParam"
+        - name: region
+          in: query
+          description: Filter by region code
+          required: false
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: Nationality statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        nationality:
+                          type: string
+                        year:
+                          type: integer
+                        gender:
+                          type: string
+                        region:
+                          type: integer
+                        performances:
+                          type: integer
+                        runners:
+                          type: integer
+                  pagination:
+                    $ref: "#/components/schemas/PaginatedResponse/properties/pagination"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
         "500":
           description: Internal server error
           content:
@@ -1838,6 +2001,75 @@ paths:
               schema:
                 $ref: "#/components/schemas/ServerError"
 
+  /records/german:
+    get:
+      summary: Retrieve German records across categories
+      description: |
+        Returns German-specific records by age category and surface type.
+        Based on trecordger table data.
+
+        **Authentication:**
+        - Public tier: Basic access
+      operationId: getGermanRecords
+      tags:
+        - Records
+      parameters:
+        - name: distance
+          in: query
+          description: Distance category
+          required: false
+          schema:
+            type: string
+        - name: recordType
+          in: query
+          description: Type of record (0=Overall, 1=Road, 2=Track, 3=Indoor)
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1, 2, 3]
+        - name: ageCategory
+          in: query
+          description: German age category code
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: German record data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        distance:
+                          type: string
+                        recordType:
+                          type: integer
+                        ageCategory:
+                          type: string
+                        performance:
+                          type: string
+                        dateCreated:
+                          type: string
+                          format: date-time
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
   /admin/users:
     get:
       summary: Retrieve API users
@@ -1886,6 +2118,407 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthorizationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  /admin/submitted-races:
+    get:
+      summary: Retrieve user-submitted races pending approval
+      description: |
+        Returns list of races submitted by users that need review and approval.
+        Based on tevent_submit table.
+
+        **Authentication:**
+        - Admin tier required
+      operationId: getSubmittedRaces
+      tags:
+        - Admin
+      security:
+        - ApiKeyAuth: [] # Admin authentication required
+      parameters:
+        - name: submissionType
+          in: query
+          description: Type of submission (1=new, 2=correction)
+          required: false
+          schema:
+            type: integer
+            enum: [1, 2]
+        - name: status
+          in: query
+          description: Submission status
+          required: false
+          schema:
+            type: string
+            enum: [pending, approved, rejected]
+        - $ref: "#/components/parameters/DateFromParam"
+        - $ref: "#/components/parameters/DateToParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: List of submitted races
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        submissionId:
+                          type: integer
+                        eventId:
+                          type: integer
+                        eventName:
+                          type: string
+                        submissionType:
+                          type: integer
+                        city:
+                          type: string
+                        country:
+                          type: string
+                        startDate:
+                          type: string
+                          format: date-time
+                        distance:
+                          type: string
+                        submitterEmail:
+                          type: string
+                        createdOn:
+                          type: string
+                          format: date-time
+                  pagination:
+                    $ref: "#/components/schemas/PaginatedResponse/properties/pagination"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationError"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+    post:
+      summary: Create a new race submission
+      description: |
+        Submit a new race for approval
+
+        **Authentication:**
+        - Basic tier or higher required
+      operationId: createRaceSubmission
+      tags:
+        - Admin
+      security:
+        - ApiKeyAuth: [] # Authentication required
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - eventName
+                - startDate
+                - length
+                - country
+                - city
+                - submitterEmail
+              properties:
+                eventName:
+                  type: string
+                  description: Race name
+                  required: true
+                edition:
+                  type: string
+                  description: Edition identifier/number
+                promOrg:
+                  type: string
+                  description: Organizing body/promoter
+                startDate:
+                  type: string
+                  format: date-time
+                  description: Event start date
+                  required: true
+                endDate:
+                  type: string
+                  format: date-time
+                  description: Event end date for multi-day events
+                length:
+                  type: string
+                  description: Original distance description (e.g. "100 miles")
+                  required: true
+                duration:
+                  type: string
+                  description: Duration for time-based events (e.g. "24h")
+                country:
+                  type: string
+                  description: Country code
+                  required: true
+                city:
+                  type: string
+                  description: City name
+                  required: true
+                website:
+                  type: string
+                  description: Event website URL
+                submitterEmail:
+                  type: string
+                  description: Email of the person submitting
+                  required: true
+                comments:
+                  type: string
+                  description: Additional comments
+      responses:
+        "201":
+          description: Race submission created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Race submission created successfully"
+                  submissionId:
+                    type: integer
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  /admin/submitted-races/{submissionId}:
+    get:
+      summary: Retrieve details for a specific race submission
+      description: |
+        Returns detailed information about a specific race submission.
+
+        **Authentication:**
+        - Admin tier required
+      operationId: getSubmittedRaceById
+      tags:
+        - Admin
+      security:
+        - ApiKeyAuth: [] # Admin authentication required
+      parameters:
+        - name: submissionId
+          in: path
+          description: Unique submission identifier
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Submission details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  submissionId:
+                    type: integer
+                  eventId:
+                    type: integer
+                  eventName:
+                    type: string
+                  edition:
+                    type: string
+                  promOrg:
+                    type: string
+                  contact:
+                    type: string
+                  address:
+                    type: string
+                  phone:
+                    type: string
+                  email:
+                    type: string
+                  url:
+                    type: string
+                  eventType:
+                    type: integer
+                  startDate:
+                    type: string
+                    format: date-time
+                  endDate:
+                    type: string
+                    format: date-time
+                  length:
+                    type: string
+                  duration:
+                    type: string
+                  altitudeDiff:
+                    type: string
+                  postcode:
+                    type: string
+                  city:
+                    type: string
+                  country:
+                    type: string
+                  courseDesc:
+                    type: string
+                  moreInfo:
+                    type: string
+                  timeLimit:
+                    type: string
+                  fieldLimit:
+                    type: string
+                  fee:
+                    type: string
+                  iauLabel:
+                    type: string
+                  recordProof:
+                    type: string
+                  parentId:
+                    type: string
+                  display:
+                    type: string
+                  comments:
+                    type: string
+                  submitterEmail:
+                    type: string
+                  submissionType:
+                    type: integer
+                  createdOn:
+                    type: string
+                    format: date-time
+                  changedOn:
+                    type: string
+                    format: date-time
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationError"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizationError"
+        "404":
+          description: Submission not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+    put:
+      summary: Update the status of a race submission
+      description: |
+        Approve, reject, or update a race submission
+
+        **Authentication:**
+        - Admin tier required
+      operationId: updateSubmittedRace
+      tags:
+        - Admin
+      security:
+        - ApiKeyAuth: [] # Admin authentication required
+      parameters:
+        - name: submissionId
+          in: path
+          description: Unique submission identifier
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum: [approve, reject, update]
+                  description: Action to take on the submission
+                  required: true
+                comments:
+                  type: string
+                  description: Admin comments about the decision
+                eventData:
+                  type: object
+                  description: Updated event data (required if action is 'update')
+      responses:
+        "200":
+          description: Submission processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                  eventId:
+                    type: integer
+                    description: ID of the created/updated event (if approved)
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationError"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizationError"
+        "404":
+          description: Submission not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
         "500":
           description: Internal server error
           content:
