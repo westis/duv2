@@ -23,7 +23,7 @@ info:
 
     Rate limit information is returned in response headers.
 servers:
-  - url: /duv2/api/v1
+  - url: http://localhost/duv2/api/v1
     description: Local XAMPP (http://localhost/duv2/api/v1)
 security: [] # Default: no authentication required (public tier)
 

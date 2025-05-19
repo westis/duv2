@@ -11,8 +11,8 @@ function connectToDatabase() {
     $config = [
         'host' => 'localhost',
         'dbname' => 'ultradb',
-        'user' => 'your_db_user',
-        'pass' => 'your_db_password',
+        'user' => 'root',
+        'pass' => '',
         'charset' => 'utf8mb4',
     ];
     if (file_exists(__DIR__ . '/config.php')) {
@@ -88,8 +88,13 @@ function authenticate($pdo, $requiredTier = 'public') {
         $method = 'session';
     }
     if (!$user) {
-        logAuthenticationAttempt(false, $method, ['reason' => 'No valid credentials']);
-        errorResponse(401, 'AUTHENTICATION_ERROR', 'Authentication required');
+        if ($requiredTier === 'public') {
+            // Allow anonymous public access
+            $user = ['user_id' => null, 'tier' => 'public', 'via' => 'anonymous'];
+        } else {
+            logAuthenticationAttempt(false, $method, ['reason' => 'No valid credentials']);
+            errorResponse(401, 'AUTHENTICATION_ERROR', 'Authentication required');
+        }
     }
     if (!checkUserPermission($user, $requiredTier)) {
         logAuthenticationAttempt(false, $method, ['user_id' => $user['user_id'], 'tier' => $user['tier'], 'required' => $requiredTier]);
