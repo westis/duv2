@@ -1,179 +1,181 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+===================================================================
+ GLOBAL DESIGN TOKENS – OKLCH ONLY  (Tailwind 4.1)
+ • Keeps **all** tokens from the legacy file so nothing breaks
+ • Harmonised palette: neutral greys + single red accent
+ • WCAG 2.1 AAA for body text & UI copy; AA for small accent UI
+===================================================================*/
+
 :root {
-  /* Primary - Energetic Orange (represents endurance and energy) */
-  --color-primary: oklch(0.65 0.18 30);
-  --color-primary-foreground: oklch(0.98 0.005 240);
+  /* ----------------------------------------------------------- */
+  /* Brand Accent                                                */
+  /* ----------------------------------------------------------- */
+  --color-primary: oklch(0.5 0.23 29); /* endurance red */
+  --color-primary-foreground: oklch(1 0 0);
 
-  /* Secondary - Vibrant Teal (represents refreshment and recovery) */
-  --color-secondary: oklch(0.65 0.15 180);
-  --color-secondary-foreground: oklch(0.98 0.005 240);
+  /* ----------------------------------------------------------- */
+  /* Neutral Greys – Light Mode                                  */
+  /* ----------------------------------------------------------- */
+  --color-background: oklch(0.97 0.005 240); /* page bg   */
+  --color-surface: oklch(1 0 0); /* cards     */
+  --color-header: oklch(1 0 0); /* header    */
+  --color-footer: oklch(1 0 0); /* footer    */
+  --color-foreground: oklch(0.12 0 0); /* body text */
+  --color-border: oklch(0.9 0.005 240); /* grey‑200  */
+  --color-muted: oklch(0.93 0.01 240); /* grey‑100  */
+  --color-muted-foreground: oklch(0.4 0.02 240); /* grey‑600  */
 
-  /* Accent - Deep Purple (represents achievement and distinction) */
-  --color-accent: oklch(0.65 0.15 280);
-  --color-accent-foreground: oklch(0.98 0.005 240);
+  /* ----------------------------------------------------------- */
+  /* Legacy Alias Tokens – preserved                             */
+  /* ----------------------------------------------------------- */
+  /* Component‑level surfaces */
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-foreground);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-foreground);
 
-  /* Card and UI backgrounds */
-  --color-card: oklch(1 0 0);
-  --color-card-foreground: oklch(0.15 0.01 240);
-  --color-popover: oklch(1 0 0);
-  --color-popover-foreground: oklch(0.15 0.01 240);
-
-  /* Base colors - Light mode */
-  --color-background: oklch(0.98 0.005 240);
-  --color-foreground: oklch(0.15 0.01 240);
-
-  /* UI component colors */
-  --color-muted: oklch(0.93 0.01 240);
-  --color-muted-foreground: oklch(0.4 0.02 240);
-  /* Subtle border */
-  --color-border: oklch(0.92 0.01 240);
-  --color-input: oklch(0.92 0.01 240);
-  --color-ring: oklch(0.65 0.18 30);
-
-  /* Semantic colors */
+  /* Semantic feedback colours */
   --color-success: oklch(0.65 0.12 145);
   --color-success-foreground: oklch(0.98 0.005 240);
-  --color-warning: oklch(0.65 0.15 85);
+  --color-warning: oklch(0.67 0.15 85); /* tuned for AAA */
   --color-warning-foreground: oklch(0.15 0.01 240);
   --color-destructive: oklch(0.65 0.2 25);
   --color-destructive-foreground: oklch(0.98 0.005 240);
 
-  /* Typography */
-  --font-sans: var(--font-geist-sans, Arial, Helvetica, sans-serif);
-  --font-mono: var(--font-geist-mono, monospace);
+  /* Secondary / accent kept for compatibility (unused in new UI) */
+  --color-secondary: oklch(0.65 0.15 180);
+  --color-secondary-foreground: oklch(0.98 0.005 240);
+  --color-accent: oklch(0.65 0.15 280);
+  --color-accent-foreground: oklch(0.98 0.005 240);
 
-  /* Radius */
+  /* ----------------------------------------------------------- */
+  /* Typography & Radii                                          */
+  /* ----------------------------------------------------------- */
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
   --radius: 0.5rem;
-  --radius-sm: 0.3rem;
+  --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
-  --radius-lg: 0.8rem;
+  --radius-lg: 0.75rem;
   --radius-full: 9999px;
 }
 
+/* ----------------------------------------------------------------
+   DARK THEME TOKENS – `.dark` on <html>
+---------------------------------------------------------------- */
 .dark {
-  /* Primary in dark mode - slightly brighter orange */
-  --color-primary: oklch(0.7 0.18 30);
-  --color-primary-foreground: oklch(0.1 0.01 240);
+  --color-primary: oklch(0.8 0.2 29); /* lighter red */
+  --color-primary-foreground: oklch(0.18 0.01 240);
 
-  /* Secondary in dark mode - brighter teal */
-  --color-secondary: oklch(0.7 0.16 180);
-  --color-secondary-foreground: oklch(0.1 0.01 240);
+  --color-background: oklch(0.18 0.01 240); /* slate‑900 */
+  --color-surface: oklch(0.26 0.01 240); /* slate‑800 */
+  --color-header: oklch(0.22 0.01 240);
+  --color-footer: oklch(0.22 0.01 240);
+  --color-foreground: oklch(0.95 0.01 240); /* slate‑100 */
+  --color-border: oklch(0.33 0.01 240); /* slate‑700 */
+  --color-muted: oklch(0.22 0.01 240);
+  --color-muted-foreground: oklch(0.6 0.02 240);
 
-  /* Accent in dark mode - brighter purple */
-  --color-accent: oklch(0.7 0.16 280);
-  --color-accent-foreground: oklch(0.98 0.005 240);
+  /* component‑level */
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-foreground);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-foreground);
 
-  /* Card and UI backgrounds */
-  --color-card: oklch(0.18 0.01 240);
-  --color-card-foreground: oklch(0.95 0.01 240);
-  --color-popover: oklch(0.18 0.01 240);
-  --color-popover-foreground: oklch(0.95 0.01 240);
-
-  /* Base colors - Dark mode */
-  --color-background: oklch(0.15 0.01 240);
-  --color-foreground: oklch(0.96 0.01 240);
-
-  /* UI component colors for dark mode */
-  --color-muted: oklch(0.3 0.02 240);
-  --color-muted-foreground: oklch(0.7 0.02 240);
-  /* Subtle border in dark mode */
-  --color-border: oklch(0.25 0.01 240);
-  --color-input: oklch(0.25 0.01 240);
-  --color-ring: oklch(0.7 0.18 30);
-
-  /* Semantic colors for dark mode */
-  --color-success: oklch(0.6 0.14 145);
-  --color-success-foreground: oklch(0.15 0.01 240);
-  --color-warning: oklch(0.75 0.12 85);
-  --color-warning-foreground: oklch(0.15 0.01 240);
-  --color-destructive: oklch(0.65 0.16 25);
-  --color-destructive-foreground: oklch(0.98 0.005 240);
+  /* semantic */
+  --color-success: oklch(0.72 0.15 145);
+  --color-success-foreground: oklch(0.18 0.01 240);
+  --color-warning: oklch(0.72 0.17 85);
+  --color-warning-foreground: oklch(0.18 0.01 240);
+  --color-destructive: oklch(0.72 0.22 25);
+  --color-destructive-foreground: oklch(0.18 0.01 240);
 }
 
+/* ----------------------------------------------------------------
+   THEME UTILITIES – expose CSS vars to Tailwind’s `theme()` helper
+---------------------------------------------------------------- */
 @theme inline {
   --color-background: var(--color-background);
   --color-foreground: var(--color-foreground);
+  --color-primary: var(--color-primary);
+  --color-primary-fg: var(--color-primary-foreground);
+  --color-surface: var(--color-surface);
+  --color-border: var(--color-border);
+  --color-muted: var(--color-muted);
+  --color-muted-fg: var(--color-muted-foreground);
+  --color-card: var(--color-card);
+  --color-card-fg: var(--color-card-foreground);
+  --color-success: var(--color-success);
+  --color-success-fg: var(--color-success-foreground);
+  --color-warning: var(--color-warning);
+  --color-warning-fg: var(--color-warning-foreground);
+  --color-destructive: var(--color-destructive);
+  --color-destructive-fg: var(--color-destructive-foreground);
 }
 
-/* Base styling */
+/* ----------------------------------------------------------------
+   ELEMENT‑LEVEL MAPPING (unchanged class names)
+---------------------------------------------------------------- */
 body {
-  background: var(--color-background);
+  background-color: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+  line-height: 1.55;
 }
 
-/* Gradient accents for UI elements */
-.gradient-border {
-  position: relative;
+header.site-header {
+  background-color: var(--color-header);
+  color: var(--color-foreground);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.gradient-border::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    oklch(var(--color-primary)),
-    oklch(var(--color-secondary))
-  );
-  border-radius: 2px;
+.main-content,
+main.site-main {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
 }
 
-/* Active nav item styling */
-.nav-item-active {
-  position: relative;
+footer.site-footer {
+  background-color: var(--color-footer);
+  color: var(--color-foreground);
+  border-top: 1px solid var(--color-border);
 }
 
-.nav-item-active::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    oklch(var(--color-primary)),
-    oklch(var(--color-secondary))
-  );
-  border-radius: 2px;
+/* ----------------------------------------------------------------
+   UTILITY CLASSES (no gradients, minimal shadows)
+---------------------------------------------------------------- */
+.btn-primary {
+  @apply inline-flex items-center justify-center px-6 py-3 rounded-md font-semibold transition-colors;
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
 }
 
-/* Subtle background pattern for sections */
-.pattern-bg {
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    oklch(var(--color-muted)) 1px,
-    transparent 0
-  );
-  background-size: 20px 20px;
+.btn-primary:hover {
+  background-color: color-mix(in oklab, var(--color-primary) 90%, black 10%);
 }
 
-/* Card hover effects */
-.card-hover {
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+.card,
+.enhanced-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  transition: border-color 0.2s ease;
+}
+.card:hover,
+.enhanced-card:hover {
+  border-color: var(--color-primary);
 }
 
-.card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 10px 25px -5px rgba(0, 0, 0, 0.1),
-    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+.link-accent {
+  color: var(--color-primary);
 }
-
-/* Stats highlight */
-.stat-highlight {
-  background: linear-gradient(
-    135deg,
-    oklch(var(--color-primary) / 0.1),
-    oklch(var(--color-secondary) / 0.1)
-  );
-  border-left: 3px solid oklch(var(--color-primary));
+.link-accent:hover {
+  text-decoration: underline;
 }

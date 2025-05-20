@@ -18,13 +18,7 @@ export function NavBar({ items }: NavBarProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <nav
-      className="hidden md:flex items-center space-x-6 p-4 shadow-md"
-      style={{
-        background: "var(--color-card)",
-        color: "var(--color-card-foreground)",
-      }}
-    >
+    <nav className="hidden md:flex items-center space-x-6 p-4 shadow-md bg-[var(--color-card)] text-[var(--color-card-foreground)]">
       {items.map((item, index) => (
         <div
           key={index}
@@ -33,23 +27,20 @@ export function NavBar({ items }: NavBarProps) {
           onMouseLeave={() => setOpenIndex(null)}
         >
           {item.href ? (
-            <Link
-              href={item.href}
-              style={{ color: "inherit" }}
-              className="hover:underline"
-            >
+            <Link href={item.href} className="hover:underline">
               {item.label}
             </Link>
           ) : (
-            <span style={{ color: "inherit" }}>{item.label}</span>
+            <span className="text-inherit">{item.label}</span>
           )}
+
           {item.children && openIndex === index && (
-            <div className="absolute left-0 mt-2 w-48 bg-white border rounded shadow-lg z-10">
+            <div className="absolute left-0 mt-2 w-48 bg-[var(--color-card)] border border-[var(--color-border)] rounded shadow-lg z-10">
               {item.children.map((child, idx) => (
                 <Link
                   key={idx}
                   href={child.href || "#"}
-                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  className="block px-4 py-2 text-[var(--color-foreground)] hover:bg-[var(--color-muted)]"
                 >
                   {child.label}
                 </Link>
@@ -58,6 +49,7 @@ export function NavBar({ items }: NavBarProps) {
           )}
         </div>
       ))}
+
       <ThemeToggle />
     </nav>
   );

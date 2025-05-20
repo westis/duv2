@@ -17,7 +17,7 @@ interface MobileNavProps {
   onClose: () => void;
 }
 
-export function MobileNav({ items, isOpen, onClose }: MobileNavProps) {
+export function MobileMenu({ items, isOpen, onClose }: MobileNavProps) {
   const pathname = usePathname();
 
   // Close the mobile menu when clicking outside

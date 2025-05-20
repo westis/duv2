@@ -20,58 +20,37 @@ export function BottomNav({ locale }: BottomNavProps) {
   const pathname = usePathname();
 
   const navItems = [
-    {
-      label: "Home",
-      href: `/${locale}`,
-      icon: HomeIcon,
-    },
-    {
-      label: "Races",
-      href: `/${locale}/races`,
-      icon: ListIcon,
-    },
-    {
-      label: "Records",
-      href: `/${locale}/records`,
-      icon: TrophyIcon,
-    },
-    {
-      label: "Search",
-      href: `/${locale}/search`,
-      icon: SearchIcon,
-    },
-    {
-      label: "Profile",
-      href: `/${locale}/profile`,
-      icon: UserIcon,
-    },
+    { href: `/${locale}`, icon: HomeIcon, label: "Home" },
+    { href: `/${locale}/races`, icon: ListIcon, label: "Races" },
+    { href: `/${locale}/records`, icon: TrophyIcon, label: "Records" },
+    { href: `/${locale}/search`, icon: SearchIcon, label: "Search" },
+    { href: `/${locale}/runners`, icon: UserIcon, label: "Runners" },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-card shadow-[0_-2px_8px_rgba(0,0,0,0.1)]">
-      <div className="grid grid-cols-5 h-16">
-        {navItems.map((item, index) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href;
-
-          return (
-            <Link
-              key={index}
-              href={item.href}
-              className={`flex flex-col items-center justify-center ${
-                isActive
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-card-foreground"
-              }`}
-            >
-              <Icon
-                className={`h-5 w-5 ${isActive ? "stroke-[2.5px]" : "stroke-[1.5px]"}`}
-              />
-              <span className="text-[10px] mt-1">{item.label}</span>
-            </Link>
-          );
-        })}
-      </div>
+    <nav
+      className="fixed bottom-0 inset-x-0 z-50 md:hidden flex justify-around
+                 bg-[var(--color-header)] text-[var(--color-foreground)] 
+                 border-t border-[var(--color-border)] py-2 backdrop-blur-sm"
+    >
+      {navItems.map(({ href, icon: Icon, label }) => {
+        const isActive = pathname === href;
+        return (
+          <Link
+            key={href}
+            href={href}
+            className={
+              `flex flex-col items-center justify-center gap-0.5 px-3 py-1 ` +
+              (isActive
+                ? "text-[var(--color-primary)]"
+                : "text-[var(--color-foreground)]/80 hover:text-[var(--color-foreground)]")
+            }
+          >
+            <Icon className="h-5 w-5" />
+            <span className="text-xs">{label}</span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }

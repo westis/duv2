@@ -5,7 +5,6 @@ import { routing } from "@/i18n/routing";
 import ThemeProvider from "@/theme/theme-provider";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
-import { BottomNav } from "@/components/navigation/bottom-nav";
 import "@/app/globals.css";
 
 export default async function LocaleLayout({
@@ -23,7 +22,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col text-sm sm:text-base">
+      <body className="min-h-screen flex flex-col bg-background text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -32,11 +31,8 @@ export default async function LocaleLayout({
         >
           <NextIntlClientProvider>
             <SiteHeader locale={locale} />
-            <main className="flex-1 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 md:py-8 lg:py-10">
-              {children}
-            </main>
+            <main className="flex-1 w-full">{children}</main>
             <SiteFooter />
-            <BottomNav locale={locale} />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
