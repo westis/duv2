@@ -316,6 +316,14 @@ components:
         courseDescription:
           type: string
           description: Description of the course
+        parentId:
+          type: string
+          description: Parent event identifier if this race is an edition of another race
+        editions:
+          type: array
+          description: Other editions of the same event (returned when `editions=true`)
+          items:
+            $ref: "#/components/schemas/Race"
       required:
         - raceId
         - name
@@ -1130,6 +1138,24 @@ components:
         default: false
       style: form
       explode: true
+    UpcomingParam:
+      name: upcoming
+      in: query
+      description: Filter races based on whether they are upcoming (true) or past (false)
+      required: false
+      schema:
+        type: boolean
+      style: form
+      explode: true
+    EditionsParam:
+      name: editions
+      in: query
+      description: Include other editions of the race in the response (only for detail endpoint)
+      required: false
+      schema:
+        type: boolean
+      style: form
+      explode: true
 paths:
   /races:
     get:
@@ -1184,6 +1210,7 @@ paths:
         - $ref: "#/components/parameters/OffsetParam"
         - $ref: "#/components/parameters/ExtendedFieldsParam"
         - $ref: "#/components/parameters/TierOverrideParam"
+        - $ref: "#/components/parameters/UpcomingParam"
       responses:
         "200":
           description: Array of events
@@ -1285,6 +1312,7 @@ paths:
         - ApiKeyAuth: [] # Optional authentication
       parameters:
         - $ref: "#/components/parameters/RaceIdParam"
+        - $ref: "#/components/parameters/EditionsParam"
       responses:
         "200":
           description: Event object
@@ -1526,6 +1554,7 @@ paths:
         - $ref: "#/components/parameters/IncludePrivateParam"
         - $ref: "#/components/parameters/ExtendedFieldsParam"
         - $ref: "#/components/parameters/TierOverrideParam"
+        - $ref: "#/components/parameters/UpcomingParam"
       responses:
         "200":
           description: Array of runner objects

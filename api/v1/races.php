@@ -267,6 +267,22 @@ try {
             $params[] = "%$search%";
         }
     }
+    // Upcoming vs past filter
+    if (isset($_GET['upcoming'])) {
+        $upcoming = filter_var($_GET['upcoming'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        if ($upcoming === null) {
+            outputJson([
+                'status' => 400,
+                'code' => 'INVALID_PARAMETER',
+                'message' => 'Invalid upcoming parameter.'
+            ], 400);
+        }
+        if ($upcoming) {
+            $filters[] = 'Startdate >= CURDATE()';
+        } else {
+            $filters[] = 'Startdate < CURDATE()';
+        }
+    }
 
     // Sorting
     $sortable = [

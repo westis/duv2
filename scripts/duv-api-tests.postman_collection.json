@@ -507,6 +507,83 @@
           }
         }
       ]
+    },
+    {
+      "name": "GET /races?upcoming=true",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/races?upcoming=true",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "races"],
+          "query": [{ "key": "upcoming", "value": "true" }]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Response is JSON and has data array\", function () { var json = pm.response.json(); pm.expect(json).to.have.property('data'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /races?upcoming=false",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/races?upcoming=false",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "races"],
+          "query": [{ "key": "upcoming", "value": "false" }]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /races/{raceId}?editions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/duv2/api/v1/races/42600?editions=true",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["duv2", "api", "v1", "races", "42600"],
+          "query": [{ "key": "editions", "value": "true" }]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Has editions property\", function () { var json = pm.response.json(); pm.expect(json).to.have.property('editions'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
     }
   ]
 }
