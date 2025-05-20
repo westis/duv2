@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "title": "DUV Ultramarathon Statistics",
+    "title": "DUV",
     "about": "About",
     "subtitle": "Your ultimate source for ultramarathon race results, records, and runner statistics from around the world.",
     "findRaces": "Find Races",
@@ -42,7 +42,7 @@
     "statAvgKmPerRunner": "Avg. km per Runner",
     "statAvgKmPerRunnerValue": "200+ km",
     "ctaButton": "Sign Up",
-    "titleAccent": "Ultramarathon Stats"
+    "titleAccent": "Ultramarathon Statistics"
   },
   "Navbar": {
     "home": "Home",

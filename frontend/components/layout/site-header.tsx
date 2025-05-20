@@ -3,11 +3,17 @@
 import React from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, SettingsIcon } from "lucide-react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 
 import { MainNav } from "./main-nav";
 import ThemeToggle from "@/theme/theme-toggle";
 import { MobileMenu } from "@/components/navigation/mobile-menu";
+import PreferencesPanel from "@/components/client/preferences-panel";
 
 interface SiteHeaderProps {
   locale: string;
@@ -52,6 +58,19 @@ export function SiteHeader({ locale }: SiteHeaderProps) {
         {/* Controls */}
         <div className="flex items-center gap-2">
           <ThemeToggle />
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className="inline-flex items-center justify-center rounded-md p-2 text-[var(--color-foreground)]/60 hover:bg-[var(--color-muted)]/20 hover:text-[var(--color-foreground)]"
+                aria-label="Preferences"
+              >
+                <SettingsIcon className="h-5 w-5" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-80 p-0">
+              <PreferencesPanel />
+            </PopoverContent>
+          </Popover>
           <button
             onClick={() => setOpen((s) => !s)}
             className="inline-flex items-center justify-center rounded-md p-2 text-[var(--color-foreground)]/60 hover:bg-[var(--color-muted)]/20 hover:text-[var(--color-foreground)] md:hidden"

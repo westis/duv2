@@ -1,19 +1,67 @@
-import React, { createContext, useContext } from "react";
+"use client";
 
-const PreferencesContext = createContext({});
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
+import type { ReactNode } from "react";
+import type { Preferences } from "../../types/preferences";
+import { getDefaultPreferences } from "../../types/preferences";
+import {
+  loadPreferencesOrDefault,
+  savePreferences,
+  clearPreferences,
+} from "../utils/storage";
 
-export function PreferencesProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export interface PreferencesContextType {
+  preferences: Preferences;
+  updatePreferences: (updates: Partial<Preferences>) => void;
+  resetPreferences: () => void;
+}
+
+const PreferencesContext = createContext<PreferencesContextType | undefined>(
+  undefined,
+);
+
+export const PreferencesProvider = ({ children }: { children: ReactNode }) => {
+  const [preferences, setPreferences] = useState<Preferences>(() =>
+    loadPreferencesOrDefault(),
+  );
+
+  useEffect(() => {
+    savePreferences(preferences);
+  }, [preferences]);
+
+  const updatePreferences = (updates: Partial<Preferences>) => {
+    setPreferences((prev) => ({ ...prev, ...updates }));
+  };
+
+  const resetPreferences = () => {
+    clearPreferences();
+    setPreferences(getDefaultPreferences());
+  };
+
+  const value = useMemo(
+    () => ({ preferences, updatePreferences, resetPreferences }),
+    [preferences],
+  );
+
   return (
-    <PreferencesContext.Provider value={{}}>
+    <PreferencesContext.Provider value={value}>
       {children}
     </PreferencesContext.Provider>
   );
-}
+};
 
-export function usePreferencesContext() {
-  return useContext(PreferencesContext);
+export function usePreferencesContext(): PreferencesContextType {
+  const context = useContext(PreferencesContext);
+  if (!context) {
+    throw new Error(
+      "usePreferencesContext must be used within PreferencesProvider",
+    );
+  }
+  return context;
 }

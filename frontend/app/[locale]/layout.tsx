@@ -3,8 +3,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import ThemeProvider from "@/theme/theme-provider";
-import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
+import Providers from "./Providers";
 import "@/app/globals.css";
 
 export default async function LocaleLayout({
@@ -30,9 +29,9 @@ export default async function LocaleLayout({
           disableTransitionOnChange
         >
           <NextIntlClientProvider>
-            <SiteHeader locale={locale} />
-            <main className="flex-1 w-full">{children}</main>
-            <SiteFooter />
+            <Providers locale={locale}>
+              <main className="flex-1 w-full">{children}</main>
+            </Providers>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
