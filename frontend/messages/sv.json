@@ -1,0 +1,29 @@
+{
+  "HomePage": {
+    "title": "Rubrik",
+    "about": "Om"
+  },
+  "Navbar": {
+    "home": "Hem",
+    "calendarResults": "Kalender & Resultat",
+    "runners": "Löpare",
+    "records": "Resultat",
+    "topLists": "Topplistor",
+    "submitRace": "Skicka in lopp",
+    "search": "Sök"
+  },
+  "Footer": {
+    "brand": "DUV Ultramarathon Statistics",
+    "tagline": "Den ultimata källan för ultramaratonlöpsresultat och statistik.",
+    "resourcesTitle": "Resurser",
+    "faq": "Vanliga frågor",
+    "api": "API",
+    "legalTitle": "Juridik",
+    "about": "Om oss",
+    "privacy": "Integritet",
+    "terms": "Villkor",
+    "contact": "Kontakt",
+    "copyright": "© {year} DUV Ultramarathon Statistics. Alla rättigheter förbehållna.",
+    "copyrightShort": "© {year} DUV Ultramarathon Statistics"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "HomePage": {
+    "title": "Home",
+    "about": "About"
+  },
+  "Navbar": {
+    "home": "Startseite",
+    "calendarResults": "Kalender & Ergebnisse",
+    "runners": "Läufer",
+    "records": "Aufzeichnungen",
+    "topLists": "Top-Listen",
+    "submitRace": "Rennen einreichen",
+    "search": "Suche"
+  },
+  "Footer": {
+    "brand": "DUV Ultramarathon Statistics",
+    "tagline": "Die ultimative Quelle für Ultramarathon-Rennergebnisse und Statistiken.",
+    "resourcesTitle": "Ressourcen",
+    "faq": "FAQ",
+    "api": "API",
+    "legalTitle": "Rechtliches",
+    "about": "Über uns",
+    "privacy": "Datenschutz",
+    "terms": "Nutzungsbedingungen",
+    "contact": "Kontakt",
+    "copyright": "© {year} DUV Ultramarathon Statistics. Alle Rechte vorbehalten.",
+    "copyrightShort": "© {year} DUV Ultramarathon Statistics"
+  }
+}

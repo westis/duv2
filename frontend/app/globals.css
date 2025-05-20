@@ -1,26 +1,179 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary - Energetic Orange (represents endurance and energy) */
+  --color-primary: oklch(0.65 0.18 30);
+  --color-primary-foreground: oklch(0.98 0.005 240);
+
+  /* Secondary - Vibrant Teal (represents refreshment and recovery) */
+  --color-secondary: oklch(0.65 0.15 180);
+  --color-secondary-foreground: oklch(0.98 0.005 240);
+
+  /* Accent - Deep Purple (represents achievement and distinction) */
+  --color-accent: oklch(0.65 0.15 280);
+  --color-accent-foreground: oklch(0.98 0.005 240);
+
+  /* Card and UI backgrounds */
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.15 0.01 240);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.15 0.01 240);
+
+  /* Base colors - Light mode */
+  --color-background: oklch(0.98 0.005 240);
+  --color-foreground: oklch(0.15 0.01 240);
+
+  /* UI component colors */
+  --color-muted: oklch(0.93 0.01 240);
+  --color-muted-foreground: oklch(0.4 0.02 240);
+  /* Subtle border */
+  --color-border: oklch(0.92 0.01 240);
+  --color-input: oklch(0.92 0.01 240);
+  --color-ring: oklch(0.65 0.18 30);
+
+  /* Semantic colors */
+  --color-success: oklch(0.65 0.12 145);
+  --color-success-foreground: oklch(0.98 0.005 240);
+  --color-warning: oklch(0.65 0.15 85);
+  --color-warning-foreground: oklch(0.15 0.01 240);
+  --color-destructive: oklch(0.65 0.2 25);
+  --color-destructive-foreground: oklch(0.98 0.005 240);
+
+  /* Typography */
+  --font-sans: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+  --font-mono: var(--font-geist-mono, monospace);
+
+  /* Radius */
+  --radius: 0.5rem;
+  --radius-sm: 0.3rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.8rem;
+  --radius-full: 9999px;
+}
+
+.dark {
+  /* Primary in dark mode - slightly brighter orange */
+  --color-primary: oklch(0.7 0.18 30);
+  --color-primary-foreground: oklch(0.1 0.01 240);
+
+  /* Secondary in dark mode - brighter teal */
+  --color-secondary: oklch(0.7 0.16 180);
+  --color-secondary-foreground: oklch(0.1 0.01 240);
+
+  /* Accent in dark mode - brighter purple */
+  --color-accent: oklch(0.7 0.16 280);
+  --color-accent-foreground: oklch(0.98 0.005 240);
+
+  /* Card and UI backgrounds */
+  --color-card: oklch(0.18 0.01 240);
+  --color-card-foreground: oklch(0.95 0.01 240);
+  --color-popover: oklch(0.18 0.01 240);
+  --color-popover-foreground: oklch(0.95 0.01 240);
+
+  /* Base colors - Dark mode */
+  --color-background: oklch(0.15 0.01 240);
+  --color-foreground: oklch(0.96 0.01 240);
+
+  /* UI component colors for dark mode */
+  --color-muted: oklch(0.3 0.02 240);
+  --color-muted-foreground: oklch(0.7 0.02 240);
+  /* Subtle border in dark mode */
+  --color-border: oklch(0.25 0.01 240);
+  --color-input: oklch(0.25 0.01 240);
+  --color-ring: oklch(0.7 0.18 30);
+
+  /* Semantic colors for dark mode */
+  --color-success: oklch(0.6 0.14 145);
+  --color-success-foreground: oklch(0.15 0.01 240);
+  --color-warning: oklch(0.75 0.12 85);
+  --color-warning-foreground: oklch(0.15 0.01 240);
+  --color-destructive: oklch(0.65 0.16 25);
+  --color-destructive-foreground: oklch(0.98 0.005 240);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base styling */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+/* Gradient accents for UI elements */
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    oklch(var(--color-primary)),
+    oklch(var(--color-secondary))
+  );
+  border-radius: 2px;
+}
+
+/* Active nav item styling */
+.nav-item-active {
+  position: relative;
+}
+
+.nav-item-active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    oklch(var(--color-primary)),
+    oklch(var(--color-secondary))
+  );
+  border-radius: 2px;
+}
+
+/* Subtle background pattern for sections */
+.pattern-bg {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    oklch(var(--color-muted)) 1px,
+    transparent 0
+  );
+  background-size: 20px 20px;
+}
+
+/* Card hover effects */
+.card-hover {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats highlight */
+.stat-highlight {
+  background: linear-gradient(
+    135deg,
+    oklch(var(--color-primary) / 0.1),
+    oklch(var(--color-secondary) / 0.1)
+  );
+  border-left: 3px solid oklch(var(--color-primary));
 }
