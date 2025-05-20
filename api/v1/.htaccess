@@ -25,4 +25,9 @@ RewriteRule ^toplists$ toplists.php [L,QSA]
 # 9. /statistics/([a-zA-Z0-9_-]+)$ → statistics.php?type=xxx
 RewriteRule ^statistics/([a-zA-Z0-9_-]+)$ statistics.php?type=$1 [L,QSA]
 # 10. /resource → resource.php (fallback for all other top-level endpoints)
-RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L,QSA] 
+RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L,QSA]
+
+# --- Metadata Routing ---
+# /metadata/{resource} → metadata.php?resource={resource}
+RewriteRule ^metadata/([a-zA-Z0-9_-]+)$ metadata.php?resource=$1 [L,QSA]
+# ------------------------ 

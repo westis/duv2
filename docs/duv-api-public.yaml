@@ -46,6 +46,8 @@ tags:
     description: "[PLANNED] Summary and analytical statistics endpoints"
   - name: Admin
     description: "[PLANNED] Administrative endpoints (requires Admin tier authentication)"
+  - name: Metadata
+    description: API metadata endpoints (disciplines, etc.)
 
 components:
   securitySchemes:
@@ -2121,27 +2123,89 @@ paths:
       parameters:
         - name: recordType
           in: query
-          description: Type of record
+          description: Type of record (world, national, or region)
+          required: true
+          schema:
+            type: string
+            enum: ["world", "national", "region"]
+            default: "world"
+        - name: region
+          in: query
+          description: Numeric region code for continental records (matches `tcountry.Region` grouping)
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: discipline
+          in: query
+          description: One of the standard distances or durations with unit.
           required: false
           schema:
             type: string
-            enum: [world, national, age_group, course]
-            default: world
-        - name: distance
+            enum:
+              [
+                "50km",
+                "50mi",
+                "100km",
+                "100mi",
+                "6h",
+                "12h",
+                "24h",
+                "48h",
+                "72h",
+                "6d",
+              ]
+            example: "100km"
+        - name: gender
           in: query
-          description: Distance category (km)
-          required: false
-          schema:
-            type: number
-        - name: duration
-          in: query
-          description: Duration category (e.g., 24h)
+          description: Filter record holders by gender; only valid when `recordType` includes identity logic (national, region).
           required: false
           schema:
             type: string
-        - $ref: "#/components/parameters/CountryParam"
-        - $ref: "#/components/parameters/GenderParam"
-        - $ref: "#/components/parameters/AgeCategoryParam"
+            enum: ["M", "W", "X"]
+        - name: ageCategory
+          in: query
+          description: Filter record holders by age category code (e.g., M40).
+          required: false
+          schema:
+            type: string
+        - name: surface
+          in: query
+          description: Filter record holders by surface type; only valid when `recordType=region`.
+          required: false
+          schema:
+            type: string
+            enum: [road, trail, track, indoor]
+        - name: limit
+          in: query
+          description: Maximum number of records to return (pagination).
+          required: false
+          schema:
+            type: integer
+            default: 100
+        - name: offset
+          in: query
+          description: Number of records to skip (pagination).
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: sortBy
+          in: query
+          description: Field to sort records by.
+          required: false
+          schema:
+            type: string
+            enum: ["distance", "recordValue"]
+            default: "distance"
+        - name: order
+          in: query
+          description: Sort order for results.
+          required: false
+          schema:
+            type: string
+            enum: ["asc", "desc"]
+            default: "desc"
       responses:
         "200":
           description: Record data
@@ -2794,6 +2858,47 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthorizationError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  /metadata/disciplines:
+    get:
+      summary: Retrieve supported disciplines
+      description: Returns supported distance and duration disciplines for client use
+      operationId: getDisciplines
+      tags:
+        - Metadata
+      security:
+        - {} # Public access allowed
+      responses:
+        "200":
+          description: Supported disciplines list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  distances:
+                    type: array
+                    items:
+                      type: string
+                  durations:
+                    type: array
+                    items:
+                      type: string
+              example:
+                distances: ["50km", "100km", "100mi"]
+                durations: ["24h", "48h", "72h"]
+        "404":
+          description: Metadata resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
         "500":
           description: Internal server error
           content:
