@@ -24,6 +24,7 @@ try {
             EventID as raceId,
             EventName as name,
             Edition as edition,
+            ParentID as parentId,
             Country as country,
             City as city,
             Startdate as date,
@@ -51,6 +52,36 @@ try {
                 'code' => 'RESOURCE_NOT_FOUND',
                 'message' => "Race with ID '$raceId' not found"
             ], 404);
+        }
+        // Optionally fetch other editions when requested
+        if (isset($_GET['editions'])) {
+            // Fetch other editions for this race
+            $childSql = 'SELECT
+                EventID as raceId,
+                EventName as name,
+                Edition as edition,
+                ParentID as parentId,
+                Country as country,
+                City as city,
+                Startdate as date,
+                Enddate as endDate,
+                NormLen as distance,
+                Length as distanceOriginal,
+                EventType as eventType,
+                AltitudeDiff as altitude,
+                FinisherM + FinisherW as finishers,
+                FinisherM as finishersMen,
+                FinisherW as finishersWomen,
+                TimeLimit as timeLimit,
+                Results as resultsStatus,
+                IAULabel as iauLabel,
+                RecordProof as recordProof,
+                URL as website,
+                PromOrg as organizer
+              FROM tevent WHERE ParentID = ?';
+            $childStmt = $pdo->prepare($childSql);
+            $childStmt->execute([$raceId]);
+            $race['editions'] = $childStmt->fetchAll();
         }
         outputJson($race);
     }
@@ -262,7 +293,9 @@ try {
     $total = $countStmt->fetchColumn();
 
     // Build SQL
-    $sql = 'SELECT EventID as raceId, EventName as name, Edition as edition, Country as country, City as city, Startdate as date, Enddate as endDate, NormLen as distance, Length as distanceOriginal, EventType as eventType, AltitudeDiff as altitude, FinisherM + FinisherW as finishers, FinisherM as finishersMen, FinisherW as finishersWomen, TimeLimit as timeLimit, Results as resultsStatus, IAULabel as iauLabel, RecordProof as recordProof, URL as website, PromOrg as organizer FROM tevent';
+    $sql = 'SELECT EventID as raceId, EventName as name, Edition as edition,
+        ParentID as parentId,
+        Country as country, City as city, Startdate as date, Enddate as endDate, NormLen as distance, Length as distanceOriginal, EventType as eventType, AltitudeDiff as altitude, FinisherM + FinisherW as finishers, FinisherM as finishersMen, FinisherW as finishersWomen, TimeLimit as timeLimit, Results as resultsStatus, IAULabel as iauLabel, RecordProof as recordProof, URL as website, PromOrg as organizer FROM tevent';
     if ($filters) {
         $sql .= ' WHERE ' . implode(' AND ', $filters);
     }

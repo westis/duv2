@@ -1,4 +1,5 @@
 # DUV Ultramarathon Statistics Frontend
+
 ## Product Requirements Document
 
 **Date:** May 20, 2025  
@@ -8,32 +9,197 @@
 
 ## Table of Contents
 
-1. [Executive Summary](#executive-summary)
-2. [Project Overview & Objectives](#project-overview--objectives)
-3. [Target Audience & User Personas](#target-audience--user-personas)
-4. [Core Features & Functionality](#core-features--functionality)
-5. [Technical Stack & Architecture](#technical-stack--architecture)
-6. [User Interface & Experience Design](#user-interface--experience-design)
-7. [Data Model & API Integration](#data-model--api-integration)
-8. [Authentication & Privacy](#authentication--privacy)
-9. [Search & Filter Functionality](#search--filter-functionality)
-10. [Internationalization](#internationalization)
-11. [User Preferences](#user-preferences)
-12. [Development Phases](#development-phases)
-13. [Analytics & Error Monitoring](#analytics--error-monitoring)
-14. [SEO Optimization](#seo-optimization)
-15. [Feature Requirements & Acceptance Criteria](#feature-requirements--acceptance-criteria)
-16. [Future Enhancements](#future-enhancements)
-17. [Technical Considerations & Challenges](#technical-considerations--challenges)
-18. [Risks and Dependencies](#risks-and-dependencies)
+### Part 1: API Completion (Remaining Tasks)
+
+1. [API Completion Overview](#api-completion-overview)
+2. [Remaining API Endpoints](#remaining-api-endpoints)
+3. [API Integration Challenges](#api-integration-challenges)
+4. [API Completion Tasks](#api-completion-tasks)
+
+### Part 2: Frontend Implementation
+
+5. [Executive Summary](#executive-summary)
+6. [Project Overview & Objectives](#project-overview--objectives)
+7. [Target Audience & User Personas](#target-audience--user-personas)
+8. [Core Features & Functionality](#core-features--functionality)
+9. [Technical Stack & Architecture](#technical-stack--architecture)
+10. [User Interface & Experience Design](#user-interface--experience-design)
+11. [Data Model & API Integration](#data-model--api-integration)
+12. [Authentication & Privacy](#authentication--privacy)
+13. [Search & Filter Functionality](#search--filter-functionality)
+14. [Internationalization](#internationalization)
+15. [User Preferences](#user-preferences)
+16. [Development Phases](#development-phases)
+17. [Analytics & Error Monitoring](#analytics--error-monitoring)
+18. [SEO Optimization](#seo-optimization)
+19. [Feature Requirements & Acceptance Criteria](#feature-requirements--acceptance-criteria)
+20. [Future Enhancements](#future-enhancements)
+21. [Technical Considerations & Challenges](#technical-considerations--challenges)
+22. [Risks and Dependencies](#risks-and-dependencies)
 
 ---
+
+## Part 1: API Completion (Remaining Tasks)
+
+### API Completion Overview
+
+Before developing the new frontend, several API implementation tasks must be completed to ensure the frontend has the necessary data services. The API migration is partially complete, with several key endpoints already implemented. This section outlines the remaining API tasks that need to be finalized before or alongside frontend development.
+
+### Remaining API Endpoints
+
+#### 1. Races Endpoints Completion
+
+- Complete implementation of `/api/v1/races` and `/api/v1/races/{raceId}` endpoints
+- Finish race filtering capabilities (distance range, geographic, certification)
+- Optimize race listing queries for performance with large datasets
+- Implement proper handling of the ParentID relationship for annual editions
+- Add support for upcoming vs past race filtering
+
+#### 2. Records Endpoint Implementation
+
+- Complete the `/api/v1/records` endpoint implementation
+- Add filtering by distance, gender, age group, and surface
+- Implement national and global record tracking
+- Handle the runner identity management for record holders
+- Include relevant race information for each record
+- Potentially refactor to support the unified discipline parameter and new database schema
+
+#### 3. Admin Endpoints
+
+- Complete `/api/v1/admin/submitted-races` endpoint
+- Implement `/api/v1/admin/submitted-races/{submissionId}` endpoint
+- Create `/api/v1/admin/users` endpoint for user management
+- Ensure proper admin-only access controls
+- Implement filtering and sorting for admin endpoints
+
+#### 4. Frontend API Integration
+
+- Update frontend code to use new `/api/v1/` endpoints
+- Add API key authentication headers to requests
+- Adapt to new field naming conventions
+- Update error handling for standardized error responses
+- Implement graceful fallbacks for temporary API issues
+
+### API Integration Challenges
+
+Two significant data model challenges need to be addressed:
+
+#### 1. Runner Identity Management
+
+- Design and implement a solution for runner identity management
+- Create a unified runner resource that consolidates multiple database entries
+- Ensure performance data correctly links to the appropriate runner identity
+- Consider implementing personal and yearly bests for runners with rankings
+
+#### 2. Event-Race Hierarchy
+
+- Design a solution for the event-race hierarchy limitation
+- Develop an approach to group related races within event containers
+- Consider how to represent races that occur during the same event weekend
+- Update API specification to document the chosen approach
+
+Completing these API tasks is a prerequisite for successful frontend development, as the frontend will rely on these endpoints for data access.
+
+## API Completion Tasks
+
+To ensure the frontend has a complete and stable API to work with, the following tasks must be completed as part of the overall project:
+
+### Task 1: Complete Races Endpoints
+
+- **Objective**: Finish implementing the `/api/v1/races` and `/api/v1/races/{raceId}` endpoints
+- **Requirements**:
+  - Implement GET handler for listing races with all filtering options
+  - Add sorting and pagination functionality
+  - Create single race endpoint with detailed information
+  - Implement proper handling of parent-child relationships for annual editions
+  - Optimize database queries for performance with large datasets
+- **Acceptance Criteria**:
+  - Endpoints return data in the format specified in the OpenAPI specification
+  - Filtering works correctly for all supported parameters
+  - Single race endpoint returns complete race information
+  - Response performance meets requirements even with large result sets
+
+### Task 2: Complete Records Endpoint Implementation
+
+- **Objective**: Finish implementing the `/api/v1/records` endpoint
+- **Requirements**:
+  - Add support for filtering by distance, gender, age group, and surface
+  - Implement national and global record tracking
+  - Properly link record holders to runner profiles
+  - Include relevant race information for each record
+  - Consider refactoring to use new trecords table schema
+- **Acceptance Criteria**:
+  - Records endpoint returns properly formatted data according to the specification
+  - Filtering works correctly for all parameters
+  - Record holders are correctly linked to runner profiles
+  - National and global records are properly identified
+
+### Task 3: Implement Admin Endpoints
+
+- **Objective**: Implement administrative endpoints for managing submitted races and users
+- **Requirements**:
+  - Create `/api/v1/admin/submitted-races` endpoint
+  - Implement `/api/v1/admin/submitted-races/{submissionId}` endpoint
+  - Create `/api/v1/admin/users` endpoint for user management
+  - Ensure proper admin-only access controls
+  - Add filtering and pagination functionality
+- **Acceptance Criteria**:
+  - Admin endpoints return data according to the OpenAPI specification
+  - Only authenticated admin users can access these endpoints
+  - Filtering and pagination work correctly
+  - Response performance meets requirements
+
+### Task 4: Address Runner Identity Management
+
+- **Objective**: Design and implement a solution for handling multiple database entries for the same runner
+- **Requirements**:
+  - Create a unified runner resource that consolidates multiple database entries
+  - Ensure performance data correctly links to the appropriate runner identity
+  - Handle special cases like name changes over time
+  - Consider implementing personal and yearly bests with rankings
+- **Acceptance Criteria**:
+  - API presents a single, consistent view of each runner regardless of underlying data structure
+  - All runner performances are correctly attributed
+  - Name changes and identity variations are properly handled
+  - Performance data is aggregated correctly across all linked entries
+
+### Task 5: Address Event-Race Hierarchy Limitations
+
+- **Objective**: Design and implement a solution for grouping related races within event containers
+- **Requirements**:
+  - Develop an approach to represent races that occur during the same event weekend
+  - Update API documentation to describe the event-race relationship
+  - Ensure API responses provide clear relationships between races
+- **Acceptance Criteria**:
+  - API clearly represents the relationship between races in the same event
+  - Documentation accurately describes the event-race hierarchy
+  - Clients can easily identify related races
+
+### Task 6: Frontend API Integration
+
+- **Objective**: Update frontend code to use the new API endpoints
+- **Requirements**:
+  - Create central configuration for API access
+  - Update fetch calls to use new endpoints
+  - Add API key authentication headers
+  - Update error handling for standardized error responses
+  - Implement graceful fallbacks for temporary API issues
+- **Acceptance Criteria**:
+  - Frontend successfully retrieves data from new API endpoints
+  - Authentication works correctly for restricted endpoints
+  - Error handling gracefully manages API errors
+  - Frontend correctly formats and displays API data# DUV Ultramarathon Statistics Project
+
+---
+
+## Part 2: Frontend Implementation
 
 ## Executive Summary
 
 The DUV Ultramarathon Statistics Frontend project aims to modernize the existing platform with a responsive, user-friendly interface that serves the diverse needs of the ultramarathon community. The new frontend will connect to a revamped API, presenting comprehensive race, runner, and performance data in an accessible and engaging format.
 
 Key project objectives include:
+
 - Creating a responsive design that works seamlessly across devices
 - Implementing a clean, modern interface with both light and dark modes
 - Streamlining navigation while maintaining access to all important features
@@ -69,31 +235,37 @@ The DUV Ultramarathon Statistics Frontend project aims to create a modern, respo
 The platform serves a diverse user base including:
 
 ### 1. Ultramarathon Runners
+
 - **Needs:** Performance tracking, race discovery, result comparison
 - **Behaviors:** Regular checking of race calendars, viewing personal results, comparing with peers
 - **Goals:** Find races to participate in, track personal progress, view standings in results
 
 ### 2. Race Organizers
+
 - **Needs:** Race submission, results publishing, historical race data
 - **Behaviors:** Updating race information, checking competitor events
 - **Goals:** Promote events, maintain accurate race information, analyze participation trends
 
 ### 3. Media and Journalists
+
 - **Needs:** Performance statistics, records data, notable achievements
 - **Behaviors:** Researching athletes and performances, analyzing trends
 - **Goals:** Find newsworthy performances, back stories with data, identify emerging talent
 
 ### 4. Statisticians and Researchers
+
 - **Needs:** Comprehensive data sets, detailed filtering, historical trends
 - **Behaviors:** Deep analysis of ultrarunning trends, performance patterns
 - **Goals:** Identify statistical patterns, analyze performance factors, publish research
 
 ### 5. Ultrarunning Community and Fans
+
 - **Needs:** Following favorite athletes, browsing events and records
 - **Behaviors:** Casual browsing of results and records, searching for specific runners
 - **Goals:** Stay informed about the sport, follow athlete performances, discover events
 
 ### 6. Administrators
+
 - **Needs:** Content management, submission review, data correction
 - **Behaviors:** Reviewing submissions, correcting data inconsistencies
 - **Goals:** Maintain data accuracy, approve appropriate submissions, ensure site integrity
@@ -105,6 +277,7 @@ The platform serves a diverse user base including:
 ### MVP Features
 
 #### 1. Race Calendar and Results
+
 - Comprehensive listing of past and upcoming ultramarathon events
 - Detailed race information including distance, location, dates, etc.
 - Complete results for past events with filtering and sorting
@@ -112,12 +285,14 @@ The platform serves a diverse user base including:
 - Interactive filtering system with primary and advanced filters
 
 #### 2. Runner Profiles
+
 - Searchable database of ultramarathon runners
 - Detailed performance history for each runner
 - Privacy-aware display of personal information based on privacy settings
 - Linking of related runner profiles (same person with different entries)
 
 #### 3. Records
+
 - Three main record types:
   - World records
   - Regional records (continental, etc.)
@@ -130,6 +305,7 @@ The platform serves a diverse user base including:
 - Note: Course records may be added in a future enhancement
 
 #### 4. Top Lists
+
 - Two primary types:
   - All-time top performances
   - Yearly top performances
@@ -143,6 +319,7 @@ The platform serves a diverse user base including:
 - Historical context and performance comparison
 
 #### 5. Search System
+
 - Global search with entity-type selection (accessible via CTRL+K / CMD+K keyboard shortcut)
 - Dedicated search interfaces for:
   - Runners
@@ -150,18 +327,21 @@ The platform serves a diverse user base including:
   - Clubs
 
 #### 6. Race Submission
+
 - Form for adding new races
 - Form for adding new editions of existing races with pre-populated data
 - Validation and error prevention
 - Submission status tracking
 
 #### 7. User Interface Features
+
 - Light and dark mode toggle
 - Responsive design for all devices
 - Multi-language support (initially English, German, Swedish)
 - Modern navigation system with streamlined menu hierarchy
 
 #### 8. Admin Interface (Basic)
+
 - Secure login for administrators
 - Management of submitted races
 - Basic content management capabilities
@@ -169,36 +349,43 @@ The platform serves a diverse user base including:
 ### Phase 2 Features (Post-MVP)
 
 #### 1. Enhanced Admin Tools
+
 - Multi-tier administration (contributors vs. full admins)
 - Dashboard for races without results
 - Approval workflows for submissions
 
 #### 2. User Accounts & Personalization
+
 - User registration and profiles
 - Saved searches and filters
 - Profile claiming for runners
 - Subscription to runners or events
 
 #### 3. Championships Section
+
 - International, continental, and national championships
 - Historical championship data
 - Special championship statistics
 
 #### 4. Expanded Analytics
+
 - Performance trends
 - Participation statistics
 - Comparative analysis tools
 
 #### 5. Advanced Search
+
 - Natural language search with MCP server chatbot
 - Cross-entity searching and relationship identification
 
 #### 6. Community Features
+
 - Notifications for subscribed content
 - Enhanced feedback mechanisms
 - User contributions
 
 #### 7. Expanded Internationalization
+
 - Additional language support (French, Spanish, Italian, Russian, Chinese, Japanese)
 
 ---
@@ -208,6 +395,7 @@ The platform serves a diverse user base including:
 ### Frontend Technology Stack
 
 #### 1. Framework: Next.js 15
+
 - Provides full support for React 19 features
 - Optimized Server Components for improved performance
 - Built-in App Router for enhanced routing capabilities
@@ -215,12 +403,14 @@ The platform serves a diverse user base including:
 - Stable Turbopack for faster development experience
 
 #### 2. Styling: TailwindCSS
+
 - Utility-first CSS framework for rapid development
 - Highly customizable design system
 - Excellent responsive design capabilities
 - Dark mode support out of the box
 
 #### 3. UI Components: shadcn/ui
+
 - High-quality, accessible component library
 - Full compatibility with React 19 and Tailwind v4
 - Customizable to match branding requirements
@@ -228,11 +418,13 @@ The platform serves a diverse user base including:
 - Optimized for Next.js 15 App Router integration
 
 #### 4. State Management
+
 - React Context for global state
 - React Query for server state management and caching
 - Local storage for persistent user preferences
 
 #### 5. Internationalization
+
 - next-intl or next-i18next for localization
 - Support for RTL languages in the future
 - Language detection and switching capabilities
@@ -240,6 +432,7 @@ The platform serves a diverse user base including:
 ### Architecture Approach
 
 #### 1. Rendering Strategy
+
 - Server Components for static content and SEO-critical pages
 - Client Components for interactive elements
 - Static Site Generation (SSG) for stable content
@@ -248,30 +441,35 @@ The platform serves a diverse user base including:
 - Streaming for improved user experience with large data sets
 
 #### 2. API Integration
+
 - Custom API client for the DUV Ultramarathon Statistics API
 - Request caching and optimization
 - Error handling and retry logic
 - Response transformation and normalization
 
 #### 3. Authentication & Authorization
+
 - API key-based authentication as specified in the API specification
 - Authentication headers (`X-API-Key`)
 - Secure credential storage
 - Role-based permission mapping based on API tiers
 
 #### 4. Responsive Design Implementation
+
 - Mobile-first approach
 - Breakpoint system for different device sizes
 - Conditional rendering of UI elements based on screen size
 - Touch-optimized interactions for mobile
 
 #### 5. Performance Optimization
+
 - Code splitting and lazy loading
 - Image optimization
 - Web Vitals monitoring
 - Caching strategies
 
 #### 6. Deployment & Hosting
+
 - Vercel or similar platform for Next.js hosting
 - CDN integration for static assets
 - CI/CD pipeline for automated testing and deployment
@@ -280,16 +478,19 @@ The platform serves a diverse user base including:
 ### Data Fetching Optimization
 
 #### 1. Server Components Strategy
+
 - Utilize Next.js 15 Server Components for initial data loading
 - Direct API calls with secure API key storage
 - Pre-fetch critical data paths for common user journeys
 
 #### 2. Client Components Strategy
+
 - Dynamic data fetching for interactive UI elements
 - Implement optimistic UI updates for improved perceived performance
 - Strategic client-side data mutations with server validation
 
 #### 3. Caching Strategy
+
 - Implement SWR (stale-while-revalidate) pattern for client-side data
 - Configure appropriate cache invalidation rules by data type
 - Consider React Query for more complex data requirements
@@ -301,24 +502,28 @@ The platform serves a diverse user base including:
 ### Design Principles
 
 #### 1. Clean and Modern
+
 - Contemporary design language with ample whitespace
 - Clear typography hierarchy for readability of statistical data
 - Consistent visual language across all sections
 - Subtle animations for state changes and interactions
 
 #### 2. Data Focused
+
 - Presentation prioritizes clarity of statistical information
 - Visually engaging without sacrificing data density where appropriate
 - Data visualizations to complement tabular data
 - Progressive disclosure of complex information
 
 #### 3. Responsive and Adaptive
+
 - Mobile-first approach ensuring functionality on all devices
 - Optimized layouts for different screen sizes
 - Touch-friendly interface elements
 - Priority-based content display on smaller screens
 
 #### 4. Accessibility
+
 - WCAG 2.2 compliance with AAA targets where possible
 - Keyboard navigation support
 - Screen reader compatibility
@@ -328,6 +533,7 @@ The platform serves a diverse user base including:
 - Alternative text for all visual content
 
 #### 5. Dark and Light Modes
+
 - Well-designed color schemes for both modes
 - System preference detection with manual override
 - Consistent readability in both modes
@@ -336,6 +542,7 @@ The platform serves a diverse user base including:
 ### Navigation Structure
 
 #### 1. Primary Navigation (Desktop)
+
 - Top navbar with primary sections
   - Races & Calendar
   - Results
@@ -350,12 +557,14 @@ The platform serves a diverse user base including:
 - Dark/light mode toggle
 
 #### 2. Mobile Navigation
+
 - Hamburger menu for full navigation access
 - Bottom navigation bar with 4-5 most critical sections
 - Collapsible nested navigation in expanded menu
 - Sticky search access
 
 #### 3. Page-Level Navigation
+
 - Breadcrumbs for hierarchical navigation
 - Related content links
 - Context-aware filtering options
@@ -364,6 +573,7 @@ The platform serves a diverse user base including:
 ### Page Templates
 
 #### 1. Home Page
+
 - Featured upcoming races
 - Recent results highlights
 - Latest records
@@ -371,6 +581,7 @@ The platform serves a diverse user base including:
 - News or announcements (if applicable)
 
 #### 2. List Pages (Races, Runners, etc.)
+
 - Filtering sidebar/panel
 - Sortable column headers
 - Pagination or infinite scroll
@@ -378,6 +589,7 @@ The platform serves a diverse user base including:
 - Quick action buttons
 
 #### 3. Detail Pages (Race Detail, Runner Profile)
+
 - Header with essential information
 - Tabbed interface for different data sections
 - Related information sidebar
@@ -385,6 +597,7 @@ The platform serves a diverse user base including:
 - Performance visualizations
 
 #### 4. Data Table Components
+
 - Sortable columns
 - Fixed headers for long tables
 - Row highlighting on hover
@@ -393,6 +606,7 @@ The platform serves a diverse user base including:
 - Mobile adaptation with priority columns and expandable details
 
 #### 5. Search Results
+
 - Faceted filtering options
 - Result grouping by entity type
 - Preview information
@@ -400,6 +614,7 @@ The platform serves a diverse user base including:
 - Search refinement suggestions
 
 #### 6. Form Pages (Race Submission)
+
 - Multi-step process for complex forms
 - Inline validation
 - Contextual help
@@ -409,6 +624,7 @@ The platform serves a diverse user base including:
 ### UI Components
 
 #### 1. Data Visualization Components
+
 - Performance trend charts
 - Distribution graphs
 - Record progression timelines
@@ -416,6 +632,7 @@ The platform serves a diverse user base including:
 - Responsive scaling for all device sizes
 
 #### 2. Interactive Elements
+
 - Filters with instant visual feedback
 - Tooltips for additional information
 - Modal dialogs for focused tasks
@@ -423,6 +640,7 @@ The platform serves a diverse user base including:
 - Collapsible sections
 
 #### 3. Feedback Mechanisms
+
 - Success/error notifications
 - Loading indicators
 - Empty state displays
@@ -432,12 +650,14 @@ The platform serves a diverse user base including:
 ### Color Palette and Typography
 
 #### 1. Primary Color Palette
+
 - Base neutral colors for content areas
 - Brand accent colors for interactive elements
 - Semantic colors for status indicators
 - Accessible color combinations
 
 #### 2. Typography System
+
 - Sans-serif primary font for general content
 - Monospace font for numerical data and statistics
 - Clear hierarchy with distinct heading levels
@@ -452,6 +672,7 @@ The platform serves a diverse user base including:
 Based on the API specification, the application will work with these primary data entities:
 
 #### 1. Races
+
 - Race details (name, location, date, distance, etc.)
 - Administrative information
 - Race type distinction:
@@ -461,6 +682,7 @@ Based on the API specification, the application will work with these primary dat
 - Race status (upcoming, results available, etc.)
 
 #### 2. Results
+
 - Performance records linked to races and runners
 - Performance metrics appropriate to race type:
   - For distance-based races: finish time/duration (may exceed 24 hours)
@@ -470,6 +692,7 @@ Based on the API specification, the application will work with these primary dat
 - Age/performance categories
 
 #### 3. Runners
+
 - Personal information (name, nationality, birth year)
 - Performance history
 - Club affiliations
@@ -477,6 +700,7 @@ Based on the API specification, the application will work with these primary dat
 - Linked/duplicate profiles
 
 #### 4. Records
+
 - Three main record types:
   - World records
   - Regional records (continental, etc.)
@@ -489,6 +713,7 @@ Based on the API specification, the application will work with these primary dat
 - Note: Course records may be added in a future enhancement
 
 #### 5. Top Lists
+
 - Two primary types:
   - All-time top performances
   - Yearly top performances
@@ -504,30 +729,35 @@ Based on the API specification, the application will work with these primary dat
 ### API Integration Strategy
 
 #### 1. API Client Implementation
+
 - Custom client library for the DUV Ultramarathon Statistics API
 - Authentication handling
 - Request/response formatting
 - Error handling and retry logic
 
 #### 2. Data Fetching Patterns
+
 - Server-side fetching for SEO-critical pages
 - Client-side fetching for dynamic, interactive components
 - Hybrid approach where appropriate
 - Pagination handling for large data sets
 
 #### 3. Caching Strategy
+
 - React Query for client-side caching
 - Next.js built-in caching for server-rendered content
 - Cache invalidation based on data freshness needs
 - Separate strategies for static vs. dynamic data
 
 #### 4. Request Optimization
+
 - Parameter selection to minimize payload size
 - Batch requests where possible
 - Request deduplication
 - Parallel fetching for independent data
 
 #### 5. Error Handling
+
 - Graceful degradation for API failures
 - Retry logic for transient errors
 - User-friendly error messaging
@@ -536,43 +766,52 @@ Based on the API specification, the application will work with these primary dat
 ### API Integration Points
 
 #### 1. Races Endpoints
+
 - `/races` - List and filter races
 - `/races/{raceId}` - Get race details
 - `/races/{raceId}/results` - Get race results
 
 #### 2. Runners Endpoints
+
 - `/runners` - Search and filter runners
 - `/runners/{runnerId}` - Get runner details
 - `/runners/{runnerId}/performances` - Get runner performance history
 
 #### 3. Results Endpoint
+
 - `/performances` - Flexible search across all performances
 
 #### 4. Records Endpoints
+
 - `/records` - Get records across categories
 - `/records/german` - Get German-specific records
 
 #### 5. Top Lists Endpoint
+
 - `/toplists` - Retrieve ranked performance lists
 
 #### 6. Future API Integration
+
 - Statistics endpoints (when available)
 - Admin endpoints (when available)
 
 ### Data Transformation and Normalization
 
 #### 1. Response Transformation
+
 - Convert API responses to application-specific data structures
 - Format dates, times, and numeric values for display
 - Normalize inconsistent data
 - Enrich data with derived values where helpful
 
 #### 2. Data Relationships
+
 - Maintain relationships between entities (race → results → runners)
 - Handle linked profiles for runners
 - Associate related records and top list entries
 
 #### 3. Search Result Processing
+
 - Formatting and highlighting search results
 - Categorizing results by entity type
 - Extracting preview information
@@ -581,12 +820,14 @@ Based on the API specification, the application will work with these primary dat
 ### Data Submission Flow
 
 #### 1. Race Submission
+
 - Form validation matching API requirements
 - Structured data submission
 - Status tracking
 - Confirmation and feedback
 
 #### 2. Results Submission (Future)
+
 - Multi-stage validation
 - Batch processing capabilities
 - File upload and parsing
@@ -599,12 +840,14 @@ Based on the API specification, the application will work with these primary dat
 ### Authentication System
 
 #### 1. MVP Implementation
+
 - Admin-only authentication for initial release
 - Secure login for designated administrators (Jürgen and project owner)
 - Session management with appropriate timeouts
 - CSRF protection and security best practices
 
 #### 2. Future Authentication Tiers
+
 - Public: Unauthenticated access with limited capabilities
 - Basic: Standard user accounts with enhanced access
 - Premium: Subscription-based accounts with advanced features
@@ -612,6 +855,7 @@ Based on the API specification, the application will work with these primary dat
 - Contributor: Special role for DUV contributors (view-heavy, edit-light permissions)
 
 #### 3. Authentication Technical Implementation
+
 - API key-based authentication as specified in the API specification
 - Authentication headers (`X-API-Key`)
 - Secure credential storage
@@ -620,6 +864,7 @@ Based on the API specification, the application will work with these primary dat
 ### Privacy Implementation
 
 #### 1. Runner Privacy Controls
+
 - Respect runner privacy level settings in the database
 - Conditional rendering of personal information based on:
   - Individual runner privacy settings
@@ -627,11 +872,13 @@ Based on the API specification, the application will work with these primary dat
 - Visual indicators for limited information due to privacy settings
 
 #### 2. Tier-Based Data Access
+
 - Dynamic API parameter handling based on user tier
 - UI adaptation to show/hide tier-restricted features
 - Clear indications of premium features for upselling
 
 #### 3. Data Protection Measures
+
 - GDPR compliance for European users
 - Data minimization in client-side storage
 - Sensitive data handling best practices
@@ -644,6 +891,7 @@ Based on the API specification, the application will work with these primary dat
 ### Search Implementation
 
 #### 1. MVP Search Focus
+
 - Global search with entity-type selection (accessible via CTRL+K / CMD+K keyboard shortcut)
 - Dedicated search interfaces for:
   - Runners
@@ -651,6 +899,7 @@ Based on the API specification, the application will work with these primary dat
   - Clubs
 
 #### 2. Search Features
+
 - Type-ahead suggestions and autocomplete
 - Recent search history (session-based)
 - Search result highlighting
@@ -658,6 +907,7 @@ Based on the API specification, the application will work with these primary dat
 - Intelligent handling of name variations
 
 #### 3. Search Results Presentation
+
 - Categorized results by entity type
 - Quick preview information
 - Direct links to detailed pages
@@ -665,6 +915,7 @@ Based on the API specification, the application will work with these primary dat
 - Secondary action options (e.g., "View performances" from runner result)
 
 #### 4. Future Search Enhancement
+
 - Natural language search with MCP server chatbot
 - Saved searches for registered users
 - Advanced boolean search operators
@@ -673,11 +924,13 @@ Based on the API specification, the application will work with these primary dat
 ### Filtering System
 
 #### 1. Three-Tiered Filter Approach
+
 - Primary Filters: Always visible, most common parameters
 - Advanced Filters: Available through "More Filters" expansion
 - Tier-Based Filters: Only shown to users with appropriate permissions
 
 #### 2. Filter Implementation
+
 - Instant visual feedback when possible
 - Applied filter indicators/chips
 - Save/clear filter state options
@@ -685,6 +938,7 @@ Based on the API specification, the application will work with these primary dat
 - Responsive adaptation for mobile devices
 
 #### 3. Filter Categories
+
 - Temporal filters (date ranges, years)
 - Geographic filters (country, city)
 - Performance filters (times, distances)
@@ -692,6 +946,7 @@ Based on the API specification, the application will work with these primary dat
 - Status filters (results status, certification)
 
 #### 4. Common Filter Patterns by Section
+
 - Race filters: date, location, distance, certification
 - Results filters: performance metrics, ranking, categories
 - Runner filters: nationality, gender, age, club
@@ -705,11 +960,13 @@ Based on the API specification, the application will work with these primary dat
 ### Language Implementation
 
 #### 1. MVP Language Support
+
 - English (primary development language)
 - German (important for DUV's core audience)
 - Swedish (requested initial language)
 
 #### 2. Future Language Expansion
+
 - French
 - Spanish
 - Italian
@@ -718,6 +975,7 @@ Based on the API specification, the application will work with these primary dat
 - Japanese
 
 #### 3. Technical Implementation
+
 - next-intl library optimized for Next.js 15 and App Router
 - ICU message syntax for pluralization and rich text
 - Server Components internationalization via getRequestConfig
@@ -725,6 +983,7 @@ Based on the API specification, the application will work with these primary dat
 - Type-safe message keys with TypeScript integration
 
 #### 4. Localization Considerations
+
 - Date and time formatting
 - Number formatting (decimal separators, thousands separators)
 - Units conversion where appropriate
@@ -732,6 +991,7 @@ Based on the API specification, the application will work with these primary dat
 - Cultural adaptations where relevant
 
 #### 5. Language Selection
+
 - Automatic detection based on browser settings
 - Persistent language preference storage
 - Clear language toggle in the UI
@@ -742,6 +1002,7 @@ Based on the API specification, the application will work with these primary dat
 ## User Preferences
 
 ### 1. Display Preferences
+
 - Unit system toggle (kilometers/miles)
   - Affects display of distances throughout the application
   - Remembers user preference between sessions
@@ -753,18 +1014,21 @@ Based on the API specification, the application will work with these primary dat
   - Applied consistently across the application
 
 ### 2. Language Selection
+
 - Language switcher in main navigation
 - Persistent language preference storage
 - Initial detection based on browser settings
 - Language-specific URLs for bookmarking and sharing
 
 ### 3. Theme Settings
+
 - Light/dark mode toggle
 - System preference detection with manual override
 - High contrast option for accessibility
 - Font size adjustment controls
 
 ### 4. Preference Management
+
 - Preferences stored in local storage for non-authenticated users
 - Preferences stored in user profile when authentication is implemented
 - Export/import settings option for convenience
@@ -774,9 +1038,17 @@ Based on the API specification, the application will work with these primary dat
 
 ## Development Phases
 
+### Phase 0: API Completion
+
+- Complete remaining API endpoints (races, records, admin endpoints)
+- Address data model challenges (runner identity, event-race hierarchy)
+- Finalize API documentation and testing
+- Ensure all required data is accessible through the API
+
 ### Phase 1: Core Platform Development (MVP)
 
 #### 1. Initial Setup and Configuration
+
 - Project setup with Next.js 15
 - TailwindCSS and shadcn/ui integration
 - Base architecture implementation
@@ -784,6 +1056,7 @@ Based on the API specification, the application will work with these primary dat
 - CI/CD pipeline setup
 
 #### 2. Core Framework Development
+
 - Navigation structure
 - Page templates
 - Authentication system (admin only)
@@ -793,6 +1066,7 @@ Based on the API specification, the application will work with these primary dat
 - User preferences system
 
 #### 3. Primary Features Implementation
+
 - Race calendar and results views
 - Runner search and profiles
 - Records section
@@ -801,6 +1075,7 @@ Based on the API specification, the application will work with these primary dat
 - Race submission form
 
 #### 4. Enhancement and Refinement
+
 - Data visualization components
 - Advanced filtering capabilities
 - Cross-browser testing
@@ -809,6 +1084,7 @@ Based on the API specification, the application will work with these primary dat
 - SEO optimization
 
 #### 5. Testing and Launch Preparation
+
 - Comprehensive testing
 - Content preparation
 - Documentation
@@ -816,6 +1092,7 @@ Based on the API specification, the application will work with these primary dat
 - Soft launch preparation
 
 #### 6. MVP Launch
+
 - Production deployment
 - Monitoring setup
 - Initial feedback collection
@@ -823,6 +1100,7 @@ Based on the API specification, the application will work with these primary dat
 ### Phase 2: Platform Expansion
 
 #### 1. User Account System
+
 - Registration and authentication
 - Profile management
 - Tier-based access control
@@ -830,12 +1108,14 @@ Based on the API specification, the application will work with these primary dat
 - Saved searches and preferences
 
 #### 2. Enhanced Admin Tools
+
 - Multi-tier administration
 - Advanced dashboard
 - Approval workflows
 - Reporting tools
 
 #### 3. Advanced Features
+
 - Championships section
 - Expanded analytics
 - Natural language search
@@ -843,6 +1123,7 @@ Based on the API specification, the application will work with these primary dat
 - Additional language support
 
 #### 4. Community Features
+
 - Subscription system
 - Enhanced feedback mechanisms
 - User contributions
@@ -851,12 +1132,14 @@ Based on the API specification, the application will work with these primary dat
 ### Key Milestones and Deliverables
 
 #### Milestone 1: Technical Foundation
+
 - Complete project setup
 - Navigation and page template system
 - Authentication framework
 - Internationalization setup
 
 #### Milestone 2: Core Feature Set
+
 - Race calendar and results
 - Runner profiles
 - Records section
@@ -864,28 +1147,33 @@ Based on the API specification, the application will work with these primary dat
 - Basic search implementation
 
 #### Milestone 3: Enhanced Functionality
+
 - Advanced filtering system
 - Data visualizations
 - Race submission workflow
 - Cross-device testing complete
 
 #### Milestone 4: MVP Launch
+
 - Final testing complete
 - Documentation complete
 - Production deployment
 - Initial user feedback collection
 
 #### Milestone 5: User Account System
+
 - Registration and authentication
 - Profile management
 - Tier-based content access
 
 #### Milestone 6: Advanced Features
+
 - Championships section
 - Natural language search
 - Enhanced analytics
 
 #### Milestone 7: Community Platform
+
 - Subscription system
 - Full notification implementation
 - User contribution workflow
@@ -895,14 +1183,16 @@ Based on the API specification, the application will work with these primary dat
 ## Analytics & Error Monitoring
 
 ### 1. Error Tracking
+
 - Implement Sentry for frontend error tracking with Next.js-specific SDK
 - Configure specialized error boundaries for App Router and Server Components
 - Set up error monitoring for both client and server-side errors
 - Enable source map uploads for accurate error stack traces
-- Track and categorize API failures 
+- Track and categorize API failures
 - Set up automatic issue grouping and alerts for critical errors
 
 ### 2. Analytics
+
 - Google Tag Manager for analytics implementation
 - Event tracking for key user interactions
 - Conversion tracking for important user flows
@@ -910,6 +1200,7 @@ Based on the API specification, the application will work with these primary dat
 - Track search usage, filter combinations, and navigation patterns
 
 ### 3. Performance Monitoring
+
 - Core Web Vitals tracking
 - Real User Monitoring (RUM) data collection
 - Performance regression detection
@@ -920,6 +1211,7 @@ Based on the API specification, the application will work with these primary dat
 ## SEO Optimization
 
 ### 1. Structured Data Implementation
+
 - JSON-LD structured data for improved search visibility
 - Implement Google-supported schema types:
   - Event (for races): https://developers.google.com/search/docs/appearance/structured-data/event
@@ -929,6 +1221,7 @@ Based on the API specification, the application will work with these primary dat
 - Ensure proper nesting of relationships between entities when applicable
 
 ### 2. Technical SEO
+
 - Generate dynamic XML sitemaps
 - Implement canonical URLs for all pages
 - Use proper rel="next" and rel="prev" for paginated content
@@ -943,13 +1236,15 @@ Based on the API specification, the application will work with these primary dat
 ### Race Calendar and Results
 
 #### 1. Race Listing Feature
+
 - Display races in a responsive table/grid format
 - Filter by date, location, distance, race type, certification
 - Sort by date, name, distance, location
 - Toggle between upcoming and past races
 - Display key race information in list view
-   
+
 **Acceptance Criteria:**
+
 - Users can view races in both list and calendar views
 - Filters apply correctly and update results immediately
 - Responsive design works on all target devices
@@ -957,13 +1252,15 @@ Based on the API specification, the application will work with these primary dat
 - Pagination or infinite scroll functions correctly
 
 #### 2. Race Detail Feature
+
 - Display comprehensive race information
 - Show race results in tabular format
 - Provide historical context (previous editions)
 - Include course information and visualization
 - Offer related races suggestions
-   
+
 **Acceptance Criteria:**
+
 - All race data from API is displayed appropriately
 - Results table is sortable and filterable
 - Mobile view adapts table with expandable rows
@@ -971,13 +1268,15 @@ Based on the API specification, the application will work with these primary dat
 - Navigation between race details and results is intuitive
 
 #### 3. Results Display Feature
+
 - Tabular presentation of race results
 - Filtering by rank, gender, age category, club
 - Column selection and visibility control
 - Performance comparison tools
 - Result detail expansion
-   
+
 **Acceptance Criteria:**
+
 - Results load efficiently with appropriate pagination
 - Filters apply correctly to result set
 - Column visibility controls work correctly
@@ -987,13 +1286,15 @@ Based on the API specification, the application will work with these primary dat
 ### Runner Profiles
 
 #### 1. Runner Search Feature
+
 - Search by name, nationality, club
 - Result categorization and filtering
 - Quick preview information
 - Autocomplete suggestions
 - Recent search history
-   
+
 **Acceptance Criteria:**
+
 - Search returns relevant results ranked by relevance
 - Autocomplete suggestions appear after typing threshold
 - Results display essential runner information
@@ -1001,13 +1302,15 @@ Based on the API specification, the application will work with these primary dat
 - Mobile interface is thumb-friendly and accessible
 
 #### 2. Runner Profile Feature
+
 - Personal information display (privacy aware)
 - Performance history in tabular format
 - Performance visualizations and trends
 - Record highlights
 - Related runners (club mates, linked profiles)
-   
+
 **Acceptance Criteria:**
+
 - Profile respects runner privacy settings
 - Performance history is complete and accurate
 - Visualizations render correctly on all devices
@@ -1015,12 +1318,14 @@ Based on the API specification, the application will work with these primary dat
 - Record highlights are prominently displayed
 
 #### 3. Club Information Feature
+
 - Club details and information
 - Member listings with filtering
 - Club performance history and highlights
 - Related clubs (regional, similar)
-   
+
 **Acceptance Criteria:**
+
 - Club information is complete and well-organized
 - Member listings load efficiently with pagination
 - Filtering narrows member list correctly
@@ -1029,12 +1334,14 @@ Based on the API specification, the application will work with these primary dat
 ### Records Section
 
 #### 1. Records Listing Feature
+
 - Categorization by record type
 - Filtering by distance, age group, gender
 - Historical progression visualization
 - Record detail expansion
-   
+
 **Acceptance Criteria:**
+
 - Records display in clearly organized categories
 - Filters apply correctly to records display
 - Record progression charts render accurately
@@ -1042,12 +1349,14 @@ Based on the API specification, the application will work with these primary dat
 - Responsive design adapts to all target devices
 
 #### 2. Record Comparison Feature
+
 - Side-by-side comparison of records
 - Historical trend visualization
 - Demographic and geographic analysis
 - Contextual performance metrics
-   
+
 **Acceptance Criteria:**
+
 - Comparison view clearly distinguishes records
 - Visualizations accurately reflect record data
 - UI allows easy selection of records to compare
@@ -1056,12 +1365,14 @@ Based on the API specification, the application will work with these primary dat
 ### Top Lists Section
 
 #### 1. Top List Display Feature
+
 - Ranked performance listings
 - Filtering by year, distance, surface, nationality
 - Performance distribution visualization
 - Toggle between different ranking methods
-   
+
 **Acceptance Criteria:**
+
 - Top lists display with correct ranking
 - Filters modify top list accurately
 - Distribution visualizations render correctly
@@ -1069,12 +1380,14 @@ Based on the API specification, the application will work with these primary dat
 - Performance metrics are formatted consistently
 
 #### 2. Performance Comparison Feature
+
 - Highlight differences between rankings
 - Year-over-year comparison
 - Demographic and geographic analysis
 - Statistical significance indicators
-   
+
 **Acceptance Criteria:**
+
 - Comparisons clearly show differences
 - Year selection interface is intuitive
 - Analysis accurately reflects underlying data
@@ -1083,12 +1396,14 @@ Based on the API specification, the application will work with these primary dat
 ### Race Submission
 
 #### 1. New Race Submission Feature
+
 - Multi-step form with validation
 - Required and optional field indication
 - Date and location selection tools
 - Preview and confirmation step
-   
+
 **Acceptance Criteria:**
+
 - Form validates all required fields
 - Multi-step process maintains state between steps
 - Preview accurately shows submission data
@@ -1096,12 +1411,14 @@ Based on the API specification, the application will work with these primary dat
 - Confirmation feedback is clear and actionable
 
 #### 2. Race Edition Submission Feature
+
 - Previous edition data pre-population
 - Clear indication of carried-over data
 - Efficient updating of changed fields
 - Validation and confirmation
-   
+
 **Acceptance Criteria:**
+
 - Previous edition data loads correctly
 - Changed fields are clearly highlighted
 - Validation ensures data completeness
@@ -1110,24 +1427,28 @@ Based on the API specification, the application will work with these primary dat
 ### Admin Interface
 
 #### 1. Admin Authentication Feature
+
 - Secure login process
 - Session management
 - Role-based access control
 - Password security requirements
-   
+
 **Acceptance Criteria:**
+
 - Authentication process is secure
 - Sessions expire appropriately
 - Access control limits feature access by role
 - Password reset functionality works correctly
 
 #### 2. Submission Management Feature
+
 - List of pending submissions
 - Approval/rejection workflow
 - Edit capability before approval
 - Status tracking and history
-   
+
 **Acceptance Criteria:**
+
 - Submissions display with relevant details
 - Approval process updates database correctly
 - Edit interface allows corrections
@@ -1140,36 +1461,42 @@ Based on the API specification, the application will work with these primary dat
 Beyond the planned Phase 1 and Phase 2 development, several additional enhancements could further improve the platform:
 
 ### 1. Enhanced Data Analysis
+
 - Machine learning for performance predictions
 - Advanced statistical tools
 - Custom report generation
 - Data export capabilities
 
 ### 2. Extended Community Features
+
 - Discussion forums or comments
 - User-generated content (race reports, photos)
 - Runner verification system
 - Coaching/training integration
 
 ### 3. Mobile Application
+
 - Native mobile apps for iOS and Android
 - Offline capabilities
 - Push notifications
 - Mobile-specific features
 
 ### 4. Integration Ecosystem
+
 - APIs for third-party applications
 - Integration with tracking platforms
 - Race registration system connections
 - Training platforms integration
 
 ### 5. Content Expansion
+
 - Editorial content and news
 - Historical deep dives
 - Interviews and profiles
 - Educational resources
 
 ### 6. Monetization Options
+
 - Enhanced premium tier features
 - Advertising integration
 - Marketplace functionality
@@ -1182,14 +1509,16 @@ Beyond the planned Phase 1 and Phase 2 development, several additional enhanceme
 ### Technical Challenges
 
 #### 1. Data Volume and Performance
+
 - **Challenge:** Managing large datasets while maintaining performance
-- **Approach:** 
+- **Approach:**
   - Efficient pagination and lazy loading
   - Optimized API queries with parameter tuning
   - Strategic caching based on data update frequency
   - Server-side rendering for data-heavy pages
 
 #### 2. Complex Filtering and Search
+
 - **Challenge:** Implementing a comprehensive yet intuitive filtering system
 - **Approach:**
   - Progressive disclosure of complex filters
@@ -1198,6 +1527,7 @@ Beyond the planned Phase 1 and Phase 2 development, several additional enhanceme
   - Strategic server-side filtering for complex queries
 
 #### 3. Responsive Data Presentation
+
 - **Challenge:** Displaying complex tabular data across devices
 - **Approach:**
   - Priority-based column display
@@ -1206,6 +1536,7 @@ Beyond the planned Phase 1 and Phase 2 development, several additional enhanceme
   - Alternative views for mobile devices
 
 #### 4. Authentication and Privacy
+
 - **Challenge:** Implementing tiered access while respecting privacy settings
 - **Approach:**
   - Clear permission model mapping API tiers
@@ -1214,6 +1545,7 @@ Beyond the planned Phase 1 and Phase 2 development, several additional enhanceme
   - Secure authentication implementation
 
 #### 5. API Availability Risk
+
 - **Challenge:** Frontend functionality depends on API availability and performance
 - **Approach:**
   - Implement graceful degradation for API failures
@@ -1223,6 +1555,7 @@ Beyond the planned Phase 1 and Phase 2 development, several additional enhanceme
   - Maintain static fallback data for critical sections
 
 #### 5. Internationalization Complexity
+
 - **Challenge:** Supporting multiple languages with specialized terminology
 - **Approach:**
   - Context-aware translation keys
@@ -1233,21 +1566,25 @@ Beyond the planned Phase 1 and Phase 2 development, several additional enhanceme
 ### Technical Debt Considerations
 
 #### 1. API Versioning
+
 - Plan for API versioning changes
 - Abstraction layer for API client
 - Backward compatibility handling
 
 #### 2. State Management Scaling
+
 - Initial simple state management may need enhancement
 - Plan for potential migration to more robust solutions
 - Clear state boundaries and access patterns
 
 #### 3. Component Library Evolution
+
 - shadcn/ui may evolve or change
 - Component abstraction for easier updates
 - Style system that can adapt to component changes
 
 #### 4. Next.js Version Updates
+
 - Plan for regular framework updates
 - Feature usage that minimizes breaking change risk
 - Testing strategy for framework updates
@@ -1255,24 +1592,28 @@ Beyond the planned Phase 1 and Phase 2 development, several additional enhanceme
 ### Performance Optimization Strategies
 
 #### 1. Code Optimization
+
 - Tree shaking and dead code elimination
 - Component code splitting
 - Lazy loading of non-critical components
 - Bundle size monitoring
 
 #### 2. Network Optimization
+
 - API request batching and deduplication
 - Strategic data prefetching
 - Response compression
 - Cache-Control header optimization
 
 #### 3. Rendering Optimization
+
 - Appropriate rendering strategy selection based on content type
 - Static generation for stable content
 - Incremental static regeneration for semi-dynamic content
 - Client-side rendering only when necessary
 
 #### 4. Resource Optimization
+
 - Image optimization and next/image usage
 - Font loading optimization
 - Third-party script management
@@ -1285,16 +1626,19 @@ Beyond the planned Phase 1 and Phase 2 development, several additional enhanceme
 ### Key Dependencies
 
 #### 1. API Readiness and Stability
+
 - The frontend relies heavily on the DUV Ultramarathon Statistics API
 - Any changes to API structure or endpoints may require frontend adjustments
 - **Mitigation:** Clear API versioning and abstraction layer in frontend code
 
 #### 2. Data Quality and Consistency
+
 - Frontend experience depends on consistent, well-structured data
 - Inconsistencies in historical data may require special handling
 - **Mitigation:** Robust data normalization and error handling
 
 #### 3. Third-Party Libraries
+
 - Reliance on Next.js, shadcn/ui, and other libraries
 - Future updates may introduce breaking changes
 - **Mitigation:** Clear update strategy and component abstraction
@@ -1302,21 +1646,25 @@ Beyond the planned Phase 1 and Phase 2 development, several additional enhanceme
 ### Risk Assessment
 
 #### 1. Performance Risks
+
 - Large data volumes may impact frontend performance
 - Complex filtering operations could cause sluggishness
 - **Mitigation:** Optimized rendering strategies, pagination, and strategic caching
 
 #### 2. User Adoption Risks
+
 - Existing users may resist significant interface changes
 - Feature parity with existing site is expected
 - **Mitigation:** Phased rollout, clear communication, and feedback mechanisms
 
 #### 3. Timeline Risks
+
 - Complex feature implementation may exceed estimated timeframes
 - API dependencies may cause unexpected delays
 - **Mitigation:** Prioritized feature development, regular progress tracking
 
 #### 4. Technical Complexity Risks
+
 - Responsive data tables with many columns present UX challenges
 - Privacy-aware display requires careful implementation
 - **Mitigation:** Early prototyping of complex components, clear acceptance criteria
