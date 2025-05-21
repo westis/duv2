@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   useUnitSystem,
   useDateFormat,
@@ -8,6 +8,7 @@ import {
   useLanguage,
   useResetPreferences,
 } from "../../lib/hooks/use-preferences";
+import { useTranslations } from "next-intl";
 import {
   UnitSystem,
   DateFormat,
@@ -29,14 +30,66 @@ export default function PreferencesPanel() {
   const [theme, setTheme] = useTheme();
   const [language, setLanguage] = useLanguage();
   const resetPreferences = useResetPreferences();
+  const t = useTranslations("PreferencesPanel");
+
+  // Initialize theme based on system preference or current HTML class
+  useEffect(() => {
+    // Check if there's already a dark class on the HTML element
+    const isDarkModeActive =
+      document.documentElement.classList.contains("dark");
+
+    // Synchronize our theme state with what's actually on the HTML element
+    // This ensures we don't override the existing theme when the panel opens
+    if (isDarkModeActive && theme !== ThemeType.Dark) {
+      setTheme(ThemeType.Dark);
+    } else if (!isDarkModeActive && theme !== ThemeType.Light) {
+      setTheme(ThemeType.Light);
+    }
+  }, [theme, setTheme]);
+
+  // Apply theme class to HTML element when theme changes - we keep this
+  // separate and will only apply changes when the user explicitly clicks
+  // a theme button
+  useEffect(() => {
+    function handleThemeChange(newTheme: ThemeType) {
+      const htmlElement = document.documentElement;
+      if (newTheme === ThemeType.Dark) {
+        htmlElement.classList.add("dark");
+      } else {
+        htmlElement.classList.remove("dark");
+      }
+    }
+
+    // Only run this effect when theme changes due to user action
+    const themeButtons = document.querySelectorAll<HTMLButtonElement>(
+      "button[data-theme-action]",
+    );
+    themeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (button.dataset.themeAction === "light") {
+          handleThemeChange(ThemeType.Light);
+        } else {
+          handleThemeChange(ThemeType.Dark);
+        }
+      });
+    });
+
+    return () => {
+      themeButtons.forEach((button) => {
+        button.removeEventListener("click", () => {});
+      });
+    };
+  }, []);
 
   return (
     <div className="space-y-6 p-0">
-      <h2 className="text-xl font-semibold">Settings</h2>
+      <h2 className="text-xl font-semibold">{t("settingsTitle")}</h2>
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">Unit System</label>
+          <label className="block text-sm font-medium">
+            {t("unitSystemLabel")}
+          </label>
           <div className="flex mt-1 overflow-hidden rounded-md border border-border">
             <button
               onClick={() => setUnitSystem(UnitSystem.Kilometers)}
@@ -47,7 +100,7 @@ export default function PreferencesPanel() {
                   : "bg-card text-card-fg",
               )}
             >
-              Kilometers
+              {t("kilometersOption")}
             </button>
             <button
               onClick={() => setUnitSystem(UnitSystem.Miles)}
@@ -58,16 +111,18 @@ export default function PreferencesPanel() {
                   : "bg-card text-card-fg",
               )}
             >
-              Miles
+              {t("milesOption")}
             </button>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Date Format</label>
+          <label className="block text-sm font-medium">
+            {t("dateFormatLabel")}
+          </label>
           <Select value={dateFormat} onValueChange={setDateFormat}>
             <SelectTrigger className="mt-1 w-full">
-              <SelectValue placeholder="Select date format" />
+              <SelectValue placeholder={t("dateFormatLabel")} />
             </SelectTrigger>
             <SelectContent>
               {Object.values(DateFormat).map((fmt) => (
@@ -80,9 +135,10 @@ export default function PreferencesPanel() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Theme</label>
+          <label className="block text-sm font-medium">{t("themeLabel")}</label>
           <div className="flex mt-1 overflow-hidden rounded-md border border-border">
             <button
+              data-theme-action="light"
               onClick={() => setTheme(ThemeType.Light)}
               className={cn(
                 "flex-1 py-2 text-sm font-medium",
@@ -91,9 +147,10 @@ export default function PreferencesPanel() {
                   : "bg-card text-card-fg",
               )}
             >
-              Light
+              {t("lightOption")}
             </button>
             <button
+              data-theme-action="dark"
               onClick={() => setTheme(ThemeType.Dark)}
               className={cn(
                 "flex-1 py-2 text-sm font-medium border-l border-border",
@@ -102,16 +159,18 @@ export default function PreferencesPanel() {
                   : "bg-card text-card-fg",
               )}
             >
-              Dark
+              {t("darkOption")}
             </button>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Language</label>
+          <label className="block text-sm font-medium">
+            {t("languageLabel")}
+          </label>
           <Select value={language} onValueChange={setLanguage}>
             <SelectTrigger className="mt-1 w-full">
-              <SelectValue placeholder="Select language" />
+              <SelectValue placeholder={t("languageLabel")} />
             </SelectTrigger>
             <SelectContent>
               {Object.values(Language).map((lang) => (
@@ -129,7 +188,7 @@ export default function PreferencesPanel() {
         onClick={resetPreferences}
         className="btn-primary w-full mt-4"
       >
-        Reset to Defaults
+        {t("resetButton")}
       </button>
     </div>
   );

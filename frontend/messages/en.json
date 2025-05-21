@@ -66,5 +66,17 @@
     "contact": "Contact",
     "copyright": "© {year} DUV Ultramarathon Statistics. All rights reserved.",
     "copyrightShort": "© {year} DUV Ultramarathon Statistics"
+  },
+  "PreferencesPanel": {
+    "settingsTitle": "Settings",
+    "unitSystemLabel": "Unit System",
+    "kilometersOption": "Kilometers",
+    "milesOption": "Miles",
+    "dateFormatLabel": "Date Format",
+    "themeLabel": "Theme",
+    "lightOption": "Light",
+    "darkOption": "Dark",
+    "languageLabel": "Language",
+    "resetButton": "Reset to Defaults"
   }
 }

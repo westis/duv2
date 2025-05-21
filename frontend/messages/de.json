@@ -66,5 +66,17 @@
     "contact": "Kontakt",
     "copyright": "© {year} DUV Ultramarathon-Statistik. Alle Rechte vorbehalten.",
     "copyrightShort": "© {year} DUV Ultramarathon-Statistik"
+  },
+  "PreferencesPanel": {
+    "settingsTitle": "Einstellungen",
+    "unitSystemLabel": "Einheitensystem",
+    "kilometersOption": "Kilometer",
+    "milesOption": "Meilen",
+    "dateFormatLabel": "Datumsformat",
+    "themeLabel": "Thema",
+    "lightOption": "Hell",
+    "darkOption": "Dunkel",
+    "languageLabel": "Sprache",
+    "resetButton": "Auf Standard zurücksetzen"
   }
 }

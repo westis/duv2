@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/popover";
 
 import { MainNav } from "./main-nav";
-import ThemeToggle from "@/theme/theme-toggle";
 import { MobileMenu } from "@/components/navigation/mobile-menu";
 import PreferencesPanel from "@/components/client/preferences-panel";
 
@@ -57,7 +56,6 @@ export function SiteHeader({ locale }: SiteHeaderProps) {
 
         {/* Controls */}
         <div className="flex items-center gap-2">
-          <ThemeToggle />
           <Popover>
             <PopoverTrigger asChild>
               <button

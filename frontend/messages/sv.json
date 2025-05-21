@@ -66,5 +66,17 @@
     "contact": "Kontakt",
     "copyright": "© {year} DUV Ultramaraton Statistik. Alla rättigheter förbehållna.",
     "copyrightShort": "© {year} DUV Ultramaraton Statistik"
+  },
+  "PreferencesPanel": {
+    "settingsTitle": "Inställningar",
+    "unitSystemLabel": "Enhetssystem",
+    "kilometersOption": "Kilometer",
+    "milesOption": "Miles",
+    "dateFormatLabel": "Datumformat",
+    "themeLabel": "Tema",
+    "lightOption": "Ljus",
+    "darkOption": "Mörk",
+    "languageLabel": "Språk",
+    "resetButton": "Återställ till standard"
   }
 }
