@@ -4,19 +4,15 @@ import React from "react";
 import {
   useUnitSystem,
   useDateFormat,
-  useTimeFormat,
   useTheme,
   useLanguage,
-  useFontSize,
   useResetPreferences,
 } from "../../lib/hooks/use-preferences";
 import {
   UnitSystem,
   DateFormat,
-  TimeFormatType,
   ThemeType,
   Language,
-  FontSize,
 } from "../../types/preferences";
 import { cn } from "@/lib/utils";
 import {
@@ -30,10 +26,8 @@ import {
 export default function PreferencesPanel() {
   const [unitSystem, setUnitSystem] = useUnitSystem();
   const [dateFormat, setDateFormat] = useDateFormat();
-  const [timeFormat, setTimeFormat] = useTimeFormat();
   const [theme, setTheme] = useTheme();
   const [language, setLanguage] = useLanguage();
-  const [fontSize, setFontSize] = useFontSize();
   const resetPreferences = useResetPreferences();
 
   return (
@@ -86,34 +80,6 @@ export default function PreferencesPanel() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Time Format</label>
-          <div className="flex mt-1 overflow-hidden rounded-md border border-border">
-            <button
-              onClick={() => setTimeFormat(TimeFormatType.H12)}
-              className={cn(
-                "flex-1 py-2 text-sm font-medium",
-                timeFormat === TimeFormatType.H12
-                  ? "bg-primary text-primary-fg"
-                  : "bg-card text-card-fg",
-              )}
-            >
-              12-hour
-            </button>
-            <button
-              onClick={() => setTimeFormat(TimeFormatType.H24)}
-              className={cn(
-                "flex-1 py-2 text-sm font-medium border-l border-border",
-                timeFormat === TimeFormatType.H24
-                  ? "bg-primary text-primary-fg"
-                  : "bg-card text-card-fg",
-              )}
-            >
-              24-hour
-            </button>
-          </div>
-        </div>
-
-        <div>
           <label className="block text-sm font-medium">Theme</label>
           <div className="flex mt-1 overflow-hidden rounded-md border border-border">
             <button
@@ -151,22 +117,6 @@ export default function PreferencesPanel() {
               {Object.values(Language).map((lang) => (
                 <SelectItem key={lang} value={lang}>
                   {lang}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Font Size</label>
-          <Select value={fontSize} onValueChange={setFontSize}>
-            <SelectTrigger className="mt-1 w-full">
-              <SelectValue placeholder="Select font size" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.values(FontSize).map((size) => (
-                <SelectItem key={size} value={size}>
-                  {size}
                 </SelectItem>
               ))}
             </SelectContent>
