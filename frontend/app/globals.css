@@ -3,10 +3,10 @@
 
 /*
 ===================================================================
- GLOBAL DESIGN TOKENS – OKLCH ONLY  (Tailwind 4.1)
+ GLOBAL DESIGN TOKENS – OKLCH ONLY  (Tailwind 4.1)
  • Keeps **all** tokens from the legacy file so nothing breaks
  • Harmonised palette: neutral greys + single red accent
- • WCAG 2.1 AAA for body text & UI copy; AA for small accent UI
+ • WCAG 2.1 AAA for body text & UI copy; AA for small accent UI
 ===================================================================*/
 
 :root {
@@ -97,7 +97,7 @@
 }
 
 /* ----------------------------------------------------------------
-   THEME UTILITIES – expose CSS vars to Tailwind’s `theme()` helper
+   THEME UTILITIES – expose CSS vars to Tailwind's `theme()` helper
 ---------------------------------------------------------------- */
 @theme inline {
   --color-background: var(--color-background);
@@ -110,6 +110,8 @@
   --color-muted-fg: var(--color-muted-foreground);
   --color-card: var(--color-card);
   --color-card-fg: var(--color-card-foreground);
+  --color-popover: var(--color-popover);
+  --color-popover-foreground: var(--color-popover-foreground);
   --color-success: var(--color-success);
   --color-success-fg: var(--color-success-foreground);
   --color-warning: var(--color-warning);

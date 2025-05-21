@@ -18,6 +18,7 @@ import {
   Language,
   FontSize,
 } from "../../types/preferences";
+import { cn } from "@/lib/utils";
 import {
   Select,
   SelectTrigger,
@@ -36,21 +37,36 @@ export default function PreferencesPanel() {
   const resetPreferences = useResetPreferences();
 
   return (
-    <div className="card space-y-6">
+    <div className="space-y-6 p-0">
       <h2 className="text-xl font-semibold">Settings</h2>
 
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium">Unit System</label>
-          <Select value={unitSystem} onValueChange={setUnitSystem}>
-            <SelectTrigger className="mt-1 w-full">
-              <SelectValue placeholder="Select unit" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={UnitSystem.Kilometers}>Kilometers</SelectItem>
-              <SelectItem value={UnitSystem.Miles}>Miles</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex mt-1 overflow-hidden rounded-md border border-border">
+            <button
+              onClick={() => setUnitSystem(UnitSystem.Kilometers)}
+              className={cn(
+                "flex-1 py-2 text-sm font-medium",
+                unitSystem === UnitSystem.Kilometers
+                  ? "bg-primary text-primary-fg"
+                  : "bg-card text-card-fg",
+              )}
+            >
+              Kilometers
+            </button>
+            <button
+              onClick={() => setUnitSystem(UnitSystem.Miles)}
+              className={cn(
+                "flex-1 py-2 text-sm font-medium border-l border-border",
+                unitSystem === UnitSystem.Miles
+                  ? "bg-primary text-primary-fg"
+                  : "bg-card text-card-fg",
+              )}
+            >
+              Miles
+            </button>
+          </div>
         </div>
 
         <div>
@@ -71,28 +87,58 @@ export default function PreferencesPanel() {
 
         <div>
           <label className="block text-sm font-medium">Time Format</label>
-          <Select value={timeFormat} onValueChange={setTimeFormat}>
-            <SelectTrigger className="mt-1 w-full">
-              <SelectValue placeholder="Select time" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={TimeFormatType.H12}>12-hour</SelectItem>
-              <SelectItem value={TimeFormatType.H24}>24-hour</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex mt-1 overflow-hidden rounded-md border border-border">
+            <button
+              onClick={() => setTimeFormat(TimeFormatType.H12)}
+              className={cn(
+                "flex-1 py-2 text-sm font-medium",
+                timeFormat === TimeFormatType.H12
+                  ? "bg-primary text-primary-fg"
+                  : "bg-card text-card-fg",
+              )}
+            >
+              12-hour
+            </button>
+            <button
+              onClick={() => setTimeFormat(TimeFormatType.H24)}
+              className={cn(
+                "flex-1 py-2 text-sm font-medium border-l border-border",
+                timeFormat === TimeFormatType.H24
+                  ? "bg-primary text-primary-fg"
+                  : "bg-card text-card-fg",
+              )}
+            >
+              24-hour
+            </button>
+          </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium">Theme</label>
-          <Select value={theme} onValueChange={setTheme}>
-            <SelectTrigger className="mt-1 w-full">
-              <SelectValue placeholder="Select theme" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ThemeType.Light}>Light</SelectItem>
-              <SelectItem value={ThemeType.Dark}>Dark</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex mt-1 overflow-hidden rounded-md border border-border">
+            <button
+              onClick={() => setTheme(ThemeType.Light)}
+              className={cn(
+                "flex-1 py-2 text-sm font-medium",
+                theme === ThemeType.Light
+                  ? "bg-primary text-primary-fg"
+                  : "bg-card text-card-fg",
+              )}
+            >
+              Light
+            </button>
+            <button
+              onClick={() => setTheme(ThemeType.Dark)}
+              className={cn(
+                "flex-1 py-2 text-sm font-medium border-l border-border",
+                theme === ThemeType.Dark
+                  ? "bg-primary text-primary-fg"
+                  : "bg-card text-card-fg",
+              )}
+            >
+              Dark
+            </button>
+          </div>
         </div>
 
         <div>
